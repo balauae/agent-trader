@@ -47,6 +47,12 @@ Keeps track of all scheduled market-moving events — macro data releases, Fed d
 | Fed speaker (non-decision) | 🟡 Medium |
 | Dividend ex-date | 🟢 Low |
 
+## Data Sources
+
+- **Trading Economics**: https://tradingeconomics.com/calendar — primary source for macro events
+- Yahoo Finance earnings calendar
+- EDGAR for company-specific filings
+
 ## Notes
 
 - Auto-flag any open position that has an earnings date within 7 days
