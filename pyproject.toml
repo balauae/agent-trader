@@ -1,0 +1,16 @@
+[project]
+name = "agent-trader"
+version = "0.1.0"
+description = "AI-powered multi-agent trading assistant"
+requires-python = ">=3.12"
+dependencies = [
+    "tvdatafeed @ git+https://github.com/rongardF/tvdatafeed.git",
+    "yfinance",
+    "pandas",
+    "numpy",
+    "requests",
+    "python-dotenv",
+]
+
+[tool.uv]
+dev-dependencies = []
