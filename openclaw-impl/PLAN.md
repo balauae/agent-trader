@@ -30,11 +30,17 @@ Before any skill works, we need reliable, shared data fetching. All skills call 
 | Economic calendar | Trading Economics (scrape), Yahoo earnings | — |
 | SEC filings | EDGAR API (free) | — |
 
-### Open Decisions
-- [ ] Real-time or delayed intraday? (Polygon vs Yahoo 15-min delay)
-- [ ] Options trading enabled? (Tradier free to start)
-- [ ] Social: StockTwits or X API?
-- [ ] Budget for paid APIs?
+### Decisions — Locked ✅
+
+- [x] **Data tier:** Free only — Yahoo Finance (`yfinance`) for OHLCV, 15-min delay acceptable
+- [x] **Options:** Tradier free tier for chains, Market Chameleon scrape for IV rank
+- [x] **Social:** StockTwits API (free, trader-focused)
+- [x] **Budget:** $0 — free stack only
+
+**Known limitations with free stack:**
+- 15-min intraday delay → `market-open-scalper` is a planning tool, not live execution
+- No real-time options flow (Unusual Whales is paid) → `sentiment-monitor` limited
+- No X/Twitter → `twitter-monitor` uses StockTwits only
 
 ---
 
@@ -151,12 +157,12 @@ skills/
 
 ---
 
-## Open Questions (Resolve Before Phase 1)
+## Open Questions — ✅ All Resolved
 
-1. **Real-time or delayed?** Trading live → need Polygon. Research/planning → Yahoo Finance is fine.
-2. **Options trading?** Yes → enable Tradier + Market Chameleon from day 1.
-3. **Social sentiment?** StockTwits free to start, upgrade to X API if needed.
-4. **Budget?** Free-only or ~$50–100/mo for Polygon + Unusual Whales?
+1. ~~Real-time or delayed?~~ → **Delayed (free) — Yahoo Finance 15-min delay**
+2. ~~Options trading?~~ → **Yes, free tier — Tradier + Market Chameleon**
+3. ~~Social sentiment?~~ → **StockTwits (free)**
+4. ~~Budget?~~ → **Free only ($0)**
 
 ---
 
