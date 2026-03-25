@@ -30,10 +30,28 @@ logger = logging.getLogger(__name__)
 
 # Default watchlist
 DEFAULT_WATCHLIST = [
-    "NVDA", "AMD", "ARM", "AVGO", "MU", "AAPL", "MSFT", "META", "AMZN", "GOOGL",
-    "TSLA", "PLTR", "APP", "CRWV", "COIN", "HOOD", "SOFI", "AFRM", "NU",
-    "RKLB", "SMR", "IREN", "HIMS", "SOUN", "RGTI", "QBTS", "LAC",
-    "NFLX", "ADBE", "CRWD", "PANW", "ZS", "SNOW", "TEAM", "ORCL"
+    # AI / Semis
+    "NVDA", "AMD", "ARM", "AVGO", "MU", "TSM", "MRVL", "SMCI", "INTC", "ALAB",
+    # Big Tech / Cloud
+    "AAPL", "MSFT", "META", "AMZN", "GOOGL", "GOOG", "ORCL", "ADBE", "IBM",
+    # SaaS / Cybersecurity
+    "CRWD", "PANW", "ZS", "SNOW", "MDB", "TEAM", "DOCU", "WDAY", "OKTA", "RBRK",
+    # Fintech / Crypto
+    "COIN", "HOOD", "SOFI", "AFRM", "NU", "PYPL", "IBIT",
+    # AI / Data
+    "PLTR", "APP", "TTD", "SOUN", "BBAI",
+    # EV / Space / Innovation
+    "TSLA", "RKLB", "AXON", "LAC",
+    # Energy / Quantum / Emerging
+    "SMR", "IREN", "APLD", "QBTS", "RGTI", "HIMS", "ENPH",
+    # Consumer / Other
+    "NFLX", "LULU", "DUOL", "GME", "BABA",
+    # Healthcare
+    "UNH", "NVO",
+    # IPO / Recent
+    "CRWV",
+    # Momentum / Small cap
+    "BTBT", "ARRY",
 ]
 
 
