@@ -142,6 +142,24 @@ def run_agent(name: str, ticker: str | None) -> dict:
         return {"ticker": t, "count": len(items), "items": items}
     elif name == "economic_calendar":
         return build_calendar(ticker=ticker, days=7)
+    elif name == "fundamental_analyst":
+        from scripts.fundamental_analyst import analyze as fund_analyze
+        return fund_analyze(ticker or "SPY")
+    elif name == "earnings_expert":
+        from scripts.earnings_expert import analyze as earn_analyze
+        return earn_analyze(ticker or "SPY")
+    elif name == "premarket_specialist":
+        from scripts.premarket_specialist import analyze as pm_analyze
+        return pm_analyze(ticker or "SPY")
+    elif name == "market_open_scalper":
+        from scripts.market_open_scalper import analyze as open_analyze
+        return open_analyze(ticker or "SPY")
+    elif name == "postmarket_summarizer":
+        from scripts.postmarket_summarizer import summarize as post_analyze
+        return post_analyze(ticker or "SPY")
+    elif name == "overnight_expert":
+        from scripts.overnight_expert import analyze as overnight_analyze
+        return overnight_analyze(ticker or "SPY")
     else:
         return {"error": f"Unknown agent: {name}"}
 
