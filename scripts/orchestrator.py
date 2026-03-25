@@ -52,7 +52,14 @@ NOISE_WORDS = {
 INTENT_MAP = {
     "news": ["news", "headlines", "what happened", "catalyst", "why is", "why did"],
     "chart": ["chart", "setup", "technical", "indicators", "levels", "entry", "exit"],
-    "calendar": ["earnings", "calendar", "events", "fomc", "fed", "opex", "macro", "economic"],
+    "calendar": ["calendar", "events", "fomc", "fed", "opex", "macro", "economic"],
+    "earnings": ["earnings", "iv crush", "expected move", "earnings play", "options"],
+    "fundamental": ["fundamentals", "valuation", "pe ratio", "revenue", "analyst target", "balance sheet"],
+    "premarket": ["pre-market", "premarket", "gap", "before open", "overnight gap"],
+    "open": ["opening range", "orb", "first candle", "market open", "9:30"],
+    "postmarket": ["how did", "eod", "end of day", "recap", "after close", "today's performance"],
+    "overnight": ["overnight", "after hours", "ah price", "hold overnight", "tomorrow setup"],
+    "scan": ["scan", "find setups", "best setups", "watchlist", "what's moving", "scan all"],
     "market": ["market summary", "market overview", "broad market", "sector", "overview"],
 }
 
@@ -62,6 +69,13 @@ INTENT_AGENTS = {
     "news": ["news_fetcher"],
     "chart": ["technical_analyst", "vwap_watcher"],
     "calendar": ["economic_calendar"],
+    "earnings": ["earnings_expert", "economic_calendar"],
+    "fundamental": ["fundamental_analyst", "earnings_expert"],
+    "premarket": ["premarket_specialist", "vwap_watcher"],
+    "open": ["market_open_scalper", "vwap_watcher"],
+    "postmarket": ["postmarket_summarizer", "technical_analyst"],
+    "overnight": ["overnight_expert", "fundamental_analyst"],
+    "scan": ["technical_analyst", "vwap_watcher"],
     "market": ["technical_analyst", "news_fetcher", "economic_calendar"],
 }
 
