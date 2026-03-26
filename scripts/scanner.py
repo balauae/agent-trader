@@ -32,7 +32,7 @@ logger = logging.getLogger(__name__)
 DEFAULT_WATCHLIST = [
     # Momentum / Day trade
     "TSLA", "NVDA", "AMD", "MRVL", "PLTR", "COIN", "APP", "HIMS", "CRWV", "ARM",
-    "RKLB", "HOOD", "SOFI", "SOUN", "RGTI",
+    "RKLB", "HOOD", "SOFI", "SOUN", "RGTI", "SMCI",
     # Growth / Swing
     "AAPL", "MSFT", "META", "AMZN", "GOOGL", "AVGO", "MU", "CRWD", "PANW", "NFLX",
     "ORCL", "TSM", "NU", "AFRM", "SNOW", "TEAM", "DOCU", "WDAY", "DOCN", "UNH",
