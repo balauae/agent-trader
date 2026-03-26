@@ -67,7 +67,7 @@ INTENT_MAP = {
 
 # Agents per intent
 INTENT_AGENTS = {
-    "analyze": ["technical_analyst", "vwap_watcher", "news_fetcher", "economic_calendar"],
+    "analyze": ["technical_analyst", "vwap_watcher", "news_fetcher", "economic_calendar", "timeframe_analyzer", "pattern_finder"],
     "news": ["news_fetcher"],
     "chart": ["technical_analyst", "vwap_watcher"],
     "calendar": ["economic_calendar"],
