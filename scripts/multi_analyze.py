@@ -19,6 +19,7 @@ from scripts.technical_analyst import analyze as tech_analyze
 from scripts.fundamental_analyst import analyze as fund_analyze
 from scripts.earnings_expert import analyze as earn_analyze
 from scripts.overnight_expert import analyze as overnight_analyze
+from scripts.timeframe_analyzer import analyze as tf_analyze
 
 
 def analyze_ticker(ticker: str, mode: str = "quick") -> dict:
@@ -41,6 +42,10 @@ def analyze_ticker(ticker: str, mode: str = "quick") -> dict:
             f = fund_analyze(t)
             e = earn_analyze(t)
             o = overnight_analyze(t)
+            tf = tf_analyze(t)
+            out["tf_confluence"] = tf.get("confluence")
+            out["tf_score"] = tf.get("confluence_score")
+            out["tf_recommendation"] = tf.get("recommendation")
             out["pe"] = f.get("pe_ratio")
             out["analyst_rating"] = f.get("analyst_rating")
             out["analyst_target"] = f.get("analyst_target")
@@ -76,6 +81,8 @@ def format_result(r: dict, mode: str = "quick") -> str:
         lines.append(f"   • {sig}")
 
     if mode == "full":
+        if r.get("tf_confluence"):
+            lines.append(f"   ⏱️  TF Confluence: {r.get('tf_confluence')} ({r.get('tf_score')}) — {r.get('tf_recommendation')}")
         lines.append(f"   📊 PE {r.get('pe')} | {r.get('analyst_rating')} → ${r.get('analyst_target')}")
         lines.append(f"   📅 Earnings {r.get('earnings_date')} ({r.get('days_to_earnings')}d) | Exp ±{r.get('expected_move')}%")
         lines.append(f"   🌙 AH ${r.get('ah_price')} ({r.get('ah_change'):+.2f}%) | Risk: {r.get('overnight_risk')}")
