@@ -223,6 +223,57 @@ def build_summary(intent: str, ticker: str | None, results: dict, errors: dict) 
         else:
             parts.append("No high-impact events in the next 7 days.")
 
+    # Fundamental
+    fa = results.get("fundamental_analyst", {})
+    if fa and not fa.get("error"):
+        pe = fa.get("pe_ratio", "N/A")
+        rating = fa.get("analyst_rating", "N/A")
+        target = fa.get("analyst_target", "N/A")
+        growth = fa.get("growth_grade", "N/A")
+        parts.append(f"Fundamentals: PE {pe}, {growth}, analyst {rating} → ${target}.")
+
+    # Earnings
+    ee = results.get("earnings_expert", {})
+    if ee and not ee.get("error"):
+        days = ee.get("days_to_earnings", 999)
+        date = ee.get("next_earnings_date", "N/A")
+        exp = ee.get("expected_move_pct", "N/A")
+        iv_risk = ee.get("iv_crush_risk", "N/A")
+        parts.append(f"Earnings {date} ({days}d away), expected move ±{exp}%, IV risk {iv_risk}.")
+
+    # Timeframe confluence
+    tf = results.get("timeframe_analyzer", {})
+    if tf and not tf.get("error"):
+        confluence = tf.get("confluence", "N/A")
+        score = tf.get("confluence_score", "N/A")
+        rec = tf.get("recommendation", "")
+        parts.append(f"Timeframe confluence: {confluence} ({score}). {rec}")
+
+    # Pattern finder
+    pt = results.get("pattern_finder", {})
+    if pt and not pt.get("error"):
+        best = pt.get("best_pattern")
+        if best:
+            parts.append(f"Pattern: {best['pattern']} ({best['confidence']}% confidence). {best['description']}")
+        else:
+            parts.append("No chart patterns detected.")
+
+    # Overnight / AH
+    ov = results.get("overnight_expert", {})
+    if ov and not ov.get("error"):
+        ah = ov.get("ah_change_pct", 0)
+        risk = ov.get("risk_level", "N/A")
+        ah_price = ov.get("ah_price", "N/A")
+        parts.append(f"After hours: ${ah_price} ({ah:+.2f}%), overnight risk {risk}.")
+
+    # Premarket
+    pm = results.get("premarket_specialist", {})
+    if pm and not pm.get("error"):
+        gap = pm.get("gap_pct", 0)
+        direction = pm.get("gap_direction", "")
+        setup = pm.get("setup", "")
+        parts.append(f"Pre-market gap: {gap:+.2f}% {direction} — {setup}.")
+
     # Errors
     for agent, err in errors.items():
         parts.append(f"{agent} unavailable: {err}")
