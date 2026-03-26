@@ -30,35 +30,25 @@ logger = logging.getLogger(__name__)
 
 # Default watchlist
 DEFAULT_WATCHLIST = [
-    # AI / Semis
-    "NVDA", "AMD", "ARM", "AVGO", "MU", "TSM", "MRVL", "SMCI", "INTC", "ALAB",
-    # Big Tech / Cloud
-    "AAPL", "MSFT", "META", "AMZN", "GOOGL", "GOOG", "ORCL", "ADBE", "IBM",
-    # SaaS / Cybersecurity
-    "CRWD", "PANW", "ZS", "SNOW", "MDB", "TEAM", "DOCU", "WDAY", "OKTA", "RBRK",
-    # Fintech / Crypto
-    "COIN", "HOOD", "SOFI", "AFRM", "NU", "PYPL", "IBIT",
-    # AI / Data
-    "PLTR", "APP", "TTD", "SOUN", "BBAI",
-    # EV / Space / Innovation
-    "TSLA", "RKLB", "AXON", "LAC",
-    # Energy / Quantum / Emerging
-    "SMR", "IREN", "APLD", "QBTS", "RGTI", "HIMS", "ENPH",
-    # Consumer / Other
-    "NFLX", "LULU", "DUOL", "GME", "BABA",
-    # Healthcare
-    "UNH", "NVO",
-    # IPO / Recent
-    "CRWV",
-    # Momentum / Small cap
-    "BTBT", "ARRY",
+    # Momentum / Day trade
+    "TSLA", "NVDA", "AMD", "MRVL", "PLTR", "COIN", "APP", "HIMS", "CRWV", "ARM",
+    "RKLB", "HOOD", "SOFI", "SOUN", "RGTI",
+    # Growth / Swing
+    "AAPL", "MSFT", "META", "AMZN", "GOOGL", "AVGO", "MU", "CRWD", "PANW", "NFLX",
+    "ORCL", "TSM", "NU", "AFRM", "SNOW", "TEAM", "DOCU", "WDAY", "DOCN", "UNH",
+    "OKTA", "PYPL", "NVO",
+    # Macro / Crypto proxies
+    "GLD", "SLV", "IBIT", "BABA",
+    # Speculative
+    "QBTS", "APLD", "IREN", "SMR", "ALAB", "MDB",
+    # Swing
+    "AXON", "TTD", "ZS", "ADBE",
 ]
 
 
 def scan_ticker(ticker: str, mode: str = "vwap") -> dict:
     """Run all relevant agents on a single ticker with retry + timeout guard."""
-    import time, random
-    time.sleep(random.uniform(0.5, 1.2))  # stagger to avoid rate limits
+    import time
     t = ticker.upper()
     result = {"ticker": t, "error": None}
 
@@ -117,24 +107,20 @@ def format_row(r: dict) -> str:
 
 
 def scan(tickers: list, mode: str = "vwap", max_workers: int = 5) -> list:
-    """Parallel scan — batched to avoid yfinance rate limits."""
+    """Sequential scan with progress — avoids yfinance rate limits."""
     import time
     results = []
-    BATCH_SIZE = 10
 
-    # Process in batches of 10 with a short pause between batches
-    for i in range(0, len(tickers), BATCH_SIZE):
-        batch = tickers[i:i + BATCH_SIZE]
-        with ThreadPoolExecutor(max_workers=min(max_workers, len(batch))) as ex:
-            futures = {ex.submit(scan_ticker, t, mode): t for t in batch}
-            for future in as_completed(futures):
-                try:
-                    results.append(future.result())
-                except Exception as e:
-                    ticker = futures[future]
-                    results.append({"ticker": ticker, "error": str(e)})
-        if i + BATCH_SIZE < len(tickers):
-            time.sleep(2)  # pause between batches
+    for i, t in enumerate(tickers):
+        try:
+            result = scan_ticker(t, mode)
+            results.append(result)
+            # Print progress live
+            row = format_row(result)
+            print(row, flush=True)
+        except Exception as e:
+            results.append({"ticker": t, "error": str(e)})
+        time.sleep(1.0)  # steady rate — avoid TV throttle
 
     # Sort: BULLISH above VWAP first, then by setup quality
     def sort_key(r):
@@ -168,9 +154,6 @@ if __name__ == "__main__":
     if args.json:
         print(json.dumps(results, indent=2, default=str))
     else:
-        for r in results:
-            print(format_row(r))
-
         # Summary
         bullish = sum(1 for r in results if r.get("technical", {}).get("bias") == "BULLISH")
         bearish = sum(1 for r in results if r.get("technical", {}).get("bias") == "BEARISH")
