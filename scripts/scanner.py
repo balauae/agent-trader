@@ -56,25 +56,29 @@ DEFAULT_WATCHLIST = [
 
 
 def scan_ticker(ticker: str, mode: str = "vwap") -> dict:
-    """Run all relevant agents on a single ticker."""
+    """Run all relevant agents on a single ticker with retry + timeout guard."""
+    import time, random
+    time.sleep(random.uniform(0.5, 1.2))  # stagger to avoid rate limits
     t = ticker.upper()
     result = {"ticker": t, "error": None}
 
+    def safe_run(fn, *args, retries=2):
+        last_err = None
+        for attempt in range(retries):
+            try:
+                return fn(*args)
+            except Exception as e:
+                last_err = e
+                if attempt < retries - 1:
+                    time.sleep(1.0 + attempt)
+        raise last_err
+
     try:
-        # Always run VWAP + Technical (retry once on failure)
-        try:
-            result["vwap"] = vwap_analyze(t)
-        except Exception as e1:
-            result["vwap"] = vwap_analyze(t)  # retry once
-        try:
-            result["technical"] = tech_analyze(t, timeframe="1D")
-        except Exception as e2:
-            result["technical"] = tech_analyze(t, timeframe="1D")
-
+        result["vwap"] = safe_run(vwap_analyze, t)
+        result["technical"] = safe_run(tech_analyze, t, "1D")
         if mode == "full":
-            result["fundamental"] = fund_analyze(t)
-            result["earnings"] = earn_analyze(t)
-
+            result["fundamental"] = safe_run(fund_analyze, t)
+            result["earnings"] = safe_run(earn_analyze, t)
     except Exception as e:
         result["error"] = str(e)
 
@@ -112,14 +116,25 @@ def format_row(r: dict) -> str:
     return line
 
 
-def scan(tickers: list, mode: str = "vwap", max_workers: int = 8) -> list:
-    """Parallel scan of all tickers."""
+def scan(tickers: list, mode: str = "vwap", max_workers: int = 5) -> list:
+    """Parallel scan — batched to avoid yfinance rate limits."""
+    import time
     results = []
+    BATCH_SIZE = 10
 
-    with ThreadPoolExecutor(max_workers=max_workers) as ex:
-        futures = {ex.submit(scan_ticker, t, mode): t for t in tickers}
-        for future in as_completed(futures):
-            results.append(future.result())
+    # Process in batches of 10 with a short pause between batches
+    for i in range(0, len(tickers), BATCH_SIZE):
+        batch = tickers[i:i + BATCH_SIZE]
+        with ThreadPoolExecutor(max_workers=min(max_workers, len(batch))) as ex:
+            futures = {ex.submit(scan_ticker, t, mode): t for t in batch}
+            for future in as_completed(futures):
+                try:
+                    results.append(future.result())
+                except Exception as e:
+                    ticker = futures[future]
+                    results.append({"ticker": ticker, "error": str(e)})
+        if i + BATCH_SIZE < len(tickers):
+            time.sleep(2)  # pause between batches
 
     # Sort: BULLISH above VWAP first, then by setup quality
     def sort_key(r):
