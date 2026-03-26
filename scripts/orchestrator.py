@@ -60,6 +60,7 @@ INTENT_MAP = {
     "postmarket": ["how did", "eod", "end of day", "recap", "after close", "today's performance"],
     "overnight": ["overnight", "after hours", "ah price", "hold overnight", "tomorrow setup"],
     "timeframe": ["timeframe", "multi timeframe", "mtf", "all timeframes", "1m 5m 15m", "confluence"],
+    "pattern": ["pattern", "chart pattern", "flag", "wedge", "double top", "double bottom", "head and shoulders", "triangle"],
     "scan": ["scan", "find setups", "best setups", "watchlist", "what's moving", "scan all"],
     "market": ["market summary", "market overview", "broad market", "sector", "overview"],
 }
@@ -77,6 +78,7 @@ INTENT_AGENTS = {
     "postmarket": ["postmarket_summarizer", "technical_analyst"],
     "overnight": ["overnight_expert", "fundamental_analyst"],
     "timeframe": ["timeframe_analyzer"],
+    "pattern": ["pattern_finder"],
     "scan": ["technical_analyst", "vwap_watcher"],
     "market": ["technical_analyst", "news_fetcher", "economic_calendar"],
 }
@@ -165,6 +167,9 @@ def run_agent(name: str, ticker: str | None) -> dict:
     elif name == "timeframe_analyzer":
         from scripts.timeframe_analyzer import analyze as tf_analyze
         return tf_analyze(ticker or "SPY")
+    elif name == "pattern_finder":
+        from scripts.pattern_finder import analyze as pattern_analyze
+        return pattern_analyze(ticker or "SPY")
     else:
         return {"error": f"Unknown agent: {name}"}
 
