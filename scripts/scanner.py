@@ -106,21 +106,34 @@ def format_row(r: dict) -> str:
     return line
 
 
-def scan(tickers: list, mode: str = "vwap", max_workers: int = 5) -> list:
-    """Sequential scan with progress — avoids yfinance rate limits."""
+def scan(tickers: list, mode: str = "vwap", max_workers: int = 5, batch_size: int = 5) -> list:
+    """Batch scan — parallel within each batch, pause between batches."""
     import time
     results = []
+    total = len(tickers)
 
-    for i, t in enumerate(tickers):
-        try:
-            result = scan_ticker(t, mode)
-            results.append(result)
-            # Print progress live
-            row = format_row(result)
-            print(row, flush=True)
-        except Exception as e:
-            results.append({"ticker": t, "error": str(e)})
-        time.sleep(1.0)  # steady rate — avoid TV throttle
+    for i in range(0, total, batch_size):
+        batch = tickers[i:i + batch_size]
+        batch_num = i // batch_size + 1
+        total_batches = (total + batch_size - 1) // batch_size
+        print(f"\n📦 Batch {batch_num}/{total_batches}: {', '.join(batch)}", flush=True)
+
+        with ThreadPoolExecutor(max_workers=len(batch)) as ex:
+            futures = {ex.submit(scan_ticker, t, mode): t for t in batch}
+            batch_results = []
+            for future in as_completed(futures):
+                try:
+                    r = future.result()
+                except Exception as e:
+                    r = {"ticker": futures[future], "error": str(e)}
+                batch_results.append(r)
+                print(format_row(r), flush=True)
+
+        results.extend(batch_results)
+
+        # Pause between batches to avoid TV throttle
+        if i + batch_size < total:
+            time.sleep(3)
 
     # Sort: BULLISH above VWAP first, then by setup quality
     def sort_key(r):
