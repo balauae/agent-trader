@@ -257,3 +257,54 @@ agent-trader/
 - Watchlist scanner alert (e.g. "MRVL just broke above $100")
 - Pre-market gap alert (e.g. any watchlist stock gapping >3%)
 - Earnings countdown alert (e.g. "MU earnings in 3 days")
+
+---
+
+## Point 2 — Bidirectional Communication
+
+### Overview
+Each watcher is independently addressable. The main agent can query or command any watcher by ticker name at any time — without interrupting the price watching loop.
+
+### Watcher → Agent (push events)
+Watcher proactively notifies the main agent:
+- Stop hit / target hit → instant alert
+- Setup detected (VWAP cross, breakout, etc.)
+- Periodic update every 30 mins during market hours
+- Any significant price move
+
+### Agent → Watcher (on-demand commands)
+
+| Command | Action |
+|---------|--------|
+| `status` | Return current price, P&L, VWAP, stop distance |
+| `stop` | Shut down this watcher cleanly |
+| `update stop=X target=Y` | Update levels without restarting |
+| `pause 30` | Silence alerts for 30 mins |
+| `resume` | Re-enable alerts |
+| `history` | Return last 10 price ticks |
+
+### Status Response Format
+When agent asks "how is MU watcher doing?":
+```
+👁️ MU Watcher — Active
+Price: $363.44 | Avg: $358.45
+P&L: +$791 (+1.4%)
+VWAP: $361.20 | Status: ABOVE ✅
+Stop: $348 (4.3% away — safe)
+Target: $382 (5.1% away)
+Running: 47 mins | Last alert: none
+```
+
+### Key Requirement
+> Each watcher runs independently. Main agent knows which watcher handles which ticker. Commands are non-blocking — watcher handles the command and immediately resumes watching.
+
+### Watcher Registry
+Main agent maintains a registry of active watchers:
+```json
+{
+  "watchers": {
+    "GLD": { "pid": 12345, "started": "2026-03-27T17:30:00", "status": "active" },
+    "MU":  { "pid": 12346, "started": "2026-03-27T17:36:00", "status": "active" }
+  }
+}
+```
