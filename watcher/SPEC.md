@@ -461,3 +461,98 @@ Via Telegram: `"show watchers"`
 - Real-time tick processing = Go's strength
 - No full rewrite — Python scripts stay as-is
 - Go watcher is self-contained; delegates deep analysis to Python when needed
+
+---
+
+## Architecture — Technical Decisions
+
+### System Diagram
+```
+Telegram → Main Agent (Python/OpenClaw)
+               │
+               │ "watch MU avg=358.45 stop=348 target=382"
+               ▼
+       Watcher Manager (Go)          ← always running
+       ├── Owns registry.json
+       ├── Spawns/kills watchers
+       ├── Health checks (restart on crash)
+       └── Unix socket: /tmp/watcher_manager.sock
+               │
+       ┌───────┼────────┐
+  GLD Watcher  MU Watcher  MRVL Watcher
+  (Go process) (Go process) (Go process)
+  /tmp/watcher_GLD.sock
+  /tmp/watcher_MU.sock
+               │
+               ▼
+         FastAPI (Python) — localhost:8000
+         (deep analysis on demand)
+               │
+               ▼
+         Telegram → You
+```
+
+### Decision Summary
+
+| Decision | Choice | Reason |
+|----------|--------|--------|
+| IPC | Unix sockets | Fast, no deps, same machine |
+| Registry | JSON file | Simple, human readable |
+| Python calls | FastAPI | Persistent, reuses existing scripts |
+| Lifecycle owner | Watcher Manager (Go) | Single control point, health checks |
+| Real-time metrics | Go (native) | VWAP, RSI, MACD, ATR — sub-second |
+| Deep analysis | Python/FastAPI | News, fundamentals, patterns |
+
+### IPC — Unix Sockets
+```
+/tmp/watcher_manager.sock   ← agent talks here (start/stop/list)
+/tmp/watcher_GLD.sock       ← per-ticker commands (status/pause/update)
+/tmp/watcher_MU.sock
+```
+
+### Registry — JSON file
+```json
+// watcher/data/registry.json
+{
+  "watchers": {
+    "GLD": {
+      "pid": 12345,
+      "socket": "/tmp/watcher_GLD.sock",
+      "started": "2026-03-27T17:30:00",
+      "avg": 381.80, "stop": 390.00, "target": 420.00
+    },
+    "MU": {
+      "pid": 12346,
+      "socket": "/tmp/watcher_MU.sock",
+      "started": "2026-03-27T17:36:00",
+      "avg": 358.45, "stop": 348.00, "target": 382.00
+    }
+  }
+}
+```
+
+### FastAPI — Python Analysis Server
+```
+GET /analyze/{ticker}   → technical_analyst.py
+GET /news/{ticker}      → news_fetcher.py
+GET /vwap/{ticker}      → vwap_watcher.py
+GET /pattern/{ticker}   → pattern_finder.py
+GET /earnings/{ticker}  → earnings_expert.py
+```
+
+### Watcher Manager — Responsibilities
+- Start/stop individual watcher processes
+- Health check every 30s → auto-restart on crash
+- Single Unix socket for all agent commands
+- Owns and updates registry.json
+- Token refresh coordination
+
+### Go Metrics (native, every tick)
+- VWAP + bands (1σ, 2σ)
+- RSI (14)
+- EMA (9, 20)
+- MACD
+- Volume average + spike detection
+- ATR (14)
+- Stop/target distance
+- Live P&L
