@@ -1,8 +1,10 @@
 # TradeDesk Watcher Service — Spec
 
-**Status:** Design phase  
+**Status:** Design phase — decisions locked  
 **Priority:** High  
-**Estimated build time:** 2-3 hours
+**Estimated build time:** 2-3 hours  
+**Language:** Python (asyncio) — same stack as all agents  
+**Last updated:** 2026-03-27
 
 ---
 
@@ -198,25 +200,53 @@ Upgrade poll engine to connect directly to TradingView WebSocket:
 
 ---
 
+## Folder Structure
+
+```
+agent-trader/
+├── scripts/                  # analysis agents (existing)
+├── watcher/                  # watcher service — self-contained
+│   ├── config/
+│   │   └── settings.json     # all watcher config
+│   ├── service.py            # main asyncio loop
+│   ├── alerts.py             # alert conditions + cooldown logic
+│   ├── notifier.py           # Telegram sender
+│   ├── trailing_stop.py      # trailing stop engine
+│   └── market_hours.py       # Abu Dhabi session detection
+├── data/                     # shared runtime data
+│   ├── positions.json        # YOUR positions (user editable)
+│   └── watcher_state.json    # alert history (auto-managed)
+└── skills/watcher/SKILL.md   # documentation
+```
+
 ## Files to Build
 
 | File | Purpose |
 |------|---------|
-| `scripts/watcher_service.py` | Main service |
-| `scripts/notifier.py` | Telegram alert sender |
+| `watcher/service.py` | Main asyncio loop |
+| `watcher/alerts.py` | Alert conditions + cooldown |
+| `watcher/notifier.py` | Telegram alert sender |
+| `watcher/trailing_stop.py` | Trailing stop engine |
+| `watcher/market_hours.py` | Abu Dhabi session detection |
+| `watcher/config/settings.json` | All config |
 | `data/positions.json` | Position config (user editable) |
 | `data/watcher_state.json` | Alert state (auto-managed) |
-| `skills/watcher/SKILL.md` | Skill documentation |
+| `skills/watcher/SKILL.md` | Documentation |
 
 ---
 
-## Open Questions
+## Decisions Locked ✅
 
-1. Should periodic updates be opt-in? (e.g. every 30 min P&L = noisy?)
-2. Alert for watchlist tickers too (not just positions)?
-3. Should "scan watchlist" trigger automatically at market open?
-4. Support for trailing stops?
-5. Multi-position P&L threshold alert? (e.g. total portfolio -$500)
+| Decision | Choice |
+|----------|--------|
+| Language | Python + asyncio |
+| Periodic updates | Every 30 mins during market hours |
+| Watchlist alerts | Positions + watchlist breakouts |
+| Auto scan at open | Yes — 5:30 PM Abu Dhabi daily |
+| Trailing stops | Yes — trail by % |
+| Portfolio loss alert | $1,000 threshold |
+| Config location | Inside `watcher/config/` |
+| Runtime data | `data/` (shared with other scripts) |
 
 ---
 
