@@ -2,7 +2,9 @@ package engine
 
 import (
 	"context"
+	"encoding/json"
 	"log"
+	"os"
 	"sync"
 	"time"
 
@@ -24,6 +26,7 @@ type Supervisor struct {
 	mu       sync.RWMutex
 	ctx      context.Context
 	cancel   context.CancelFunc
+	silenced bool // global alert mute
 }
 
 // NewSupervisor creates a new supervisor.
@@ -207,4 +210,55 @@ func (s *Supervisor) healthLoop() {
 			log.Printf("[supervisor] health: %d watchers active", count)
 		}
 	}
+}
+
+// Silence mutes all Telegram alerts globally and persists state.
+func (s *Supervisor) Silence() {
+	s.mu.Lock()
+	s.silenced = true
+	s.mu.Unlock()
+	s.persistSilence(true)
+}
+
+// Unsilence re-enables all Telegram alerts and persists state.
+func (s *Supervisor) Unsilence() {
+	s.mu.Lock()
+	s.silenced = false
+	s.mu.Unlock()
+	s.persistSilence(false)
+}
+
+// IsSilenced returns true if alerts are globally muted.
+func (s *Supervisor) IsSilenced() bool {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+	return s.silenced
+}
+
+// LoadSilenceState loads persisted silence state from disk on startup.
+func (s *Supervisor) LoadSilenceState() {
+	path := s.cfg.DataDir + "/watcher-state.json"
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return
+	}
+	var state struct {
+		Silenced bool `json:"silenced"`
+	}
+	if json.Unmarshal(data, &state) == nil {
+		s.mu.Lock()
+		s.silenced = state.Silenced
+		s.mu.Unlock()
+		if state.Silenced {
+			log.Printf("[supervisor] alerts silenced (persisted state)")
+		}
+	}
+}
+
+func (s *Supervisor) persistSilence(silenced bool) {
+	path := s.cfg.DataDir + "/watcher-state.json"
+	data, _ := json.Marshal(map[string]bool{"silenced": silenced})
+	tmp := path + ".tmp"
+	os.WriteFile(tmp, data, 0644)
+	os.Rename(tmp, path)
 }

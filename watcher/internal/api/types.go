@@ -43,10 +43,11 @@ type StatusResponse struct {
 
 // HealthResponse is the overall system health.
 type HealthResponse struct {
-	Status        string           `json:"status"`
-	Uptime        string           `json:"uptime"`
-	WatcherCount  int              `json:"watcher_count"`
-	Watchers      []StatusResponse `json:"watchers"`
+	Status       string           `json:"status"`
+	Uptime       string           `json:"uptime"`
+	WatcherCount int              `json:"watcher_count"`
+	Silenced     bool             `json:"silenced"`
+	Watchers     []StatusResponse `json:"watchers"`
 }
 
 // ErrorResponse wraps an error message.

@@ -50,6 +50,8 @@ func (s *Server) Start() error {
 	mux.HandleFunc("/watch", s.handleWatch)
 	mux.HandleFunc("/status", s.handleAllStatus)
 	mux.HandleFunc("/health", s.handleHealth)
+	mux.HandleFunc("/silence", s.handleSilence)
+	mux.HandleFunc("/unsilence", s.handleUnsilence)
 	// Dynamic routes for ticker-specific ops
 	mux.HandleFunc("/stop/", s.handleStop)
 	mux.HandleFunc("/update/", s.handleUpdate)
@@ -146,6 +148,7 @@ func (s *Server) handleHealth(w http.ResponseWriter, r *http.Request) {
 		Status:       "ok",
 		Uptime:       uptime,
 		WatcherCount: len(entries),
+		Silenced:     s.supervisor.IsSilenced(),
 	})
 }
 
@@ -197,4 +200,16 @@ func writeError(w http.ResponseWriter, msg string, code int) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(code)
 	json.NewEncoder(w).Encode(ErrorResponse{Error: msg})
+}
+
+// POST /silence — mute all alerts globally
+func (s *Server) handleSilence(w http.ResponseWriter, r *http.Request) {
+	s.supervisor.Silence()
+	writeJSON(w, OKResponse{OK: true, Message: "🔕 Alerts silenced — watching continues"})
+}
+
+// POST /unsilence — re-enable all alerts
+func (s *Server) handleUnsilence(w http.ResponseWriter, r *http.Request) {
+	s.supervisor.Unsilence()
+	writeJSON(w, OKResponse{OK: true, Message: "🔔 Alerts resumed"})
 }

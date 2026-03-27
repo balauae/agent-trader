@@ -294,6 +294,7 @@ func runMulti(cfg *config.Settings, posPath string, timeout time.Duration) {
 
 	registryPath := cfg.DataDir + "/registry.json"
 	sup := engine.NewSupervisor(cfg, registryPath)
+	sup.LoadSilenceState()
 	sup.Start(positions)
 
 	// Start HTTP API server
@@ -321,8 +322,10 @@ func runMulti(cfg *config.Settings, posPath string, timeout time.Duration) {
 				fmt.Println(evt.Message)
 			case engine.EventAlert:
 				fmt.Printf("🚨 ALERT: %s\n", evt.Message)
-				if ntf != nil {
+				if ntf != nil && !sup.IsSilenced() {
 					ntf.Send(evt.Message)
+				} else if sup.IsSilenced() {
+					fmt.Printf("   (silenced)\n")
 				}
 			case engine.EventStateChange:
 				fmt.Printf("[%s] %s\n", evt.Ticker, evt.Message)
