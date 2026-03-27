@@ -17,4 +17,13 @@
     "direction": "long",
     "exchange": "NASDAQ"
   }
+  ,{
+    "ticker": "NVDA",
+    "shares": 0,
+    "avg_price": 0,
+    "stop": 158.00,
+    "target": 185.00,
+    "direction": "long",
+    "exchange": "NASDAQ"
+  }
 ]
