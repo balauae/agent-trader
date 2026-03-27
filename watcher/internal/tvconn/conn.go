@@ -149,6 +149,11 @@ func (c *Conn) Done() <-chan struct{} {
 // ReadLoop reads messages from the WebSocket and dispatches them.
 // It blocks until the connection is closed or an error occurs.
 func (c *Conn) ReadLoop() {
+	defer func() {
+		if r := recover(); r != nil {
+			log.Printf("tvconn: ReadLoop recovered from panic: %v", r)
+		}
+	}()
 	defer close(c.done)
 	for {
 		c.ws.SetReadDeadline(time.Now().Add(10 * time.Second))
