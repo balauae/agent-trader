@@ -3,7 +3,7 @@
     "GLD": {
       "ticker": "GLD",
       "state": "running",
-      "started_at": "2026-03-28T00:52:16.809989188+04:00",
+      "started_at": "2026-03-28T00:54:33.832868044+04:00",
       "stop": 395,
       "target": 420,
       "avg_price": 381.8,
@@ -21,7 +21,7 @@
     "MU": {
       "ticker": "MU",
       "state": "running",
-      "started_at": "2026-03-28T00:52:16.810163674+04:00",
+      "started_at": "2026-03-28T00:54:33.833207698+04:00",
       "stop": 348,
       "target": 382,
       "avg_price": 358.45,
@@ -39,7 +39,7 @@
     "NVDA": {
       "ticker": "NVDA",
       "state": "running",
-      "started_at": "2026-03-28T00:52:16.819294667+04:00",
+      "started_at": "2026-03-28T00:54:33.842148714+04:00",
       "stop": 158,
       "target": 185,
       "avg_price": 0,
@@ -57,7 +57,7 @@
     "TSLA": {
       "ticker": "TSLA",
       "state": "running",
-      "started_at": "2026-03-28T00:52:16.819392797+04:00",
+      "started_at": "2026-03-28T00:54:33.842300832+04:00",
       "stop": 0,
       "target": 0,
       "avg_price": 0,
