@@ -430,3 +430,34 @@ Via Telegram: `"show watchers"`
 • GLD | $408.20 | P&L +$6,600 | 2h 10m
 • MU  | $363.44 | P&L +$791  | 1h 23m
 ```
+
+---
+
+## Architecture Decision — Go vs Python
+
+### Go owns (real-time, live market)
+- TradingView WebSocket connection
+- Live VWAP calculation on ticks
+- Live RSI on forming bars
+- Volume analysis (avg, spikes)
+- Pattern detection on live bars
+- Price alerts (stop/target/VWAP cross)
+- Watcher process management
+
+### Python owns (on-demand, analysis)
+- News fetching (yfinance, BeautifulSoup)
+- Fundamentals / earnings (EDGAR)
+- Scanner (yfinance bulk download)
+- Orchestrator / intent routing
+- Deep pattern analysis
+- Economic calendar
+
+### Communication
+- Go → Python: subprocess call, JSON response
+- Python → Go: command via watcher registry (status, stop, update)
+
+### Rationale
+- tvdatafeed, yfinance, pandas = Python-only libraries, no Go equivalent
+- Real-time tick processing = Go's strength
+- No full rewrite — Python scripts stay as-is
+- Go watcher is self-contained; delegates deep analysis to Python when needed
