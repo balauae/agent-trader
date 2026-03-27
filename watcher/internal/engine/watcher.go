@@ -204,6 +204,7 @@ func (w *Watcher) checkAlerts(price float64) {
 		alerts.CheckVWAPBreak(w.pos.Ticker, price, w.prevPrice, w.vwap.Value()),
 		alerts.CheckVWAPReclaim(w.pos.Ticker, price, w.prevPrice, w.vwap.Value()),
 		alerts.CheckFlashMove(w.pos.Ticker, price, w.prevPrice, 1.5),
+		alerts.CheckRSI(w.pos.Ticker, price, w.rsi.Value()),
 	}
 
 	for _, a := range candidates {

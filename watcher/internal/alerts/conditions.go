@@ -154,3 +154,33 @@ func CheckFlashMove(ticker string, price, prevClose float64, thresholdPct float6
 		Time:     time.Now(),
 	}
 }
+
+// CheckRSI returns an alert if RSI hits overbought or oversold.
+func CheckRSI(ticker string, price, rsi float64) *Alert {
+	if rsi == 0 {
+		return nil
+	}
+	if rsi <= 30 {
+		return &Alert{
+			Type:     AlertType("rsi_oversold"),
+			Severity: SeverityWarning,
+			Ticker:   ticker,
+			Price:    price,
+			RSI:      rsi,
+			Message:  fmt.Sprintf("📉 %s RSI oversold %.1f — potential bounce zone", ticker, rsi),
+			Time:     time.Now(),
+		}
+	}
+	if rsi >= 70 {
+		return &Alert{
+			Type:     AlertType("rsi_overbought"),
+			Severity: SeverityWarning,
+			Ticker:   ticker,
+			Price:    price,
+			RSI:      rsi,
+			Message:  fmt.Sprintf("📈 %s RSI overbought %.1f — watch for reversal", ticker, rsi),
+			Time:     time.Now(),
+		}
+	}
+	return nil
+}
