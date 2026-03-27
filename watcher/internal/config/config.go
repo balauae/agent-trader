@@ -37,7 +37,7 @@ func DefaultSettings() *Settings {
 	return &Settings{
 		PollIntervalMs:    1000,
 		AlertCooldownMins: 15,
-		SocketPath:        "/run/tradedesk/manager.sock",
+		SocketPath:        "/tmp/tradedesk-manager.sock",
 		DataDir:           "data",
 		PositionsFile:     "data/positions.json",
 		SecretsDir:        ".secrets",

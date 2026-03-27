@@ -9,13 +9,23 @@ import (
 
 // RegistryEntry holds metadata about a running watcher.
 type RegistryEntry struct {
-	Ticker    string       `json:"ticker"`
-	State     string       `json:"state"`
-	StartedAt time.Time    `json:"started_at"`
-	Stop      float64      `json:"stop"`
-	Target    float64      `json:"target"`
-	AvgPrice  float64      `json:"avg_price"`
-	Restarts  int          `json:"restarts"`
+	Ticker        string    `json:"ticker"`
+	State         string    `json:"state"`
+	StartedAt     time.Time `json:"started_at"`
+	Stop          float64   `json:"stop"`
+	Target        float64   `json:"target"`
+	AvgPrice      float64   `json:"avg_price"`
+	Restarts      int       `json:"restarts"`
+	// Live metrics — updated on every bar
+	Price         float64   `json:"price"`
+	VWAP          float64   `json:"vwap"`
+	RSI           float64   `json:"rsi"`
+	VWAPDistPct   float64   `json:"vwap_dist_pct"`   // % above/below VWAP (+above, -below)
+	StopDistPct   float64   `json:"stop_dist_pct"`
+	TargetDistPct float64   `json:"target_dist_pct"`
+	PnLDollars    float64   `json:"pnl_dollars"`
+	Shares        float64   `json:"shares"`
+	UpdatedAt     time.Time `json:"updated_at"`
 }
 
 // Registry tracks all active watcher goroutines.
@@ -96,4 +106,28 @@ func (r *Registry) save() {
 		Watchers map[string]*RegistryEntry `json:"watchers"`
 	}
 	_ = state.WriteAtomic(r.savePath, registryFile{Watchers: r.entries})
+}
+
+// UpdateMetrics updates live price/VWAP/RSI data for a ticker.
+func (r *Registry) UpdateMetrics(ticker string, price, vwap, rsi, shares, avgPrice, stop, target float64) {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	e, ok := r.entries[ticker]
+	if !ok {
+		return
+	}
+	e.Price = price
+	e.VWAP = vwap
+	e.RSI = rsi
+	e.UpdatedAt = time.Now()
+	e.PnLDollars = (price - avgPrice) * shares
+	if vwap > 0 {
+		e.VWAPDistPct = ((price - vwap) / vwap) * 100
+	}
+	if stop > 0 {
+		e.StopDistPct = ((price - stop) / price) * 100
+	}
+	if target > 0 {
+		e.TargetDistPct = ((target - price) / price) * 100
+	}
 }

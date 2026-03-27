@@ -62,7 +62,7 @@ func (s *Supervisor) StartWatcher(pos position.Position) {
 		return
 	}
 
-	w := NewWatcher(pos, s.cfg, s.events)
+	w := NewWatcher(pos, s.cfg, s.events, s.registry)
 	s.watchers[pos.Ticker] = w
 
 	s.registry.Register(pos.Ticker, &RegistryEntry{
@@ -186,7 +186,7 @@ func (s *Supervisor) runWithRestart(pos position.Position, w *Watcher) {
 		time.Sleep(restartDelay)
 
 		// Create fresh watcher
-		w = NewWatcher(pos, s.cfg, s.events)
+		w = NewWatcher(pos, s.cfg, s.events, s.registry)
 		s.mu.Lock()
 		s.watchers[pos.Ticker] = w
 		s.mu.Unlock()

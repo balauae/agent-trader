@@ -27,10 +27,11 @@ type Watcher struct {
 	ema9      *metrics.EMA
 	cooldown  *alerts.CooldownTracker
 	ratelimit *alerts.RateLimiter
+	registry  *Registry
 }
 
 // NewWatcher creates a new watcher for a position.
-func NewWatcher(pos position.Position, cfg *config.Settings, events chan<- Event) *Watcher {
+func NewWatcher(pos position.Position, cfg *config.Settings, events chan<- Event, registry *Registry) *Watcher {
 	return &Watcher{
 		pos:       pos,
 		cfg:       cfg,
@@ -42,6 +43,7 @@ func NewWatcher(pos position.Position, cfg *config.Settings, events chan<- Event
 		ema9:      metrics.NewEMA(9),
 		cooldown:  alerts.NewCooldownTracker(),
 		ratelimit: alerts.NewRateLimiter(5),
+		registry:  registry,
 	}
 }
 
@@ -114,6 +116,16 @@ func (w *Watcher) Run(ctx context.Context) {
 			w.ema9.Update(b.Close)
 			w.prevPrice = w.price
 			w.price = b.Close
+
+			// push live metrics to registry for API status queries
+			if w.registry != nil {
+				w.registry.UpdateMetrics(
+					w.pos.Ticker,
+					b.Close, w.vwap.Value(), w.rsi.Value(),
+					w.pos.Shares, w.pos.AvgPrice,
+					w.pos.Stop, w.pos.Target,
+				)
+			}
 
 			w.events <- Event{
 				Type:    EventPriceUpdate,

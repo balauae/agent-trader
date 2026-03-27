@@ -14,6 +14,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/bala/tradedesk-watcher/internal/api"
 	"github.com/bala/tradedesk-watcher/internal/config"
 	"github.com/bala/tradedesk-watcher/internal/engine"
 	"github.com/bala/tradedesk-watcher/internal/market"
@@ -294,6 +295,14 @@ func runMulti(cfg *config.Settings, posPath string, timeout time.Duration) {
 	registryPath := cfg.DataDir + "/registry.json"
 	sup := engine.NewSupervisor(cfg, registryPath)
 	sup.Start(positions)
+
+	// Start HTTP API server
+	apiServer := api.New(cfg.SocketPath, sup)
+	if err := apiServer.Start(); err != nil {
+		log.Printf("⚠️ API server unavailable: %v", err)
+	} else {
+		fmt.Printf("🔌 API socket: %s\n", cfg.SocketPath)
+	}
 
 	var deadline <-chan time.Time
 	if timeout > 0 {
