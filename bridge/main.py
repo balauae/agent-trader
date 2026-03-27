@@ -1,0 +1,110 @@
+"""
+TradeDesk FastAPI Bridge
+Wraps existing Python analysis scripts so Go watcher can call them via HTTP.
+Run: uvicorn bridge.main:app --port 8000
+"""
+import subprocess
+import json
+import sys
+from pathlib import Path
+from fastapi import FastAPI, HTTPException
+from fastapi.responses import JSONResponse
+
+ROOT = Path(__file__).parent.parent
+SCRIPTS = ROOT / "scripts"
+PYTHON = ROOT / ".venv" / "bin" / "python"
+
+app = FastAPI(title="TradeDesk Bridge", version="1.0")
+
+
+def run_script(script: str, *args) -> dict:
+    """Run a Python script and return its JSON stdout output."""
+    cmd = [str(PYTHON), str(SCRIPTS / script), *args]
+    try:
+        result = subprocess.run(
+            cmd,
+            capture_output=True,
+            text=True,
+            timeout=30,
+            cwd=str(ROOT),
+        )
+        if result.returncode != 0:
+            return {"error": result.stderr.strip() or f"{script} failed"}
+        output = result.stdout.strip()
+        if not output:
+            return {"error": "no output"}
+        return json.loads(output)
+    except subprocess.TimeoutExpired:
+        return {"error": f"{script} timed out"}
+    except json.JSONDecodeError as e:
+        return {"error": f"invalid JSON: {e}", "raw": result.stdout[:500]}
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@app.get("/health")
+def health():
+    return {"status": "ok", "bridge": "tradedesk"}
+
+
+@app.get("/news/{ticker}")
+def news(ticker: str):
+    """Fetch latest news for a ticker."""
+    data = run_script("news_fetcher.py", ticker.upper())
+    if "error" in data:
+        raise HTTPException(500, data["error"])
+    return data
+
+
+@app.get("/analyze/{ticker}")
+def analyze(ticker: str):
+    """Full technical analysis for a ticker."""
+    data = run_script("technical_analyst.py", ticker.upper())
+    if "error" in data:
+        raise HTTPException(500, data["error"])
+    return data
+
+
+@app.get("/vwap/{ticker}")
+def vwap(ticker: str):
+    """VWAP analysis for a ticker."""
+    data = run_script("vwap_watcher.py", ticker.upper())
+    if "error" in data:
+        raise HTTPException(500, data["error"])
+    return data
+
+
+@app.get("/pattern/{ticker}")
+def pattern(ticker: str):
+    """Chart pattern detection for a ticker."""
+    data = run_script("pattern_finder.py", ticker.upper())
+    if "error" in data:
+        raise HTTPException(500, data["error"])
+    return data
+
+
+@app.get("/earnings/{ticker}")
+def earnings(ticker: str):
+    """Earnings info for a ticker."""
+    data = run_script("earnings_expert.py", ticker.upper())
+    if "error" in data:
+        raise HTTPException(500, data["error"])
+    return data
+
+
+@app.get("/fundamental/{ticker}")
+def fundamental(ticker: str):
+    """Fundamental analysis for a ticker."""
+    data = run_script("fundamental_analyst.py", ticker.upper())
+    if "error" in data:
+        raise HTTPException(500, data["error"])
+    return data
+
+
+@app.get("/calendar")
+def calendar():
+    """Today's economic calendar events."""
+    data = run_script("economic_calendar.py")
+    if "error" in data:
+        raise HTTPException(500, data["error"])
+    return data
