@@ -5,6 +5,7 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"log"
@@ -14,6 +15,7 @@ import (
 	"time"
 
 	"github.com/bala/tradedesk-watcher/internal/config"
+	"github.com/bala/tradedesk-watcher/internal/engine"
 	"github.com/bala/tradedesk-watcher/internal/market"
 	"github.com/bala/tradedesk-watcher/internal/metrics"
 	"github.com/bala/tradedesk-watcher/internal/position"
@@ -22,16 +24,19 @@ import (
 
 func main() {
 	// ── flags ───────────────────────────────────────────────────────────
-	ticker := flag.String("ticker", "MU", "ticker symbol to watch")
+	ticker := flag.String("ticker", "", "ticker symbol to watch (single mode)")
 	exchange := flag.String("exchange", "", "exchange override (default: auto-detect)")
 	timeout := flag.Duration("timeout", 60*time.Second, "run duration (0 = forever)")
 	stop := flag.Float64("stop", 0, "stop-loss price (0 = disabled)")
 	target := flag.Float64("target", 0, "take-profit price (0 = disabled)")
 	cfgPath := flag.String("config", "config.json", "path to config file")
 	posPath := flag.String("positions", "", "path to positions file (overrides config)")
+	multi := flag.Bool("multi", false, "watch all positions from positions.json simultaneously")
 	flag.Parse()
 
-	*ticker = strings.ToUpper(*ticker)
+	if *ticker != "" {
+		*ticker = strings.ToUpper(*ticker)
+	}
 
 	// ── config ──────────────────────────────────────────────────────────
 	cfg, err := config.Load(*cfgPath)
@@ -65,6 +70,12 @@ func main() {
 			pos = &position.Position{Ticker: *ticker}
 		}
 		pos.Target = *target
+	}
+
+	// ── multi-ticker mode ───────────────────────────────────────────────
+	if *multi || *ticker == "" {
+		runMulti(cfg, *posPath, *timeout)
+		return
 	}
 
 	// ── market session ──────────────────────────────────────────────────
@@ -245,6 +256,66 @@ func evaluateStopTarget(ticker string, price float64, pos *position.Position) {
 			} else if dist < 1.0 {
 				fmt.Printf("  ~ target close ~ %s %.1f%% from target $%.2f\n", ticker, dist, pos.Target)
 			}
+		}
+	}
+}
+
+// runMulti watches all positions from positions.json simultaneously using the supervisor.
+func runMulti(cfg *config.Settings, posPath string, timeout time.Duration) {
+	posFile := cfg.PositionsFile
+	if posPath != "" {
+		posFile = posPath
+	}
+
+	positions, err := position.LoadPositions(posFile)
+	if err != nil {
+		log.Fatalf("positions: %v", err)
+	}
+	if len(positions) == 0 {
+		log.Fatal("no positions found in", posFile)
+	}
+
+	fmt.Printf("🔭 Multi-ticker mode — watching %d positions\n\n", len(positions))
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	registryPath := cfg.DataDir + "/registry.json"
+	sup := engine.NewSupervisor(cfg, registryPath)
+	sup.Start(positions)
+
+	var deadline <-chan time.Time
+	if timeout > 0 {
+		deadline = time.After(timeout)
+		fmt.Printf("Timeout: %s\n\n", timeout)
+	}
+
+	sigCh := make(chan os.Signal, 1)
+	signal.Notify(sigCh, os.Interrupt)
+
+	for {
+		select {
+		case evt := <-sup.Events():
+			switch evt.Type {
+			case engine.EventPriceUpdate:
+				fmt.Println(evt.Message)
+			case engine.EventAlert:
+				fmt.Printf("🚨 ALERT: %s\n", evt.Message)
+			case engine.EventStateChange:
+				fmt.Printf("[%s] %s\n", evt.Ticker, evt.Message)
+			case engine.EventPanic:
+				fmt.Printf("💥 PANIC [%s]: %v\n", evt.Ticker, evt.Error)
+			}
+		case <-deadline:
+			fmt.Printf("\nTimeout reached (%s). Shutting down.\n", timeout)
+			sup.Stop()
+			return
+		case <-sigCh:
+			fmt.Println("\nInterrupt. Shutting down.")
+			sup.Stop()
+			return
+		case <-ctx.Done():
+			return
 		}
 	}
 }

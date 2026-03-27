@@ -1,0 +1,22 @@
+{
+  "watchers": {
+    "GLD": {
+      "ticker": "GLD",
+      "state": "running",
+      "started_at": "2026-03-27T23:41:18.654868578+04:00",
+      "stop": 395,
+      "target": 420,
+      "avg_price": 381.8,
+      "restarts": 0
+    },
+    "MU": {
+      "ticker": "MU",
+      "state": "running",
+      "started_at": "2026-03-27T23:41:18.655058741+04:00",
+      "stop": 348,
+      "target": 382,
+      "avg_price": 358.45,
+      "restarts": 0
+    }
+  }
+}

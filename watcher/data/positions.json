@@ -3,17 +3,17 @@
     "ticker": "GLD",
     "shares": 250,
     "avg_price": 381.80,
-    "stop": 390.00,
+    "stop": 395.00,
     "target": 420.00,
     "direction": "long",
     "exchange": "NYSE"
   },
   {
     "ticker": "MU",
-    "shares": 200,
-    "avg_price": 95.50,
-    "stop": 88.00,
-    "target": 115.00,
+    "shares": 159,
+    "avg_price": 358.45,
+    "stop": 348.00,
+    "target": 382.00,
     "direction": "long",
     "exchange": "NASDAQ"
   }
