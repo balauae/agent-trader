@@ -18,6 +18,7 @@ import (
 	"github.com/bala/tradedesk-watcher/internal/engine"
 	"github.com/bala/tradedesk-watcher/internal/market"
 	"github.com/bala/tradedesk-watcher/internal/metrics"
+	"github.com/bala/tradedesk-watcher/internal/notifier"
 	"github.com/bala/tradedesk-watcher/internal/position"
 	"github.com/bala/tradedesk-watcher/internal/tvconn"
 )
@@ -277,6 +278,16 @@ func runMulti(cfg *config.Settings, posPath string, timeout time.Duration) {
 
 	fmt.Printf("🔭 Multi-ticker mode — watching %d positions\n\n", len(positions))
 
+	// Init Telegram notifier
+	ntf, err := notifier.New(cfg.SecretsDir)
+	if err != nil {
+		log.Printf("⚠️ Telegram notifier unavailable: %v — alerts to stdout only", err)
+		ntf = nil
+	} else {
+		fmt.Println("📲 Telegram notifier ready")
+		ntf.Send(fmt.Sprintf("👁️ TradeDesk Watcher started — watching %d positions", len(positions)))
+	}
+
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
@@ -301,17 +312,32 @@ func runMulti(cfg *config.Settings, posPath string, timeout time.Duration) {
 				fmt.Println(evt.Message)
 			case engine.EventAlert:
 				fmt.Printf("🚨 ALERT: %s\n", evt.Message)
+				if ntf != nil {
+					ntf.Send(evt.Message)
+				}
 			case engine.EventStateChange:
 				fmt.Printf("[%s] %s\n", evt.Ticker, evt.Message)
 			case engine.EventPanic:
-				fmt.Printf("💥 PANIC [%s]: %v\n", evt.Ticker, evt.Error)
+				msg := fmt.Sprintf("💥 PANIC [%s]: %v", evt.Ticker, evt.Error)
+				fmt.Println(msg)
+				if ntf != nil {
+					ntf.Send(msg)
+				}
 			}
 		case <-deadline:
 			fmt.Printf("\nTimeout reached (%s). Shutting down.\n", timeout)
+			if ntf != nil {
+				ntf.SendNow("👋 TradeDesk Watcher stopped")
+				ntf.Close()
+			}
 			sup.Stop()
 			return
 		case <-sigCh:
 			fmt.Println("\nInterrupt. Shutting down.")
+			if ntf != nil {
+				ntf.SendNow("👋 TradeDesk Watcher stopped")
+				ntf.Close()
+			}
 			sup.Stop()
 			return
 		case <-ctx.Done():
