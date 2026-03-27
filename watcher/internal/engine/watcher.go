@@ -6,6 +6,7 @@ import (
 	"log"
 	"time"
 
+	"github.com/bala/tradedesk-watcher/internal/alerts"
 	"github.com/bala/tradedesk-watcher/internal/config"
 	"github.com/bala/tradedesk-watcher/internal/metrics"
 	"github.com/bala/tradedesk-watcher/internal/position"
@@ -14,28 +15,33 @@ import (
 
 // Watcher watches a single ticker goroutine.
 type Watcher struct {
-	pos     position.Position
-	cfg     *config.Settings
-	events  chan<- Event
-	cmdCh   chan Command
-	state   WatcherState
-	price   float64
-	vwap    *metrics.VWAP
-	rsi     *metrics.RSI
-	ema9    *metrics.EMA
+	pos       position.Position
+	cfg       *config.Settings
+	events    chan<- Event
+	cmdCh     chan Command
+	state     WatcherState
+	price     float64
+	prevPrice float64
+	vwap      *metrics.VWAP
+	rsi       *metrics.RSI
+	ema9      *metrics.EMA
+	cooldown  *alerts.CooldownTracker
+	ratelimit *alerts.RateLimiter
 }
 
 // NewWatcher creates a new watcher for a position.
 func NewWatcher(pos position.Position, cfg *config.Settings, events chan<- Event) *Watcher {
 	return &Watcher{
-		pos:    pos,
-		cfg:    cfg,
-		events: events,
-		cmdCh:  make(chan Command, 10),
-		state:  StateStarting,
-		vwap:   metrics.NewVWAP(),
-		rsi:    metrics.NewRSI(14),
-		ema9:   metrics.NewEMA(9),
+		pos:       pos,
+		cfg:       cfg,
+		events:    events,
+		cmdCh:     make(chan Command, 10),
+		state:     StateStarting,
+		vwap:      metrics.NewVWAP(),
+		rsi:       metrics.NewRSI(14),
+		ema9:      metrics.NewEMA(9),
+		cooldown:  alerts.NewCooldownTracker(),
+		ratelimit: alerts.NewRateLimiter(5),
 	}
 }
 
@@ -106,6 +112,7 @@ func (w *Watcher) Run(ctx context.Context) {
 			w.vwap.Update(b.High, b.Low, b.Close, b.Volume)
 			w.rsi.Update(b.Close)
 			w.ema9.Update(b.Close)
+			w.prevPrice = w.price
 			w.price = b.Close
 
 			w.events <- Event{
@@ -176,21 +183,35 @@ func (w *Watcher) checkAlerts(price float64) {
 	if w.state == StatePaused {
 		return
 	}
-	if w.pos.Stop > 0 && w.pos.GetDirection() == position.Long && price <= w.pos.Stop {
-		w.events <- Event{
-			Type:    EventAlert,
-			Ticker:  w.pos.Ticker,
-			Price:   price,
-			Message: fmt.Sprintf("🚨 %s STOP HIT $%.2f (stop $%.2f)", w.pos.Ticker, price, w.pos.Stop),
-			Time:    time.Now(),
-		}
+	cooldown := time.Duration(w.cfg.AlertCooldownMins) * time.Minute
+
+	candidates := []*alerts.Alert{
+		alerts.CheckStopHit(w.pos.Ticker, price, &w.pos),
+		alerts.CheckTargetHit(w.pos.Ticker, price, &w.pos),
+		alerts.CheckNearStop(w.pos.Ticker, price, &w.pos, 1.5),
+		alerts.CheckVWAPBreak(w.pos.Ticker, price, w.prevPrice, w.vwap.Value()),
+		alerts.CheckVWAPReclaim(w.pos.Ticker, price, w.prevPrice, w.vwap.Value()),
+		alerts.CheckFlashMove(w.pos.Ticker, price, w.prevPrice, 1.5),
 	}
-	if w.pos.Target > 0 && w.pos.GetDirection() == position.Long && price >= w.pos.Target {
+
+	for _, a := range candidates {
+		if a == nil {
+			continue
+		}
+		if !w.cooldown.CanAlert(w.pos.Ticker, a.Type, cooldown) {
+			continue
+		}
+		if !w.ratelimit.Allow(a.Severity) {
+			continue
+		}
+		w.cooldown.Record(w.pos.Ticker, a.Type)
 		w.events <- Event{
 			Type:    EventAlert,
 			Ticker:  w.pos.Ticker,
 			Price:   price,
-			Message: fmt.Sprintf("🎯 %s TARGET HIT $%.2f (target $%.2f)", w.pos.Ticker, price, w.pos.Target),
+			VWAP:    w.vwap.Value(),
+			RSI:     w.rsi.Value(),
+			Message: a.Message,
 			Time:    time.Now(),
 		}
 	}

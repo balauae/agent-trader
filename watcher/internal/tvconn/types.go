@@ -60,10 +60,10 @@ var ExchangeMap = map[string]string{
 	"QCOM": "NASDAQ",
 	"COST": "NASDAQ",
 	// NYSE
-	"GLD":  "NYSE",
-	"SPY":  "NYSE",
+	"GLD":  "AMEX",
+	"SPY":  "AMEX",
 	"QQQ":  "NASDAQ",
-	"IWM":  "NYSE",
+	"IWM":  "AMEX",
 	"DIA":  "NYSE",
 	"GS":   "NYSE",
 	"JPM":  "NYSE",
