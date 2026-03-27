@@ -308,3 +308,68 @@ Main agent maintains a registry of active watchers:
   }
 }
 ```
+
+---
+
+## Point 3 — Intelligence Layer
+
+### Overview
+Each watcher is not just a price ticker — it's a mini-analyst running 24/7 on one stock. It sees what you'd see staring at the chart and alerts you at the important moments.
+
+### 3.1 Real-time Setup Detection
+As each new 1m bar closes, watcher analyzes:
+- VWAP position + distance
+- RSI zone (oversold/overbought/neutral)
+- MACD crossover on 1m/5m
+- Volume vs average
+
+Alerts when a setup forms:
+```
+📐 MU — VWAP Bounce Setup
+Price: $363.44 | VWAP: $361.20
+RSI: 38 (oversold zone)
+Entry: $361.50 | Stop: $359.80 | Target: $366.00
+R:R: 2.4 | Volume: 1.8x avg ✅
+```
+
+### 3.2 Position Context Awareness
+Watcher knows your trade:
+- Live P&L calculated every tick
+- Distance to stop (% and $)
+- Distance to target (% and $)
+- Time in trade
+
+Alerts on key thresholds:
+- Stop within 1% → warning
+- Profit hits 50% of target → notify
+- Profit hits 100% of target → celebrate + suggest trim
+
+### 3.3 Pattern Recognition (Live Bars)
+As bars form, watcher detects:
+- Bull/bear flag forming on 5m
+- Consolidation near VWAP
+- Higher highs / lower lows trend
+- Inside bar (coiling)
+
+```
+🚩 MU — Bull Flag Forming (5m)
+Flagpole: +2.1% | Consolidation: 4 bars
+Breakout level: $365.50
+Watch for volume confirmation
+```
+
+### 3.4 Risk Alerts
+Unusual activity detection:
+- Volume spike >3x avg → "something happening, check news"
+- Flash drop >1% in 1 min → "flash move — check catalyst"
+- Price gap between bars → "gap detected"
+- Consecutive red bars (5+) → "sustained selling pressure"
+
+### 3.5 Intelligence Source
+Watcher calls back to Python agents for deep analysis when needed:
+- On setup detection → call `vwap_watcher.py` for confirmation
+- On unusual volume → call `news_fetcher.py` for catalyst
+- On pattern → call `pattern_finder.py` for full analysis
+
+### Key Requirement
+> The watcher runs lightweight Go logic for real-time checks every tick. For deeper analysis it delegates to Python agents. Intelligence is layered — fast checks in Go, deep analysis in Python.
