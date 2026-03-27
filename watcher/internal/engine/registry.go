@@ -4,7 +4,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/bala/tradedesk-watcher/internal/state"
+	"encoding/json"
+	"os"
 )
 
 // RegistryEntry holds metadata about a running watcher.
@@ -105,7 +106,14 @@ func (r *Registry) save() {
 	type registryFile struct {
 		Watchers map[string]*RegistryEntry `json:"watchers"`
 	}
-	_ = state.WriteAtomic(r.savePath, registryFile{Watchers: r.entries})
+	data, err := json.Marshal(registryFile{Watchers: r.entries})
+	if err != nil {
+		return
+	}
+	tmp := r.savePath + ".tmp"
+	if err := os.WriteFile(tmp, data, 0644); err == nil {
+		os.Rename(tmp, r.savePath)
+	}
 }
 
 // UpdateMetrics updates live price/VWAP/RSI data for a ticker.

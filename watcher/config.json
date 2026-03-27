@@ -1,1 +1,6 @@
-{"secrets_dir":"/home/bala/dev/apps/agent-trader/.secrets"}
+{
+  "secrets_dir": "/home/bala/dev/apps/agent-trader/.secrets",
+  "positions_file": "/home/bala/dev/apps/agent-trader/data/positions.json",
+  "data_dir": "/home/bala/dev/apps/agent-trader/watcher/data",
+  "socket_path": "/tmp/tradedesk-manager.sock"
+}
