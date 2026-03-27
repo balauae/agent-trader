@@ -651,3 +651,47 @@ Cron job every 5 mins during market hours:
 | Short positions | Not supported | `direction` field |
 | Dead man's switch | Not specified | Cron health check |
 | Language header | Python + asyncio | Go + Python |
+
+---
+
+## Current Status (2026-03-27)
+
+### ✅ Working Now
+
+**Run command:**
+```bash
+cd ~/dev/apps/agent-trader/watcher
+go run ./cmd/watcher -multi -timeout 0  # run forever
+```
+
+**What it does:**
+- Connects to TradingView WebSocket using your auth token
+- Watches all positions in `watcher/data/positions.json` simultaneously
+- One goroutine per ticker (GLD + MU currently)
+- Supervisor restarts crashed watchers automatically
+
+**Live data per ticker (every bar):**
+- Price, VWAP, RSI, EMA9, P&L vs avg
+
+**Alerts sent to Telegram:**
+- 📈 VWAP reclaim — price crossed above VWAP
+- 📉 VWAP break — price crossed below VWAP
+- 🚨 Stop hit — price hit your stop level
+- 🎯 Target hit — price hit your target
+- ⚠️ Near stop — price within 1.5% of stop
+- ⚡ Flash move — price moved >1.5% in one bar
+- 👁️ Startup message
+- 👋 Shutdown message
+
+**Cooldown protection:**
+- 15 min cooldown per alert type per ticker
+- Global rate limit: 5 alerts/min
+- Critical alerts (stop/target) bypass rate limit
+
+**Positions config:** `watcher/data/positions.json` — edit anytime
+
+### ❌ Not Yet Built
+- Phase 5 — HTTP API (start/stop/status via Telegram command)
+- Phase 6 — Python FastAPI bridge (deep analysis on alert)
+- Phase 7 — systemd service (auto-start on boot)
+- Phase 8 — Intelligence layer (setup detection, patterns)
