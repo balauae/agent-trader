@@ -373,3 +373,60 @@ Watcher calls back to Python agents for deep analysis when needed:
 
 ### Key Requirement
 > The watcher runs lightweight Go logic for real-time checks every tick. For deeper analysis it delegates to Python agents. Intelligence is layered — fast checks in Go, deep analysis in Python.
+
+---
+
+## Point 4 — Lifecycle Management
+
+### Overview
+Defines how a watcher lives from start to finish — including crashes, reboots, token expiry, and end of day.
+
+### 4.1 Starting a Watcher
+Via Telegram:
+```
+"watch MU avg=358.45 stop=348 target=382"
+```
+Watcher starts and confirms:
+```
+👁️ Watching MU $363.44 | Avg $358.45 | P&L +$791
+Stop: $348 | Target: $382
+```
+Registered in watcher registry immediately.
+
+### 4.2 Watcher Persistence
+- **Crash** → auto-restart, resume watching
+- **Machine reboot** → auto-restart on boot
+- **TV token expiry** → refresh token and reconnect automatically
+- State preserved across restarts (stop/target/avg price)
+
+### 4.3 Stopping a Watcher
+Via Telegram:
+```
+"stop watching MU"
+```
+- Graceful shutdown
+- Sends final summary before closing:
+```
+👋 MU Watcher stopped
+Final P&L: +$791 (+1.4%) | Time watched: 1h 23m
+```
+- Removed from registry
+
+### 4.4 End of Day (Midnight Abu Dhabi)
+- Market closes → watcher pauses automatically
+- Sends EOD summary:
+```
+📊 EOD Summary — MU
+Close: $363.44 | P&L today: +$791
+Key levels: VWAP $361.20 | Support $358 | Resistance $366
+Overnight plan: Hold. Watch $358 support at open.
+```
+- Resumes at pre-market (12 PM Abu Dhabi) next day
+
+### 4.5 List All Watchers
+Via Telegram: `"show watchers"`
+```
+👁️ Active Watchers (2)
+• GLD | $408.20 | P&L +$6,600 | 2h 10m
+• MU  | $363.44 | P&L +$791  | 1h 23m
+```
