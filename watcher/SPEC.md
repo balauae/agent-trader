@@ -3,7 +3,7 @@
 **Status:** Design phase — decisions locked  
 **Priority:** High  
 **Estimated build time:** 2-3 hours  
-**Language:** Python (asyncio) — same stack as all agents  
+**Language:** Go (real-time watcher) + Python (analysis agents)  
 **Last updated:** 2026-03-27
 
 ---
@@ -556,3 +556,98 @@ GET /earnings/{ticker}  → earnings_expert.py
 - ATR (14)
 - Stop/target distance
 - Live P&L
+
+---
+
+## Architecture — Revision 2 (post Claude Code review)
+
+### Key Change: Process-per-ticker → Goroutines-per-ticker
+
+Single Go binary with goroutine-per-ticker. Simpler, same isolation, no PID/socket/registry complexity.
+
+```
+tradedesk-watcher (single Go binary)
+├── goroutine: GLD watcher  (TV WebSocket + metrics + alerts)
+├── goroutine: MU watcher
+├── goroutine: MRVL watcher
+├── goroutine: supervisor   (health checks, restart on panic)
+└── HTTP server over Unix socket: /run/tradedesk/manager.sock
+```
+
+### IPC Protocol — HTTP over Unix Socket
+Single socket, standard HTTP JSON protocol. Debuggable with curl:
+```bash
+curl --unix-socket /run/tradedesk/manager.sock http://localhost/status
+curl --unix-socket /run/tradedesk/manager.sock http://localhost/watch -d '{"ticker":"MU","avg":358.45,"stop":348,"target":382}'
+curl --unix-socket /run/tradedesk/manager.sock http://localhost/stop/MU
+```
+
+Python agent uses `requests_unixsocket` — talks to ONE endpoint only.
+
+### Manager Endpoints
+| Method | Path | Action |
+|--------|------|--------|
+| POST | `/watch` | Start watching a ticker |
+| DELETE | `/watch/{ticker}` | Stop watching |
+| GET | `/status` | All watchers status |
+| GET | `/status/{ticker}` | Single ticker status |
+| GET | `/health` | Uptime, watcher count, last poll time |
+| POST | `/update/{ticker}` | Update stop/target levels |
+| POST | `/pause/{ticker}` | Pause alerts N minutes |
+
+### Socket Location
+```
+/run/tradedesk/manager.sock   ← not /tmp/ (safe from OS cleanup)
+```
+
+### VWAP Calculation
+- On watcher startup: fetch full day bars since market open
+- Compute VWAP from all bars (typical_price × volume / total_volume)
+- Maintain running VWAP in memory, update each new bar
+- Persist running VWAP sum every 5 mins (survive short crashes)
+
+### Crash Recovery
+- Goroutine panics caught with `recover()` — supervisor restarts goroutine
+- On binary restart: read state file, reconcile, resume watching
+- Socket cleanup on startup: unlink stale socket files before binding
+
+### File Writes — Atomic
+All JSON state files use write-to-temp + rename:
+```go
+os.WriteFile("registry.tmp", data, 0600)
+os.Rename("registry.tmp", "registry.json")
+```
+
+### Short Position Support
+```json
+{
+  "ticker": "MU",
+  "direction": "long",   // or "short" — inverts stop/target logic
+  "avg": 358.45,
+  "stop": 348.00,
+  "target": 382.00
+}
+```
+
+### Dead Man's Switch
+Cron job every 5 mins during market hours:
+- Ping `/health` on manager socket
+- If no response → send Telegram alert: "⚠️ Watcher may be down"
+- Don't rely on watcher to report its own death
+
+### Alert Storm Protection
+- Per-type cooldown: 15 mins per alert type per ticker
+- Global rate limit: max 5 alerts per minute across all tickers
+- Market open grace period: 2 min silence after 5:30 PM Abu Dhabi
+
+### Changes from Revision 1
+| Item | Before | After |
+|------|--------|-------|
+| Architecture | Process-per-ticker | Goroutine-per-ticker |
+| IPC protocol | Unspecified Unix socket | HTTP over Unix socket |
+| Socket location | /tmp/ | /run/tradedesk/ |
+| VWAP source | 5 bars | Full day bars + running sum |
+| File writes | Direct | Atomic (tmp + rename) |
+| Short positions | Not supported | `direction` field |
+| Dead man's switch | Not specified | Cron health check |
+| Language header | Python + asyncio | Go + Python |
