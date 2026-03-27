@@ -105,13 +105,47 @@ def get_session() -> str:
     return "Overnight"  # 20:00 - 23:59
 
 
+def _load_ticker_db() -> dict:
+    """Load ticker database from data/tickers.json."""
+    try:
+        db_path = Path(__file__).parent.parent / "data" / "tickers.json"
+        return json.loads(db_path.read_text())
+    except Exception:
+        return {"ticker_to_name": {}, "name_to_ticker": {}}
+
+_TICKER_DB = _load_ticker_db()
+_KNOWN_TICKERS = set(_TICKER_DB.get("ticker_to_name", {}).keys())
+_NAME_TO_TICKER = _TICKER_DB.get("name_to_ticker", {})
+
 def parse_ticker(query: str) -> str | None:
-    """Extract ticker symbol from query."""
-    words = query.upper().split()
-    for word in words:
+    """
+    Smart ticker extraction:
+    1. Check query words against known ticker list (exact match)
+    2. Check query words against company name map (e.g. 'apple' → AAPL)
+    3. Fallback: regex for 2-5 uppercase letters not in noise words
+    """
+    q_lower = query.lower()
+    words_upper = query.upper().split()
+    words_lower = query.lower().split()
+
+    # 1. Exact ticker match against known list
+    for word in words_upper:
         cleaned = re.sub(r"[^A-Z]", "", word)
-        if cleaned and 1 <= len(cleaned) <= 5 and cleaned not in NOISE_WORDS:
+        if cleaned in _KNOWN_TICKERS:
             return cleaned
+
+    # 2. Company name match (e.g. "apple", "nvidia", "tesla")
+    for word in words_lower:
+        cleaned = re.sub(r"[^a-z]", "", word)
+        if cleaned in _NAME_TO_TICKER:
+            return _NAME_TO_TICKER[cleaned]
+
+    # 3. Fallback: regex (2-5 uppercase letters, not noise)
+    for word in words_upper:
+        cleaned = re.sub(r"[^A-Z]", "", word)
+        if cleaned and 2 <= len(cleaned) <= 5 and cleaned not in NOISE_WORDS:
+            return cleaned
+
     return None
 
 
