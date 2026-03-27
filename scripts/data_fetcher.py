@@ -52,6 +52,11 @@ EXCHANGE_MAP = {
 
 _tv_client: Optional[TvDatafeed] = None
 
+def reset_tv_client():
+    """Force a fresh TV connection on next call."""
+    global _tv_client
+    _tv_client = None
+
 
 def _get_tv_client() -> TvDatafeed:
     """Get or create TradingView client with fresh token."""
@@ -109,17 +114,20 @@ def get_ohlcv(
     exch = exchange or EXCHANGE_MAP.get(ticker.upper(), "NASDAQ")
     interval = TF_MAP[timeframe]
 
-    try:
-        df = tv.get_hist(ticker.upper(), exch, interval=interval, n_bars=bars)
-        if df is None or df.empty:
-            # Retry with NYSE
-            df = tv.get_hist(ticker.upper(), "NYSE", interval=interval, n_bars=bars)
-        if df is not None and not df.empty:
-            df = df[["open", "high", "low", "close", "volume"]].copy()
-            df.index = pd.to_datetime(df.index)
-            return df
-    except Exception as e:
-        logger.error(f"TV fetch failed for {ticker}: {e}")
+    for attempt in range(3):
+        try:
+            if attempt > 0:
+                time.sleep(1.5 * attempt)
+                tv = _get_tv_client()  # fresh client on retry
+            df = tv.get_hist(ticker.upper(), exch, interval=interval, n_bars=bars)
+            if df is None or df.empty:
+                df = tv.get_hist(ticker.upper(), "NYSE", interval=interval, n_bars=bars)
+            if df is not None and not df.empty:
+                df = df[["open", "high", "low", "close", "volume"]].copy()
+                df.index = pd.to_datetime(df.index)
+                return df
+        except Exception as e:
+            logger.warning(f"TV fetch attempt {attempt+1} failed for {ticker}: {e}")
 
     return pd.DataFrame()
 

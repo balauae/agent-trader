@@ -3,7 +3,7 @@
     "GLD": {
       "ticker": "GLD",
       "state": "running",
-      "started_at": "2026-03-28T00:04:23.071794547+04:00",
+      "started_at": "2026-03-28T00:26:04.76626368+04:00",
       "stop": 395,
       "target": 420,
       "avg_price": 381.8,
@@ -21,7 +21,7 @@
     "MU": {
       "ticker": "MU",
       "state": "running",
-      "started_at": "2026-03-28T00:04:23.071960168+04:00",
+      "started_at": "2026-03-28T00:26:04.766431463+04:00",
       "stop": 348,
       "target": 382,
       "avg_price": 358.45,
