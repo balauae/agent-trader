@@ -1,141 +1,177 @@
 # Idea: TraderTV Daily PDF Parser
 
-**Status:** Concept  
+**Status:** Concept — PDF format analyzed ✅  
 **Priority:** Low (adhoc)  
-**Folder:** `ideas/` — standalone, not part of core TradeDesk
+**Folder:** `misc/tradertv/`  
+**Sample PDF:** `misc/tradertv/sample_Mar27.pdf` (Mar 27, 2026)
 
 ---
 
 ## What
 
-TraderTV Live (YouTube channel) posts a daily pre-market analysis PDF every morning via their YouTube community tab. The post contains a Google Drive link to a PDF with:
-- Tickers to watch
-- Key support/resistance levels
-- Pre-market gaps
-- Bullish/bearish bias per stock
-- Catalysts and news
-
-Parse this PDF daily and cross-reference with Bala's watchlist.
+TraderTV Live posts a daily pre-market PDF ("Cherif's Morning Note") via YouTube community tab. Each PDF contains 15–20 pages of stock analysis with:
+- News catalyst per stock
+- Exact support/resistance price levels
+- Implied bias (bullish/bearish) from context
 
 ---
 
-## Why
+## PDF Format (confirmed from sample)
 
-- Free professional pre-market analysis every day
-- Saves time reviewing manually
-- Can auto-alert if they mention GLD or watchlist tickers
-- Adds external analyst view to TradeDesk morning brief
+### Structure
+- **Page 1:** Table of contents — stock name + page number
+- **Pages 2–18:** One stock per page
+
+### Each Page Layout
+```
+[STOCK NAME + HEADLINE]
+[News summary — 3–4 bullet points]     |  Support:
+                                        |  $XXX – $XXX — description
+                                        |  $XXX – $XXX — description
+                                        |  
+                                        |  Resistance:
+                                        |  $XXX – $XXX — description
+                                        |  $XXX – $XXX — description
+```
+Two-column layout: news on left, levels on right.
+
+### Tickers in sample (Mar 27)
+META, AMZN, MSFT, USO (oil), MU, NFLX, WBD, TGT, SMCI, BABA
+
+### Example extracted data
+```json
+{
+  "ticker": "META",
+  "headline": "Meta Legal Risk Escalates After Dual Jury Verdicts",
+  "bias": "BEARISH",
+  "support": [
+    {"zone": "540-545", "notes": "Current base after sharp selloff"},
+    {"zone": "530-535", "notes": "Prior flush zone"},
+    {"zone": "515-520", "notes": "Lower extension support"}
+  ],
+  "resistance": [
+    {"zone": "555-560", "notes": "Immediate resistance"},
+    {"zone": "575-580", "notes": "Prior consolidation"}
+  ]
+}
+```
 
 ---
 
 ## Pipeline
 
 ```
-YouTube community post (daily)
+Google Drive PDF link (from YouTube community post)
         ↓
-Extract Google Drive PDF link from post text
+curl download (public link — no auth needed ✅)
         ↓
-Download PDF (public link or authenticated)
+pdfplumber → extract text per page
         ↓
-Parse PDF with pdfplumber
+Parse: ticker from headline, levels from right column
         ↓
-Extract: tickers, levels, bias, catalysts
+Cross-reference with Bala's watchlist
         ↓
-Cross-reference with watchlist (USER.md)
-        ↓
-Output JSON → morning brief / Telegram alert
+Output JSON + Telegram summary
 ```
 
 ---
 
-## Questions to resolve before building
+## Key Findings from Sample
 
-1. **Is the PDF link public?** (no Google login needed) or requires Drive auth?
-2. **What time do they post?** (to schedule the fetch cron)
-3. **YouTube API key available?** or use scraping?
-4. **PDF format consistent?** (same layout every day or varies)
+1. **PDF is publicly accessible** — direct curl download works ✅
+2. **18 pages** — one stock per page after TOC
+3. **Consistent format** — same layout every day (confirmed)
+4. **pdfplumber works** — text extraction clean ✅
+5. **Levels always labeled** "Support:" and "Resistance:" — easy to parse
+6. **No login needed** for Google Drive link
 
 ---
 
-## Implementation Plan (when ready)
+## Parsing Strategy
 
-### Phase 1 — Manual test
+```python
+# Page 1 = TOC, skip
+# Pages 2+ = one stock each
+
+for page in pdf.pages[1:]:
+    text = page.extract_text()
+    
+    # Ticker: first line / headline contains stock name
+    # e.g. "Meta Legal Risk..." → META from context or explicit mention
+    
+    # Support levels: text after "Support:"
+    # Pattern: $XXX.XX – $XXX.XX — description
+    
+    # Resistance levels: text after "Resistance:"
+    # Same pattern
+    
+    # Bias: infer from headline keywords
+    # "Drops", "Freeze", "Risk", "Bearish" → BEARISH
+    # "Surges", "Ramps", "Breaks out" → BULLISH
+```
+
+---
+
+## Open Questions
+
+1. **How to get the daily link?** — YouTube community post has Drive link
+   - Option A: YouTube Data API v3 (free) — get latest community post
+   - Option B: yt-dlp scrape (no API key needed)
+   - Option C: Bala manually pastes link (simplest to start)
+
+2. **What time does Cherif post?** — Need to know for cron timing
+
+---
+
+## Implementation Phases
+
+### Phase 1 — Parser (ready to build)
 ```bash
-# Manually grab a PDF link from their community post
-# Test parsing with pdfplumber
-python ideas/tradertv/test_parse.py path/to/sample.pdf
+python misc/tradertv/parser.py misc/tradertv/sample_Mar27.pdf
+# Output: JSON with all tickers, levels, bias
 ```
 
-### Phase 2 — Automate fetch
+### Phase 2 — Fetcher
 ```python
-# ideas/tradertv/fetcher.py
-# Option A: YouTube Data API v3 (free, 10k units/day)
-#   GET https://www.googleapis.com/youtube/v3/activities?channelId=...
-# Option B: yt-dlp to scrape community posts (no API key needed)
-#   yt-dlp --get-comments https://www.youtube.com/@TraderTVLive
+# misc/tradertv/fetcher.py
+# Given a Drive link → download PDF → return path
 ```
 
-### Phase 3 — Parse PDF
+### Phase 3 — Watchlist cross-reference
 ```python
-# ideas/tradertv/parser.py
-import pdfplumber
-
-def parse_tradertv_pdf(pdf_path: str) -> dict:
-    # Extract text
-    # Find tickers (regex: uppercase 2-5 chars)
-    # Find price levels ($XXX.XX pattern)
-    # Find bias keywords (bullish, bearish, long, short, watch)
-    # Return structured JSON
-```
-
-### Phase 4 — Cross-reference watchlist
-```python
-# Check if any mentioned tickers are in Bala's watchlists
+# Check if any parsed tickers are in USER.md watchlists
 # Alert if GLD or current positions mentioned
-# Include in morning brief
 ```
 
-### Phase 5 — Cron
+### Phase 4 — Telegram summary
 ```
-Daily at 11:30 AM AbuDhabi (pre-market, before 12 PM open)
-→ Fetch post → Download PDF → Parse → Send Telegram summary
+📰 TraderTV Morning Note (Mar 31)
+Watchlist mentions: NVDA, MU, META
+
+🔴 MU — Bearish: Support $345–347, Resistance $352–355
+🟢 NVDA — Bullish: Support $165–167, Resistance $171–172
 ```
 
----
-
-## Output JSON (target)
-```json
-{
-  "date": "2026-03-31",
-  "source": "TraderTV Live",
-  "watchlist_mentions": ["NVDA", "TSLA", "GLD"],
-  "tickers": [
-    {
-      "ticker": "NVDA",
-      "bias": "BULLISH",
-      "levels": {"support": 165.0, "resistance": 172.0},
-      "notes": "Breaking out of consolidation, watching $172 pivot"
-    }
-  ],
-  "key_themes": ["AI momentum", "Fed meeting tomorrow", "Tech sector strength"],
-  "pdf_url": "https://drive.google.com/...",
-  "parsed_at": "2026-03-31T07:30:00Z"
-}
+### Phase 5 — Cron (daily pre-market)
+```
+Daily 11:30 AM AbuDhabi → fetch → parse → send Telegram
 ```
 
 ---
 
 ## Dependencies
-```
-pdfplumber    ← PDF text extraction
-yt-dlp        ← YouTube community post scraping (optional)
-google-api-python-client ← YouTube Data API (optional)
+```bash
+uv pip install pdfplumber  # ✅ already installed
+# yt-dlp (optional — for auto-fetch)
 ```
 
 ---
 
-## Notes
-- Keep entirely in `ideas/tradertv/` — do NOT mix with core scripts
-- Not wired into bridge or watcher until proven reliable
-- PDF format may change — parser needs to be flexible
-- Consider storing parsed PDFs in `ideas/tradertv/archive/YYYY-MM-DD.pdf`
+## Files
+```
+misc/tradertv/
+  idea.md              ← this file
+  sample_Mar27.pdf     ← sample PDF for testing
+  parser.py            ← (to build)
+  fetcher.py           ← (to build)
+```
