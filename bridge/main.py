@@ -50,7 +50,7 @@ def health():
 @app.get("/news/{ticker}")
 def news(ticker: str):
     """Fetch latest news for a ticker."""
-    data = run_script("news_fetcher.py", ticker.upper())
+    data = run_script("feeds/news.py", ticker.upper())
     if "error" in data:
         raise HTTPException(500, data["error"])
     return data
@@ -59,7 +59,7 @@ def news(ticker: str):
 @app.get("/analyze/{ticker}")
 def analyze(ticker: str):
     """Full technical analysis for a ticker."""
-    data = run_script("technical_analyst.py", ticker.upper())
+    data = run_script("analysis/technical.py", ticker.upper())
     if "error" in data:
         raise HTTPException(500, data["error"])
     return data
@@ -68,7 +68,7 @@ def analyze(ticker: str):
 @app.get("/vwap/{ticker}")
 def vwap(ticker: str):
     """VWAP analysis for a ticker."""
-    data = run_script("vwap_watcher.py", ticker.upper())
+    data = run_script("feeds/vwap.py", ticker.upper())
     if "error" in data:
         raise HTTPException(500, data["error"])
     return data
@@ -77,7 +77,7 @@ def vwap(ticker: str):
 @app.get("/pattern/{ticker}")
 def pattern(ticker: str):
     """Chart pattern detection for a ticker."""
-    data = run_script("pattern_finder.py", ticker.upper())
+    data = run_script("analysis/patterns.py", ticker.upper())
     if "error" in data:
         raise HTTPException(500, data["error"])
     return data
@@ -95,7 +95,7 @@ def earnings(ticker: str):
 @app.get("/fundamental/{ticker}")
 def fundamental(ticker: str):
     """Fundamental analysis for a ticker."""
-    data = run_script("fundamental_analyst.py", ticker.upper())
+    data = run_script("analysis/fundamental.py", ticker.upper())
     if "error" in data:
         raise HTTPException(500, data["error"])
     return data
@@ -104,7 +104,7 @@ def fundamental(ticker: str):
 @app.get("/calendar")
 def calendar():
     """Today's economic calendar events."""
-    data = run_script("economic_calendar.py")
+    data = run_script("feeds/calendar.py")
     if "error" in data:
         raise HTTPException(500, data["error"])
     return data
@@ -152,7 +152,7 @@ def get_alerts_summary(date: str = None):
 @app.get("/sr/{ticker}")
 def support_resistance(ticker: str, timeframe: str = "1D", bars: int = 200):
     """Single-timeframe support & resistance levels."""
-    data = run_script("support_resistance.py", ticker.upper(), timeframe, str(bars))
+    data = run_script("analysis/levels.py", ticker.upper(), timeframe, str(bars))
     if "error" in data:
         raise HTTPException(500, data["error"])
     return data
@@ -170,7 +170,7 @@ def vcp_scan(ticker: str, timeframe: str = "1D", bars: int = 200):
 @app.get("/sr-multi/{ticker}")
 def support_resistance_multi(ticker: str, timeframes: str = "1D,1h", bars: int = 200):
     """Multi-timeframe confluent S/R levels."""
-    data = run_script("support_resistance.py", ticker.upper(), "multi", timeframes, str(bars))
+    data = run_script("analysis/levels.py", ticker.upper(), "multi", timeframes, str(bars))
     if "error" in data:
         raise HTTPException(500, data["error"])
     return data
