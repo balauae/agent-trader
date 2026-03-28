@@ -400,3 +400,91 @@ python scripts/economic_calendar.py MRVL
 python scripts/economic_calendar.py TSLA
 python scripts/economic_calendar.py NVDA
 ```
+
+---
+
+## 16. `support_resistance.py` — S/R Level Detection
+
+### Single timeframe
+```bash
+python scripts/support_resistance.py GLD 1D 200   # daily, 200 bars (~10 months)
+python scripts/support_resistance.py MU 1h 100    # hourly, 100 bars
+python scripts/support_resistance.py NVDA 5m 200  # 5-min scalping levels
+python scripts/support_resistance.py TSLA 1W 100  # weekly macro levels
+```
+
+**Real output (GLD 1D 200):**
+```json
+{
+  "ticker": "GLD",
+  "price": 414.7,
+  "timeframe": "1D",
+  "resistance": [
+    {"level": 415.0,  "type": "round_number", "strength": 2, "label": "Round number $415"},
+    {"level": 418.45, "type": "swing_high",   "strength": 1, "label": "Swing high (63b ago)"},
+    {"level": 420.59, "type": "ma",           "strength": 3, "label": "EMA9"},
+    {"level": 428.59, "type": "pwh",          "strength": 3, "label": "PWH"}
+  ],
+  "support": [
+    {"level": 411.37, "type": "pdh",          "strength": 3, "label": "PDH"},
+    {"level": 410.0,  "type": "round_number", "strength": 2, "label": "Round number $410"},
+    {"level": 399.98, "type": "hvn",          "strength": 4, "label": "High volume node"}
+  ],
+  "key_levels": [399.98, 411.37, 420.59, 428.59],
+  "nearest_resistance": 415.0,
+  "nearest_support": 411.37,
+  "nearest_resistance_dist_pct": 0.07,
+  "nearest_support_dist_pct": 0.8
+}
+```
+
+### Multi-timeframe (finds confluent levels)
+```bash
+python scripts/support_resistance.py GLD multi 1D,1h 200
+python scripts/support_resistance.py NVDA multi 1D,1h,5m 200
+python scripts/support_resistance.py MU multi 1D,1h 100
+```
+
+**Args:** `TICKER multi TIMEFRAMES BARS`
+- `TIMEFRAMES` = comma-separated list: `1D,1h,5m`
+- `BARS` = how many bars per timeframe (default 200)
+
+**Real output (GLD multi 1D,1h):**
+```json
+{
+  "ticker": "GLD",
+  "price": 414.7,
+  "timeframes_analyzed": ["1D", "1h"],
+  "confluent_levels": [
+    {"level": 399.98, "side": "support",    "strength": 4, "timeframes": ["1D", "1h"], "confluence_count": 2},
+    {"level": 420.59, "side": "resistance", "strength": 4, "timeframes": ["1D", "1h"], "confluence_count": 2}
+  ],
+  "by_timeframe": {
+    "1D": {"nearest_resistance": 415.0,  "nearest_support": 411.37, "key_levels": [399.98, 411.37, 420.59, 428.59]},
+    "1h": {"nearest_resistance": 415.5,  "nearest_support": 414.04, "key_levels": [414.04, 415.5, 420.59]}
+  }
+}
+```
+
+**Confluent level = appears on 2+ timeframes = high conviction.**
+
+### Detection methods:
+| Method | What it finds |
+|--------|-------------|
+| Swing pivots | Price reversal points (local highs/lows) |
+| Volume clusters (HVN) | High volume nodes — price magnets |
+| Round numbers | $410, $415, $420 etc. |
+| PDH / PDL | Previous day high/low |
+| PWH / PWL | Previous week high/low |
+| Moving averages | EMA9, EMA21, SMA50, SMA200 |
+
+### Strength scoring (1–5):
+| Factor | Points |
+|--------|--------|
+| Tested 3+ times | +2 |
+| High volume node | +2 |
+| Round number | +1 |
+| Recent (last 20 bars) | +1 |
+| Moving average | +1 |
+
+Key levels = strength ≥ 3.
