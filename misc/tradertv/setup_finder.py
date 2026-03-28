@@ -97,7 +97,7 @@ def score_setup(stock: dict) -> dict:
 
     # 5. Catalyst strength
     headline_lower = stock["headline"].lower()
-    news_lower = stock["news_summary"].lower()
+    news_lower = " ".join(stock.get("news_bullets", [])).lower()
     combined = headline_lower + " " + news_lower
     for kw in STRONG_CATALYST:
         if kw in combined:

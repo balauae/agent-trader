@@ -252,7 +252,7 @@ def parse_page(text: str) -> dict | None:
         "support": support_zones,
         "resistance": resistance_zones,
         "trader_takeaway": takeaway_text.strip(),
-        "news_summary": " ".join(news_lines[:5]).strip()[:400]
+        "news_bullets": news_lines,  # every line, no truncation
     }
 
 
