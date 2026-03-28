@@ -63,6 +63,20 @@ def analyze(ticker: str) -> dict:
     reward = abs(target - entry) if target else 0
     rr = round(reward / risk, 2) if risk > 0 else 0
 
+    # Williams volatility breakout levels
+    try:
+        prev_open = float(df["Open"].iloc[-2]) if len(df) >= 2 else float(df["Open"].iloc[-1])
+        atr_val = float((df["High"] - df["Low"]).rolling(14).mean().iloc[-1])
+        williams_buy = round(prev_open + atr_val * 0.6, 2)
+        williams_short = round(prev_open - atr_val * 0.6, 2)
+        williams_breakout = {
+            "buy_level": williams_buy, "short_level": williams_short,
+            "atr": round(atr_val, 2),
+            "notes": f"Break above ${williams_buy} = momentum long | Below ${williams_short} = momentum short"
+        }
+    except Exception:
+        williams_breakout = {}
+
     return {
         "ticker": t,
         "current_price": round(current_price, 2),
@@ -78,6 +92,7 @@ def analyze(ticker: str) -> dict:
         "risk_reward": rr,
         "volume_confirmed": vol_confirmed,
         "notes": notes,
+        "williams_breakout": williams_breakout,
     }
 
 if __name__ == "__main__":

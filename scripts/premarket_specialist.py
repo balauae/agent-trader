@@ -70,6 +70,30 @@ def analyze(ticker: str) -> dict:
         setup = "watch"
         notes = "Moderate gap — wait for first 5 min candle to confirm direction"
 
+    # Raschke 80/20 fade
+    if prior_close and not premarket.empty:
+        prior_high = float(prior_regular["High"].max())
+        prior_low = float(prior_regular["Low"].min())
+        prior_range = prior_high - prior_low
+        if prior_range > 0:
+            open_pos = (pm_price - prior_low) / prior_range
+            if open_pos > 0.80:
+                raschke = {"setup": "fade-short", "open_position_pct": round(open_pos*100,1),
+                           "target": round(prior_low + prior_range * 0.50, 2),
+                           "stop": round(pm_high * 1.001, 2),
+                           "notes": "Opened top 20% of prior range — fade short candidate"}
+            elif open_pos < 0.20:
+                raschke = {"setup": "fade-long", "open_position_pct": round(open_pos*100,1),
+                           "target": round(prior_high - prior_range * 0.50, 2),
+                           "stop": round(pm_low * 0.999, 2),
+                           "notes": "Opened bottom 20% of prior range — fade long candidate"}
+            else:
+                raschke = {"setup": "no-fade", "open_position_pct": round(open_pos*100,1), "notes": "Mid-range open — no fade setup"}
+        else:
+            raschke = {"setup": "no-data"}
+    else:
+        raschke = {"setup": "no-data"}
+
     return {
         "ticker": t,
         "prior_close": round(prior_close, 2),
@@ -83,6 +107,7 @@ def analyze(ticker: str) -> dict:
         "setup": setup,
         "notes": notes,
         "data_source": f"extended_hours=yfinance, avg_vol={daily_src}",
+        "raschke_fade": raschke,
     }
 
 if __name__ == "__main__":

@@ -202,7 +202,51 @@ def analyze(ticker: str) -> dict:
         "growth_grade":       growth,
         "risk_flags":         risk_flags,
         "summary_text":       summary,
+        "canslim":            _compute_canslim(ticker),
     }
+
+
+def _compute_canslim(ticker: str) -> dict:
+    """O'Neil CANSLIM score (0-7)."""
+    try:
+        import yfinance as yf
+        flags = {}
+        tk = yf.Ticker(ticker)
+        info = tk.info
+        eps_q = float(info.get("earningsQuarterlyGrowth") or 0)
+        flags["C"] = {"pass": eps_q >= 0.25, "value": round(eps_q*100, 1), "label": "Current EPS growth ≥25%"}
+        eps_a = float(info.get("earningsGrowth") or 0)
+        flags["A"] = {"pass": eps_a >= 0.25, "value": round(eps_a*100, 1), "label": "Annual EPS growth ≥25%"}
+        high_52w = float(info.get("fiftyTwoWeekHigh") or 0)
+        cur = float(info.get("currentPrice") or 0)
+        flags["N"] = {"pass": high_52w > 0 and cur >= high_52w * 0.95, "value": f"52wH ${high_52w}", "label": "Near 52-week high"}
+        flt = float(info.get("floatShares") or 0)
+        flags["S"] = {"pass": 0 < flt < 500_000_000, "value": f"{flt/1e6:.0f}M shares", "label": "Float <500M"}
+        hist = tk.history(period="6mo", interval="1d")
+        spy = yf.download("SPY", period="6mo", interval="1d", progress=False, auto_adjust=True)
+        if not hist.empty and not spy.empty:
+            sr = (float(hist["Close"].iloc[-1]) / float(hist["Close"].iloc[0]) - 1) * 100
+            spy_c = spy["Close"].squeeze() if hasattr(spy["Close"], "squeeze") else spy["Close"]
+            mr = (float(spy_c.iloc[-1]) / float(spy_c.iloc[0]) - 1) * 100
+            flags["L"] = {"pass": sr > mr, "value": f"RS vs SPY: {sr-mr:+.1f}%", "label": "Market leader"}
+            if len(spy_c) >= 50:
+                spy_ma50 = float(spy_c.rolling(50).mean().iloc[-1])
+                flags["M"] = {"pass": float(spy_c.iloc[-1]) > spy_ma50, "value": f"SPY vs MA50", "label": "Market uptrend"}
+            else:
+                flags["M"] = {"pass": False, "value": "N/A", "label": "Market uptrend"}
+        else:
+            flags["L"] = flags["M"] = {"pass": False, "value": "N/A", "label": "N/A"}
+        inst = float(info.get("institutionPercentHeld") or 0)
+        flags["I"] = {"pass": inst > 0.3, "value": f"{inst*100:.0f}%", "label": "Institutional >30%"}
+        score = sum(1 for v in flags.values() if v.get("pass"))
+        return {
+            "score": f"{score}/7",
+            "passed": [k for k, v in flags.items() if v.get("pass")],
+            "flags": flags,
+            "rating": "Strong" if score >= 5 else "Moderate" if score >= 3 else "Weak"
+        }
+    except Exception as e:
+        return {"error": str(e), "score": "0/7"}
 
 
 if __name__ == "__main__":

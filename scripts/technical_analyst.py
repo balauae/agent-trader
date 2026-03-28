@@ -83,6 +83,14 @@ def vwap(high: pd.Series, low: pd.Series, close: pd.Series, volume: pd.Series) -
     return cum_tp_vol / cum_vol
 
 
+# Williams %R (14-period)
+def compute_williams_r(df, period=14):
+    highest_high = df["high"].rolling(period).max()
+    lowest_low = df["low"].rolling(period).min()
+    wr = -100 * (highest_high - df["close"]) / (highest_high - lowest_low)
+    return float(wr.iloc[-1])
+
+
 # ─────────────────────────────────────────────
 # SIGNAL DETECTION
 # ─────────────────────────────────────────────
@@ -283,6 +291,8 @@ def analyze(ticker: str, timeframe: str = "1D", bars: int = 200) -> dict:
         val = s.iloc[idx]
         return round(float(val), 4) if pd.notna(val) else None
 
+    williams_r_val = round(compute_williams_r(df), 2) if len(df) >= 14 else None
+
     ind = {
         "close": price,
         "ema_9": safe(ema_9),
@@ -293,6 +303,7 @@ def analyze(ticker: str, timeframe: str = "1D", bars: int = 200) -> dict:
         "macd_signal": safe(macd_signal),
         "macd_histogram": safe(macd_hist),
         "rsi": safe(rsi_val),
+        "williams_r": williams_r_val,
         "bb_upper": safe(bb_upper),
         "bb_mid": safe(bb_mid),
         "bb_lower": safe(bb_lower),
@@ -330,6 +341,30 @@ def analyze(ticker: str, timeframe: str = "1D", bars: int = 200) -> dict:
     reward = abs(take_profit - price)
     risk_reward = round(reward / entry_risk, 2) if entry_risk > 0 else 0
 
+    # Weinstein Stage Analysis
+    def compute_weinstein_stage(df):
+        close = df["close"]
+        if len(close) < 150:
+            return {"stage": 0, "label": "INSUFFICIENT_DATA"}
+        ma150 = close.rolling(150).mean()
+        current_ma = float(ma150.iloc[-1])
+        prev_ma = float(ma150.iloc[-5])
+        p = float(close.iloc[-1])
+        ma_trend = "up" if current_ma > prev_ma else "down" if current_ma < prev_ma else "flat"
+        if p > current_ma and ma_trend == "up":
+            stage, label = 2, "ADVANCING"
+        elif p > current_ma and ma_trend in ("flat", "down"):
+            stage, label = 3, "TOPPING"
+        elif p < current_ma and ma_trend == "down":
+            stage, label = 4, "DECLINING"
+        else:
+            stage, label = 1, "BASING"
+        return {
+            "stage": stage, "label": label,
+            "ma_150": round(current_ma, 2), "ma_trend": ma_trend,
+            "notes": f"Stage {stage}: {label} — {'BUY ZONE' if stage==2 else 'AVOID' if stage==4 else 'WAIT'}"
+        }
+
     return {
         "ticker": ticker.upper(),
         "timeframe": timeframe,
@@ -342,6 +377,7 @@ def analyze(ticker: str, timeframe: str = "1D", bars: int = 200) -> dict:
         "stop_loss": stop_loss,
         "take_profit": take_profit,
         "risk_reward": risk_reward,
+        "weinstein": compute_weinstein_stage(df),
     }
 
 

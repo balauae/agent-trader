@@ -332,8 +332,33 @@ def compute_sr(ticker: str, timeframe: str = "1D", bars: int = 200, source: str 
         "nearest_resistance_dist_pct": round(((nearest_r - price) / price) * 100, 2) if nearest_r else None,
         "nearest_support_dist_pct": round(((price - nearest_s) / price) * 100, 2) if nearest_s else None,
         "data_source": actual_source,
+        "livermore_pivot": compute_livermore_pivot(df, price),
     }
 
+
+
+def compute_livermore_pivot(df: pd.DataFrame, price: float) -> dict:
+    """Detect Livermore-style pivot breakout with volume confirmation."""
+    if len(df) < 20:
+        return {}
+    recent = df.tail(20)
+    pivot_high = float(recent["high"].max())
+    avg_vol = float(df["volume"].tail(50).mean())
+    latest_vol = float(df["volume"].iloc[-1])
+    vol_ratio = round(latest_vol / avg_vol, 2) if avg_vol > 0 else 0
+    above_pivot = price > pivot_high
+    confirmed = above_pivot and vol_ratio >= 1.5
+    ma20 = float(df["close"].rolling(20).mean().iloc[-1])
+    lor = "UP" if price > ma20 else "DOWN"
+    return {
+        "pivot_level": round(pivot_high, 2),
+        "price_vs_pivot": "ABOVE" if above_pivot else "BELOW",
+        "volume_ratio": vol_ratio,
+        "breakout_confirmed": confirmed,
+        "line_of_least_resistance": lor,
+        "notes": (f"Breakout confirmed on {vol_ratio}x volume" if confirmed
+                  else f"Watching ${pivot_high:.2f} pivot — needs 1.5x volume to confirm")
+    }
 
 
 def compute_multi_sr(ticker: str, timeframes: list = None, bars: int = 200, source: str = "yf") -> dict:

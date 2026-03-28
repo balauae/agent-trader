@@ -158,6 +158,15 @@ def support_resistance(ticker: str, timeframe: str = "1D", bars: int = 200):
     return data
 
 
+@app.get("/vcp/{ticker}")
+def vcp_scan(ticker: str, timeframe: str = "1D", bars: int = 200):
+    """VCP pattern + SEPA template scan."""
+    data = run_script("vcp_scanner.py", ticker.upper(), timeframe, str(bars))
+    if "error" in data:
+        raise HTTPException(500, data["error"])
+    return data
+
+
 @app.get("/sr-multi/{ticker}")
 def support_resistance_multi(ticker: str, timeframes: str = "1D,1h", bars: int = 200):
     """Multi-timeframe confluent S/R levels."""
