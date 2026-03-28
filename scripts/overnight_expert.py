@@ -17,7 +17,7 @@ from datetime import datetime, timedelta, timezone
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from scripts.data_fetcher import get_ohlcv, get_earnings
+from scripts.data_fetcher import get_ohlcv, get_ohlcv_smart, get_earnings
 
 logger = logging.getLogger(__name__)
 
@@ -40,8 +40,8 @@ def analyze(ticker: str) -> dict:
     ah_price = float(extended["Close"].iloc[-1])
     ah_change_pct = (ah_price - regular_close) / regular_close * 100
 
-    # Support / Resistance from last 5 daily bars
-    daily = get_ohlcv(ticker, "1D", bars=20)
+    # Support / Resistance from last 5 daily bars — TV primary
+    daily, daily_src = get_ohlcv_smart(ticker, "1D", bars=20)
     if not daily.empty:
         support = float(daily["low"].tail(5).min())
         resistance = float(daily["high"].tail(5).max())
@@ -80,6 +80,7 @@ def analyze(ticker: str) -> dict:
         "next_earnings_date": next_earnings_date,
         "earnings_tonight": earnings_tonight,
         "risk_level": risk_level,
+        "data_source": f"extended_hours=yfinance, daily={daily_src}",
     }
 
 

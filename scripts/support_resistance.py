@@ -18,6 +18,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 import numpy as np
 import pandas as pd
 import yfinance as yf
+from scripts.data_fetcher import get_ohlcv_smart
 
 # ── config ────────────────────────────────────────────────────────────────────
 SWING_WINDOW     = 5      # bars left/right to confirm pivot
@@ -30,7 +31,7 @@ MAX_LEVELS       = 6      # max resistance / support levels to return
 
 # ── helpers ───────────────────────────────────────────────────────────────────
 
-def fetch_data(ticker: str, timeframe: str, bars: int) -> pd.DataFrame:
+def fetch_data_yfinance(ticker: str, timeframe: str, bars: int) -> pd.DataFrame:
     tf_map = {
         "1m": "1m", "5m": "5m", "15m": "15m", "30m": "30m",
         "1h": "60m", "2h": "90m", "4h": "1h",
@@ -50,6 +51,22 @@ def fetch_data(ticker: str, timeframe: str, bars: int) -> pd.DataFrame:
     df.columns = [c[0].lower() if isinstance(c, tuple) else c.lower()
                   for c in df.columns]
     return df.tail(bars).copy()
+
+
+def fetch_data(ticker: str, timeframe: str, bars: int, source: str = "smart") -> pd.DataFrame:
+    """
+    Fetch OHLCV data.
+    source='smart' (default) = TV primary, yfinance fallback
+    source='tv'              = TV only (fallback to yf if TV fails)
+    source='yf'              = yfinance only
+    """
+    if source == "yf":
+        return fetch_data_yfinance(ticker, timeframe, bars)
+    # smart or tv — use get_ohlcv_smart (TV → yf fallback)
+    df, _ = get_ohlcv_smart(ticker, timeframe, bars)
+    if not df.empty:
+        return df
+    return fetch_data_yfinance(ticker, timeframe, bars)
 
 
 def find_swing_pivots(df: pd.DataFrame, window: int = SWING_WINDOW):
@@ -174,8 +191,9 @@ def score_level(level: float, price: float, tests: int, is_hvn: bool,
 
 # ── main ──────────────────────────────────────────────────────────────────────
 
-def compute_sr(ticker: str, timeframe: str = "1D", bars: int = 200) -> dict:
-    df = fetch_data(ticker, timeframe, bars)
+def compute_sr(ticker: str, timeframe: str = "1D", bars: int = 200, source: str = "yf") -> dict:
+    df = fetch_data(ticker, timeframe, bars, source)
+    actual_source = "tv" if source in ("tv", "smart") else "yfinance"
     if df.empty or len(df) < 30:
         return {"error": f"Insufficient data for {ticker}"}
 
@@ -313,18 +331,19 @@ def compute_sr(ticker: str, timeframe: str = "1D", bars: int = 200) -> dict:
         "nearest_support": nearest_s,
         "nearest_resistance_dist_pct": round(((nearest_r - price) / price) * 100, 2) if nearest_r else None,
         "nearest_support_dist_pct": round(((price - nearest_s) / price) * 100, 2) if nearest_s else None,
+        "data_source": actual_source,
     }
 
 
 
-def compute_multi_sr(ticker: str, timeframes: list = None, bars: int = 200) -> dict:
+def compute_multi_sr(ticker: str, timeframes: list = None, bars: int = 200, source: str = "yf") -> dict:
     """Run S/R across multiple timeframes and find confluent levels."""
     if timeframes is None:
         timeframes = ["1D", "1h", "5m"]
 
     results = {}
     for tf in timeframes:
-        r = compute_sr(ticker, tf, bars)
+        r = compute_sr(ticker, tf, bars, source)
         if "error" not in r:
             results[tf] = r
 
@@ -377,15 +396,27 @@ def compute_multi_sr(ticker: str, timeframes: list = None, bars: int = 200) -> d
 
 
 if __name__ == "__main__":
-    ticker = sys.argv[1].upper() if len(sys.argv) > 1 else "AAPL"
-    mode = sys.argv[2] if len(sys.argv) > 2 else "1D"
+    # Usage:
+    #   Single:  python support_resistance.py GLD 1D 200 [--source tv]
+    #   Multi:   python support_resistance.py GLD multi 1D,1h 200 [--source tv]
+    args = [a for a in sys.argv[1:] if not a.startswith("--")]
+    source = "tv" if "--source" in sys.argv and "tv" in sys.argv[sys.argv.index("--source") + 1] else "yf"
+    # Also support --source=tv
+    for a in sys.argv:
+        if a == "--source=tv":
+            source = "tv"
+        elif a == "--source=yf":
+            source = "yf"
+
+    ticker = args[0].upper() if len(args) > 0 else "AAPL"
+    mode   = args[1] if len(args) > 1 else "1D"
 
     if mode == "multi":
-        tfs = sys.argv[3].split(",") if len(sys.argv) > 3 else ["1D", "1h", "5m"]
-        bars = int(sys.argv[4]) if len(sys.argv) > 4 else 200
-        result = compute_multi_sr(ticker, tfs, bars)
+        tfs  = args[2].split(",") if len(args) > 2 else ["1D", "1h", "5m"]
+        bars = int(args[3]) if len(args) > 3 else 200
+        result = compute_multi_sr(ticker, tfs, bars, source)
     else:
-        bars = int(sys.argv[3]) if len(sys.argv) > 3 else 200
-        result = compute_sr(ticker, mode, bars)
+        bars = int(args[2]) if len(args) > 2 else 200
+        result = compute_sr(ticker, mode, bars, source)
 
     print(json.dumps(result, indent=2))

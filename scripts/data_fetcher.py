@@ -315,6 +315,49 @@ def get_market_summary() -> dict:
 # QUICK TEST
 # ─────────────────────────────────────────────
 
+def get_ohlcv_smart(ticker: str, timeframe: str = "1D", bars: int = 200) -> tuple:
+    """
+    Fetch OHLCV bars — TradingView primary, yfinance fallback.
+    Returns: (DataFrame, source_str)
+    source_str is "tv" or "yfinance"
+    """
+    import yfinance as yf
+
+    # Try TradingView first
+    try:
+        df = get_ohlcv(ticker, timeframe=timeframe, bars=bars)
+        if df is not None and not df.empty:
+            df.columns = [c.lower() for c in df.columns]
+            return df, "tv"
+    except Exception:
+        pass
+
+    # Fallback: yfinance
+    tf_map = {
+        "1m": "1m", "5m": "5m", "15m": "15m", "30m": "30m",
+        "1h": "60m", "2h": "90m", "4h": "1h",
+        "1D": "1d", "1W": "1wk",
+    }
+    period_map = {
+        "1m": "7d", "5m": "60d", "15m": "60d", "30m": "60d",
+        "1h": "730d", "60m": "730d", "90m": "730d",
+        "1d": "2y", "1wk": "5y",
+    }
+    yf_tf = tf_map.get(timeframe, "1d")
+    period = period_map.get(yf_tf, "2y")
+    try:
+        df = yf.download(ticker, period=period, interval=yf_tf,
+                         progress=False, auto_adjust=True)
+        if not df.empty:
+            df.columns = [c[0].lower() if isinstance(c, tuple) else c.lower()
+                          for c in df.columns]
+            return df.tail(bars).copy(), "yfinance"
+    except Exception:
+        pass
+
+    return pd.DataFrame(), "none"
+
+
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
 

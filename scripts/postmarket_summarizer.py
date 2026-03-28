@@ -15,6 +15,7 @@ import logging
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
+from scripts.data_fetcher import get_ohlcv_smart
 
 logger = logging.getLogger(__name__)
 
@@ -22,28 +23,31 @@ logger = logging.getLogger(__name__)
 def summarize(ticker: str) -> dict:
     """Generate post-market summary for a ticker."""
     ticker = ticker.upper()
-    tk = yf.Ticker(ticker)
 
-    # Intraday 5m bars
-    df = tk.history(period="1d", interval="5m")
+    # Intraday 5m bars — TV primary, yfinance fallback
+    df, source = get_ohlcv_smart(ticker, "5m", 200)
     if df.empty:
         return {"ticker": ticker, "error": "No intraday data available"}
 
+    # Normalize column names
+    df.columns = [c.lower() for c in df.columns]
+
     # Core price levels
-    open_price = float(df["Close"].iloc[0])
-    close_price = float(df["Close"].iloc[-1])
-    high = float(df["High"].max())
-    low = float(df["Low"].min())
+    open_price = float(df["open"].iloc[0])
+    close_price = float(df["close"].iloc[-1])
+    high = float(df["high"].max())
+    low = float(df["low"].min())
     day_change_pct = (close_price - open_price) / open_price * 100
 
     # Volume analysis
-    total_volume = int(df["Volume"].sum())
-    avg_volume = float(tk.history(period="30d", interval="1d")["Volume"].mean())
+    total_volume = int(df["volume"].sum())
+    daily_df, _ = get_ohlcv_smart(ticker, "1D", 30)
+    avg_volume = float(daily_df["volume"].mean()) if not daily_df.empty else 0
     volume_ratio = total_volume / avg_volume if avg_volume > 0 else 0.0
 
     # VWAP calculation
-    tp = (df["High"] + df["Low"] + df["Close"]) / 3
-    vwap = (tp * df["Volume"]).cumsum() / df["Volume"].cumsum()
+    tp = (df["high"] + df["low"] + df["close"]) / 3
+    vwap = (tp * df["volume"]).cumsum() / df["volume"].cumsum()
     vwap_close = float(vwap.iloc[-1])
     close_vs_vwap = "ABOVE" if close_price > vwap_close else "BELOW"
 
@@ -65,6 +69,7 @@ def summarize(ticker: str) -> dict:
         "vwap_close": round(vwap_close, 4),
         "close_vs_vwap": close_vs_vwap,
         "summary_text": summary_text,
+        "data_source": source,
     }
 
 

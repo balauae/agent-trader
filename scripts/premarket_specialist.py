@@ -8,6 +8,7 @@ import pandas as pd
 import yfinance as yf
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
+from scripts.data_fetcher import get_ohlcv_smart
 logger = logging.getLogger(__name__)
 
 def analyze(ticker: str) -> dict:
@@ -46,9 +47,12 @@ def analyze(ticker: str) -> dict:
     gap_pct = round((pm_price - prior_close) / prior_close * 100, 2)
     gap_direction = "UP" if gap_pct > 0 else "DOWN" if gap_pct < 0 else "FLAT"
 
-    # Volume ratio vs 20d avg daily volume
-    hist = tk.history(period="30d", interval="1d")
-    avg_vol = float(hist["Volume"].mean()) if not hist.empty else 0
+    # Volume ratio — use TV daily bars for avg, fallback to yfinance
+    daily_df, daily_src = get_ohlcv_smart(t, "1D", 30)
+    avg_vol = float(daily_df["volume"].mean()) if not daily_df.empty else 0
+    if avg_vol == 0:
+        hist = tk.history(period="30d", interval="1d")
+        avg_vol = float(hist["Volume"].mean()) if not hist.empty else 0
     vol_ratio = round(pm_volume / (avg_vol * 0.15), 2) if avg_vol > 0 else 0  # PM ~15% of full day
 
     # Setup classification
@@ -78,6 +82,7 @@ def analyze(ticker: str) -> dict:
         "volume_ratio": vol_ratio,
         "setup": setup,
         "notes": notes,
+        "data_source": f"extended_hours=yfinance, avg_vol={daily_src}",
     }
 
 if __name__ == "__main__":
