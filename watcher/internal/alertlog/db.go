@@ -1,5 +1,5 @@
-// Package alertlog provides SQLite-backed alert logging.
-// Go writes alerts; the Python bridge reads them (read-only).
+// Package alertlog provides SQLite-backed alert logging via a single-writer channel.
+// All goroutines send to the channel; one dedicated goroutine owns all DB writes.
 package alertlog
 
 import (
@@ -26,26 +26,37 @@ CREATE TABLE IF NOT EXISTS alerts (
 CREATE INDEX IF NOT EXISTS idx_alerts_ticker_ts ON alerts(ticker, ts);
 `
 
-// DB wraps a SQLite connection for alert logging.
+// Record is one alert to be persisted.
+type Record struct {
+	Ticker    string
+	AlertType string
+	Price     float64
+	VWAP      float64
+	RSI       float64
+	PnL       float64
+	Message   string
+}
+
+// DB owns the SQLite connection and a single write goroutine.
 type DB struct {
 	db   *sql.DB
 	stmt *sql.Stmt
+	ch   chan Record
+	done chan struct{}
 }
 
-// New opens (or creates) the SQLite database at dbPath and runs migrations.
+// New opens (or creates) the SQLite DB and starts the write goroutine.
 func New(dbPath string) (*DB, error) {
-	db, err := sql.Open("sqlite3", dbPath+"?_journal_mode=WAL&_busy_timeout=5000")
+	db, err := sql.Open("sqlite3", dbPath)
 	if err != nil {
 		return nil, fmt.Errorf("alertlog: open %s: %w", dbPath, err)
 	}
 
-	// Run schema migration
 	if _, err := db.Exec(schema); err != nil {
 		db.Close()
 		return nil, fmt.Errorf("alertlog: migrate: %w", err)
 	}
 
-	// Prepare insert statement for performance
 	stmt, err := db.Prepare(`
 		INSERT INTO alerts (ts, ticker, alert_type, price, message, vwap, rsi, pnl)
 		VALUES (?, ?, ?, ?, ?, ?, ?, ?)
@@ -55,27 +66,46 @@ func New(dbPath string) (*DB, error) {
 		return nil, fmt.Errorf("alertlog: prepare: %w", err)
 	}
 
-	log.Printf("[alertlog] opened %s", dbPath)
-	return &DB{db: db, stmt: stmt}, nil
-}
-
-// Log inserts an alert row. Timestamps are stored as UTC ISO8601.
-func (d *DB) Log(ticker, alertType string, price, vwap, rsi, pnl float64, message string) error {
-	ts := time.Now().UTC().Format(time.RFC3339)
-	_, err := d.stmt.Exec(ts, ticker, alertType, price, message, vwap, rsi, pnl)
-	if err != nil {
-		return fmt.Errorf("alertlog: insert: %w", err)
+	d := &DB{
+		db:   db,
+		stmt: stmt,
+		ch:   make(chan Record, 256), // buffered — callers never block
+		done: make(chan struct{}),
 	}
-	return nil
+
+	go d.writeLoop()
+	log.Printf("[alertlog] opened %s (single-writer channel)", dbPath)
+	return d, nil
 }
 
-// Close closes the prepared statement and database connection.
-func (d *DB) Close() error {
+// Log enqueues an alert record for writing. Never blocks the caller.
+func (d *DB) Log(ticker, alertType string, price, vwap, rsi, pnl float64, message string) {
+	select {
+	case d.ch <- Record{ticker, alertType, price, vwap, rsi, pnl, message}:
+	default:
+		log.Printf("[alertlog] channel full — dropped alert for %s", ticker)
+	}
+}
+
+// Close drains the channel and shuts down the write goroutine.
+func (d *DB) Close() {
+	close(d.ch)
+	<-d.done
 	if d.stmt != nil {
 		d.stmt.Close()
 	}
 	if d.db != nil {
-		return d.db.Close()
+		d.db.Close()
 	}
-	return nil
+}
+
+// writeLoop is the single goroutine that owns all DB writes.
+func (d *DB) writeLoop() {
+	defer close(d.done)
+	for r := range d.ch {
+		ts := time.Now().UTC().Format(time.RFC3339)
+		if _, err := d.stmt.Exec(ts, r.Ticker, r.AlertType, r.Price, r.Message, r.VWAP, r.RSI, r.PnL); err != nil {
+			log.Printf("[alertlog] write error: %v", err)
+		}
+	}
 }

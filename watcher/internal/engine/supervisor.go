@@ -3,6 +3,7 @@ package engine
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"log"
 	"os"
 	"sync"
@@ -155,6 +156,65 @@ func (s *Supervisor) Stop() {
 	}
 }
 
+// StartSnapshotLoop sends a P&L snapshot to Telegram every interval during market hours.
+// marketOpen/Close are clock hours in local time (e.g. 17, 24 for 5 PM–midnight AbuDhabi).
+func (s *Supervisor) StartSnapshotLoop(interval time.Duration, marketOpenHour, marketCloseHour int, notify func(string)) {
+	go func() {
+		ticker := time.NewTicker(interval)
+		defer ticker.Stop()
+		for {
+			select {
+			case <-s.ctx.Done():
+				return
+			case <-ticker.C:
+				h := time.Now().Hour()
+				// Handle midnight wrap (e.g. 17–24)
+				inMarket := false
+				if marketOpenHour < marketCloseHour {
+					inMarket = h >= marketOpenHour && h < marketCloseHour
+				} else {
+					inMarket = h >= marketOpenHour || h < marketCloseHour
+				}
+				if !inMarket || s.IsSilenced() {
+					continue
+				}
+				msg := s.buildSnapshot()
+				if msg != "" && notify != nil {
+					notify(msg)
+				}
+			}
+		}
+	}()
+}
+
+// buildSnapshot collects current state from all watchers and formats a P&L summary.
+func (s *Supervisor) buildSnapshot() string {
+	entries := s.registry.List()
+	if len(entries) == 0 {
+		return ""
+	}
+
+	now := time.Now().Format("15:04")
+	msg := fmt.Sprintf("📊 *P&L Snapshot* (%s)\n", now)
+	for _, e := range entries {
+		sign := "+"
+		if e.PnLDollars < 0 {
+			sign = ""
+		}
+		emoji := "🟢"
+		if e.PnLDollars < 0 {
+			emoji = "🔴"
+		}
+		vwapSide := "▲"
+		if e.VWAPDistPct < 0 {
+			vwapSide = "▼"
+		}
+		msg += fmt.Sprintf("%s *%s* $%.2f | P&L: %s$%.0f | VWAP %s%.1f%% | RSI: %.0f | Stop: %.1f%% away\n",
+			emoji, e.Ticker, e.Price, sign, e.PnLDollars, vwapSide, e.VWAPDistPct, e.RSI, e.StopDistPct)
+	}
+	return msg
+}
+
 func (s *Supervisor) runWithRestart(pos position.Position, w *Watcher) {
 	restarts := 0
 	lastReset := time.Now()
@@ -278,12 +338,10 @@ func (s *Supervisor) persistSilence(silenced bool) {
 	os.Rename(tmp, path)
 }
 
-// LogAlert writes an alert event to the SQLite alert log.
+// LogAlert enqueues an alert event to the SQLite write channel (non-blocking).
 func (s *Supervisor) LogAlert(evt Event) {
 	if s.alertDB == nil {
 		return
 	}
-	if err := s.alertDB.Log(evt.Ticker, string(evt.Type), evt.Price, 0, 0, 0, evt.Message); err != nil {
-		log.Printf("[supervisor] alertlog write error: %v", err)
-	}
+	s.alertDB.Log(evt.Ticker, string(evt.Type), evt.Price, 0, 0, 0, evt.Message)
 }

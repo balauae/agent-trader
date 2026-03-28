@@ -297,6 +297,13 @@ func runMulti(cfg *config.Settings, posPath string, timeout time.Duration) {
 	sup.LoadSilenceState()
 	sup.Start(positions)
 
+	// Start P&L snapshot loop — every 30 min during market hours (17:30–24:00 AbuDhabi)
+	if ntf != nil {
+		sup.StartSnapshotLoop(30*time.Minute, 17, 0, func(msg string) {
+			ntf.Send(msg)
+		})
+	}
+
 	// Start HTTP API server
 	apiServer := api.New(cfg.SocketPath, sup)
 	if err := apiServer.Start(); err != nil {
