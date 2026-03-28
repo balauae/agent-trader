@@ -99,6 +99,34 @@ curl -s --unix-socket /tmp/tradedesk-manager.sock http://localhost/status
 
 ---
 
+## New Monday Tests — SQLite Alert Log
+
+### 9. Verify alerts are being logged
+```bash
+# After first alert fires, check the DB
+sqlite3 data/alerts.db "SELECT * FROM alerts ORDER BY ts DESC LIMIT 10;"
+```
+
+### 10. Test bridge alert endpoints
+```bash
+# Today's GLD alerts
+curl -s http://localhost:8000/alerts/GLD | python3 -m json.tool
+
+# Summary all tickers
+curl -s http://localhost:8000/alerts | python3 -m json.tool
+
+# Specific date
+curl -s "http://localhost:8000/alerts/GLD?date=2026-03-31" | python3 -m json.tool
+```
+
+### 11. Ask me for alert history
+After market session, ask:
+- "How many alerts fired today?"
+- "Did GLD hit resistance today?"
+- "Show me all alerts this week"
+
+---
+
 ## Pending features (build after Monday test)
 
 - [ ] Break alerts: `🔼 GLD broke above $420.59` (proximity built, break detection not yet)

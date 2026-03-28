@@ -171,6 +171,8 @@ curl -s -X POST --unix-socket /tmp/tradedesk-manager.sock http://localhost/unsil
 
 ### Alerts Sent to Telegram
 
+All alerts are also **logged to SQLite** at `data/alerts.db` for historical queries.
+
 | Alert | Trigger | Severity |
 |-------|---------|---------|
 | 🚨 Stop hit | Price crosses stop level | Critical |
@@ -182,6 +184,7 @@ curl -s -X POST --unix-socket /tmp/tradedesk-manager.sock http://localhost/unsil
 | 📊 High volume | Sell candle with >2x avg volume | Warning |
 | 📉 RSI oversold | RSI ≤ 30 | Warning |
 | 📈 RSI overbought | RSI ≥ 70 | Warning |
+| 📍 S/R proximity | Price within 0.3% of key level | Warning |
 
 Cooldown: 15 min per alert type per ticker.
 Rate limit: 5 alerts/min globally. Critical alerts bypass rate limit.
@@ -226,10 +229,17 @@ GET  http://localhost:8000/calendar
 | `.secrets/tradingview.json` | TV auth token, user_id, plan |
 | `.secrets/telegram.json` | Bot token, chat_id |
 | `data/tickers.json` | ~1500 ticker → exchange mappings |
-| `data/positions.json` | Root-level positions (for Python scripts) |
-| `watcher/data/positions.json` | Watcher positions (Go binary reads this) |
+| `data/positions.json` | Active positions (single source of truth) |
+| `data/alerts.db` | SQLite alert history (all tickers, all time) |
 | `watcher/data/watcher-state.json` | Persisted silence state |
 | `watcher/data/registry.json` | Active watcher registry |
+
+### SQLite Alert Log (`data/alerts.db`)
+- Written by Go watcher (WAL mode, 5s busy timeout)
+- Read by FastAPI bridge (read-only)
+- Schema: `id, ts, ticker, alert_type, price, message, vwap, rsi, pnl`
+- Index on `(ticker, ts)` for fast time-range queries
+- Bridge endpoints: `GET /alerts/{ticker}`, `GET /alerts` (summary)
 
 ---
 
@@ -250,10 +260,12 @@ GET  http://localhost:8000/calendar
 - [ ] **`watch TICKER` from Telegram doesn't auto-save** — adding via API is lost on restart unless positions.json is updated manually
 - [ ] **TV token auto-refresh fails overnight** — requires browser running; needs headless solution
 - [ ] **GLD (AMEX) slow to connect** — TV sometimes takes 30-60s to resolve AMEX symbols
+- [ ] **Break alerts** — S/R proximity built, but no "broke above/below" detection yet
 
 ### Medium Priority
 - [ ] **Periodic P&L snapshot** — cron to send status every 30 mins during market hours
 - [ ] **Pre-market brief automation** — daily 5 PM AbuDhabi briefing on held positions
+- [ ] **S/R levels refresh mid-day** — currently loaded once on startup only
 - [ ] **Volume spike alert not fully wired** — condition exists in alerts/conditions.go but not tested
 - [ ] **Consecutive red bars alert** — not built yet
 - [ ] **P&L threshold alert** — "down $500 from open" type alert
