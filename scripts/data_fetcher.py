@@ -315,17 +315,21 @@ def get_market_summary() -> dict:
 # QUICK TEST
 # ─────────────────────────────────────────────
 
-def get_ohlcv_smart(ticker: str, timeframe: str = "1D", bars: int = 200) -> tuple:
+def get_ohlcv_smart(ticker: str, timeframe: str = "1D", bars: int = 200, tv_timeout: int = 10) -> tuple:
     """
     Fetch OHLCV bars — TradingView primary, yfinance fallback.
     Returns: (DataFrame, source_str)
     source_str is "tv" or "yfinance"
+    tv_timeout: seconds to wait for TV before falling back (default 10s)
     """
     import yfinance as yf
+    import concurrent.futures
 
-    # Try TradingView first
+    # Try TradingView first with timeout
     try:
-        df = get_ohlcv(ticker, timeframe=timeframe, bars=bars)
+        with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
+            future = executor.submit(get_ohlcv, ticker, timeframe, bars)
+            df = future.result(timeout=tv_timeout)
         if df is not None and not df.empty:
             df.columns = [c.lower() for c in df.columns]
             return df, "tv"

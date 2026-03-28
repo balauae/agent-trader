@@ -18,6 +18,7 @@ type Settings struct {
 	PositionsFile     string        `json:"positions_file"`
 	SecretsDir        string        `json:"secrets_dir"`
 	BridgeURL         string        `json:"bridge_url"`
+	AlertsDB          string        `json:"alerts_db"`
 	RSIPeriod         int           `json:"rsi_period"`
 	ATRPeriod         int           `json:"atr_period"`
 	EMAShort          int           `json:"ema_short"`
@@ -40,6 +41,7 @@ func DefaultSettings() *Settings {
 		AlertCooldownMins: 15,
 		SocketPath:        "/tmp/tradedesk-manager.sock",
 		BridgeURL:         "http://localhost:8000",
+		AlertsDB:          "/home/bala/dev/apps/agent-trader/data/alerts.db",
 		DataDir:           "data",
 		PositionsFile:     "data/positions.json",
 		SecretsDir:        ".secrets",
@@ -93,6 +95,11 @@ func Load(path string) (*Settings, error) {
 	// Compute durations
 	s.PollInterval = time.Duration(s.PollIntervalMs) * time.Millisecond
 	s.AlertCooldown = time.Duration(s.AlertCooldownMins) * time.Minute
+
+	// Default alerts DB path relative to data_dir
+	if s.AlertsDB == "" {
+		s.AlertsDB = filepath.Join(s.DataDir, "alerts.db")
+	}
 
 	return s, nil
 }

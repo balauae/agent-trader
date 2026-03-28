@@ -1,1 +1,1 @@
-{"watchers":{}}
+{"watchers":{"GLD":{"ticker":"GLD","state":"running","started_at":"2026-03-28T17:53:02.259328954+04:00","stop":395,"target":420,"avg_price":381.8,"restarts":1,"price":0,"vwap":0,"rsi":0,"vwap_dist_pct":0,"stop_dist_pct":0,"target_dist_pct":0,"pnl_dollars":0,"shares":0,"updated_at":"0001-01-01T00:00:00Z"}}}

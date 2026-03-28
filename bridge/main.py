@@ -110,6 +110,45 @@ def calendar():
     return data
 
 
+import sqlite3 as _sqlite3
+from datetime import date as _date
+
+ALERTS_DB = "/home/bala/dev/apps/agent-trader/data/alerts.db"
+
+def _query_alerts(query: str, params: tuple = ()):
+    try:
+        conn = _sqlite3.connect(f"file:{ALERTS_DB}?mode=ro", uri=True)
+        conn.row_factory = _sqlite3.Row
+        cur = conn.execute(query, params)
+        rows = [dict(r) for r in cur.fetchall()]
+        conn.close()
+        return rows
+    except Exception as e:
+        return []
+
+
+@app.get("/alerts/{ticker}")
+def get_alerts(ticker: str, date: str = None, limit: int = 100):
+    """Alerts for a ticker. date=YYYY-MM-DD (default today), limit=N."""
+    d = date or str(_date.today())
+    rows = _query_alerts(
+        "SELECT * FROM alerts WHERE ticker=? AND date(ts)=? ORDER BY ts DESC LIMIT ?",
+        (ticker.upper(), d, limit)
+    )
+    return {"ticker": ticker.upper(), "date": d, "count": len(rows), "alerts": rows}
+
+
+@app.get("/alerts")
+def get_alerts_summary(date: str = None):
+    """Summary of all alerts today grouped by ticker + type."""
+    d = date or str(_date.today())
+    rows = _query_alerts(
+        "SELECT ticker, alert_type, COUNT(*) as count FROM alerts WHERE date(ts)=? GROUP BY ticker, alert_type ORDER BY count DESC",
+        (d,)
+    )
+    return {"date": d, "summary": rows}
+
+
 @app.get("/sr/{ticker}")
 def support_resistance(ticker: str, timeframe: str = "1D", bars: int = 200):
     """Single-timeframe support & resistance levels."""

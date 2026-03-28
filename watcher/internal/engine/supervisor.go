@@ -8,6 +8,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/bala/tradedesk-watcher/internal/alertlog"
 	"github.com/bala/tradedesk-watcher/internal/config"
 	"github.com/bala/tradedesk-watcher/internal/position"
 )
@@ -27,12 +28,13 @@ type Supervisor struct {
 	ctx      context.Context
 	cancel   context.CancelFunc
 	silenced bool // global alert mute
+	alertDB  *alertlog.DB
 }
 
 // NewSupervisor creates a new supervisor.
 func NewSupervisor(cfg *config.Settings, registryPath string) *Supervisor {
 	ctx, cancel := context.WithCancel(context.Background())
-	return &Supervisor{
+	s := &Supervisor{
 		cfg:      cfg,
 		registry: NewRegistry(registryPath),
 		watchers: make(map[string]*Watcher),
@@ -40,6 +42,16 @@ func NewSupervisor(cfg *config.Settings, registryPath string) *Supervisor {
 		ctx:      ctx,
 		cancel:   cancel,
 	}
+	// Open alert DB (best-effort — don't fail if unavailable)
+	if cfg.AlertsDB != "" {
+		db, err := alertlog.New(cfg.AlertsDB)
+		if err != nil {
+			log.Printf("[supervisor] alertlog unavailable: %v", err)
+		} else {
+			s.alertDB = db
+		}
+	}
+	return s
 }
 
 // Events returns the channel for receiving events from all watchers.
@@ -137,6 +149,9 @@ func (s *Supervisor) Stop() {
 	s.mu.RUnlock()
 	for _, t := range tickers {
 		s.StopWatcher(t)
+	}
+	if s.alertDB != nil {
+		s.alertDB.Close()
 	}
 }
 
@@ -261,4 +276,14 @@ func (s *Supervisor) persistSilence(silenced bool) {
 	tmp := path + ".tmp"
 	os.WriteFile(tmp, data, 0644)
 	os.Rename(tmp, path)
+}
+
+// LogAlert writes an alert event to the SQLite alert log.
+func (s *Supervisor) LogAlert(evt Event) {
+	if s.alertDB == nil {
+		return
+	}
+	if err := s.alertDB.Log(evt.Ticker, string(evt.Type), evt.Price, 0, 0, 0, evt.Message); err != nil {
+		log.Printf("[supervisor] alertlog write error: %v", err)
+	}
 }
