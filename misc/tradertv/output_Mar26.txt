@@ -1,0 +1,678 @@
+TraderTV Live — Cherif's Morning Note
+Date: unknown | 15 stocks
+============================================================
+
+META — Meta Hit with Landmark Social Media Liability Verdict
+--------------------------------------------------
+🧑‍⚖️ Jury Verdict & Financial Impact
+●​ A California jury ruled against Meta Platforms and Alphabet, finding their
+platforms contributed to harm among teens.
+●​ Companies ordered to pay $3M to the plaintiff, plus $3M in punitive
+damages each (Meta + YouTube).
+●​ Case centered on claims that platforms were designed to be addictive
+and harmful to minors.
+●​ Marks a rare legal loss for Big Tech under protections like Section 230.
+⚠️ Legal Precedent & Broader Risk
+●​ Verdict could open the door for more lawsuits targeting social media
+design and addiction features.
+●​ Jury found they failed to warn users adequately about risks to teens.
+●​ Comes after similar rulings, signaling growing legal momentum against tech platforms.
+●​ Challenges long-standing legal shield under the Communications Decency Act (Section 230).
+🧠 Company Responses & Defense
+●​ Meta said it plans to appeal, arguing evidence showed no intentional harm.
+●​ Mark Zuckerberg testified that the company has moved away from time-spent optimization metrics.
+●​ YouTube acknowledged need for improvements but emphasized existing user safety tools (screen
+time reminders, scroll limits).
+●​ Defense highlighted that users still maintain control over device usage and settings.
+📉 Market Reaction
+●​ Shares of Meta and Alphabet were slightly higher despite the verdict, suggesting limited immediate concern.
+●​ Market likely views this as a contained legal risk rather than systemic threat (for now).
+●​ However, headline risk and regulatory overhang could increase going forward.
+
+Support:
+  $585.0–$588.0 — Recent flush low; key downside pivot
+  $590.0–$592.0 — Current consolidation support; near-term hold level
+  $595.0–$597.0 — Minor support turned pivot; needs to reclaim for strength
+
+Resistance:
+  $600.0–$603.0 — Immediate resistance; prior consolidation ceiling
+  $607.0–$610.0 — VWAP/MA cluster area; strong rejection zone
+  $615.0–$620.0 — Higher timeframe resistance; trend continuation trigger
+
+Bias: Clear downtrend structure on the 15-min, with lower highs intact. Any bounce looks corrective unless $605+ reclaims with volume. Bias remains bearish below $600, with rallies likely sold
+
+Trader Takeaway: This is a headline risk story more than an immediate financial hit, but it matters because it chips away at Big Tech’s legal protection moat. The market is shrugging it off for now, which tells you traders aren’t pricing in a wave of liability yet — but that can change quickly if more cases stack up. From a trading perspective, the chart matters more right now than the narrative, and META is still in a clear intraday downtrend. Until buyers step in and reclaim key levels, this is a sell-the-rip setup, not a bottoming story.
+
+
+META — Meta Cuts Jobs to Fund AI Spending Push
+--------------------------------------------------
+✂️ Layoffs Across Key Divisions
+●​ Meta Platforms is laying off a few hundred employees across multiple
+teams, per Reuters.
+●​ Cuts impact Reality Labs, core social media units, and recruiting.
+●​ Smaller in scale vs earlier reports of potential 20% workforce reduction,
+but still part of broader restructuring.
+●​ Management says it’s ongoing optimization rather than one-time cuts.
+🤖 AI Spending Driving Cost Pressure
+●​ Layoffs tied directly to surging AI investment costs, as Meta
+aggressively builds out infrastructure and talent.
+●​ Compensation pressure rising as Meta competes for top-tier AI engineers and researchers.
+●​ Strategy is shifting toward AI-first execution, even at the cost of near-term headcount reductions.
+🏗️ Strategic Restructuring
+●​ Meta continues to reallocate resources toward higher ROI initiatives, primarily AI.
+●​ Company emphasized internal mobility, attempting to reassign impacted workers where possible.
+●​ Reflects ongoing pivot away from low-efficiency or non-core spending areas.
+●​ Part of broader Big Tech trend of leaner operations + heavier AI capex.
+📊 Workforce & Operational Context
+●​ Meta had ~79,000 employees as of year-end, so cuts remain relatively small in percentage terms.
+●​ Continues pattern seen over past cycles of cost discipline following aggressive hiring periods.
+●​ Signals management focus on margin protection amid rising investment cycle.
+⚠️ Market Interpretation
+●​ Layoffs are typically seen as margin-positive but growth-neutral/negative signals.
+●​ Reinforces narrative that AI spending is crowding out other areas of the business.
+●​ Could support profitability in the short term, but raises questions about long-term ROI on AI spend.
+
+Support:
+  $585.0–$588.0 — Recent flush low; key downside pivot
+  $590.0–$592.0 — Current consolidation support; near-term hold level
+  $595.0–$597.0 — Minor support turned pivot; needs to reclaim for strength
+
+Resistance:
+  $600.0–$603.0 — Immediate resistance; prior consolidation ceiling
+  $607.0–$610.0 — VWAP/MA cluster area; strong rejection zone
+  $615.0–$620.0 — Higher timeframe resistance; trend continuation trigger
+
+Bias: Clear downtrend structure on the 15-min, with lower highs intact. Any bounce looks corrective unless $605+ reclaims with volume. Bias remains bearish below $600, with rallies likely sold
+
+Trader Takeaway: This is a classic Big Tech trade-off: cut costs to fund AI dominance. Meta is telling the market it’s willing to sacrifice headcount and near-term stability to stay competitive in the AI arms race. Traders should view this as margin-supportive but not a bullish growth catalyst. Combined with the current chart, the setup leans bearish — the story doesn’t change unless buyers step in and reclaim key levels. Right now, this remains a sell-the-rip environment until proven otherwise.
+
+
+GOOGL — Google Faces Leadership Gap in Key India Market
+--------------------------------------------------
+👤 Senior Legal Exit
+●​ Alphabet saw its top India lawyer Bijoya Roy resign after ~16 months
+in the role.
+●​ Exit comes at a critical time as Google deals with mounting regulatory
+and legal pressure in India.
+●​ Roy reportedly left for personal reasons to start a new venture, though
+timing raises strategic questions.
+●​ Adds to leadership instability following prior public policy head departure
+last year.
+⚖️ Regulatory Pressure Building
+●​ India has become a high-risk regulatory environment for Big Tech, especially Google.
+●​ Ongoing challenges include: Antitrust cases targeting market dominance (Android
+ecosystem); AI-related legal scrutiny; Stricter content moderation and takedown rules
+introduced in February
+●​ Lack of a permanent government relations lead leaves Google more exposed during policy
+negotiations.
+📱 Strategic Importance of India
+●​ India is a critical growth market for Google, with Android dominating smartphone OS share.
+●​ Competes with Apple, which is slowly gaining traction in premium segment.
+●​ Google’s ecosystem (Search, YouTube, Android) is deeply embedded in India’s digital infrastructure.
+●​ Any regulatory setbacks could have outsized impact on long-term growth.
+🏗️ Investment & Expansion Plans
+●​ Google previously committed $15B investment over 5 years to build AI infrastructure in India.
+●​ Includes a major AI data center project in Andhra Pradesh.
+●​ Represents one of Google’s largest global investment initiatives, reinforcing importance of the region.
+●​ Leadership gaps could complicate execution and regulatory navigation of these projects.
+
+Support:
+  $287.0–$289.0 — Recent lows; key level holding current downtrend
+  $290.0–$292.0 — Minor consolidation zone; immediate support pivot
+  $293.0–$295.0 — Prior breakdown area; needs reclaim to stabilize
+
+Resistance:
+  $296.0–$298.0 — First resistance; near-term bounce ceiling
+  $300.0–$303.0 — Psychological + prior support; strong supply zone
+  $305.0–$308.0 — Major resistance; aligns with moving averages
+
+Bias: Clear intraday downtrend with persistent lower highs. Weak bounces indicate lack of aggressive buyers. Bias remains bearish below $300, with rallies likely sold
+
+Trader Takeaway: This is a structural risk headline, not an immediate financial catalyst, but it matters because India is one of Google’s most important growth markets. Losing key legal leadership right as regulatory pressure ramps up is not ideal, especially with AI, antitrust, and content rules all tightening simultaneously. For traders, this is more about sentiment and positioning than fundamentals — and the chart confirms it. GOOGL is in a clean intraday downtrend, and until it reclaims key levels, this remains a sell-the-rally setup rather than a dip-buy opportunity.
+
+
+USO — Gulf States Escalate Rhetoric — Energy Risk Back in Focus
+--------------------------------------------------
+⚔️ Joint Statement Signals Escalation
+●​ Gulf nations (UAE, Saudi Arabia, Qatar, Kuwait, Bahrain, Jordan) issued a
+joint condemnation of Iran’s attacks on energy infrastructure.
+●​ Attacks described as “blatant” and “criminal,” marking a sharper tone
+than prior statements.
+●​ Countries explicitly asserted their right to self-defense under
+international law, including potential retaliatory action.
+●​ Signals a shift away from neutrality toward a more confrontational
+stance.
+🛰️ Ongoing Attacks & Energy Disruptions
+●​ Iranian-linked forces have launched drone and missile strikes from Iran
+and Iraqi territory.
+●​ Targets include oil and LNG infrastructure, with some facilities facing years-long repair
+timelines.
+●​ Disruptions threaten global energy supply stability, not just regional output.
+●​ Highlights vulnerability of critical energy chokepoints and production hubs.
+🌍 Strait of Hormuz & Global Risk
+●​ Gulf officials accuse Iran of effectively weaponizing the Strait of Hormuz, a key global oil transit route.
+●​ UAE leadership described Iran’s actions as “extortion on a global scale.”
+●​ Kuwait and Saudi officials warned of economic blockade conditions and catastrophic global consequences.
+●​ Any escalation here directly impacts oil prices, shipping lanes, and global inflation expectations.
+🧠 Strategic Shift in Gulf Positioning
+●​ Gulf states historically pushed for de-escalation, but tone now clearly hardening.
+●​ Officials warn that “a price must be paid”, reflecting growing frustration.
+●​ Suggests rising probability of direct or indirect military response if attacks continue.
+●​ Increases geopolitical risk premium across energy and broader markets.
+
+Support:
+  $114.5–$115.0 — Recent breakout base; key level to hold bullish structure
+  $112.5–$113.5 — Prior consolidation zone; strong intraday support
+  $110.0–$111.0 — Major support from recent lows; breakdown risk level
+
+Resistance:
+  $116.5–$117.5 — Immediate resistance; recent highs
+  $120.0–$122.0 — Prior swing highs; key supply zone
+  $124.0–$126.0 — Major resistance if geopolitical escalation accelerates
+
+Bias: Price recovering after sharp selloff; short-term bullish reversal attempt. Structure improving but still needs confirmation above $117+. Bias is neutral-to-bullish above $114.50, with headline-driven volatility
+
+Trader Takeaway: This is a pure geopolitical catalyst trade, and those tend to move fast and unpredictably. The key shift here is tone — Gulf states moving from diplomacy to openly discussing self-defense raises the odds of escalation, which markets will immediately translate into higher oil risk premiums. That’s bullish for energy in the short term, but also increases broader market volatility. For traders, this is a headline-driven momentum environment, where positioning matters less than reaction speed — and any escalation headline can trigger sharp upside in oil and energy names.
+
+
+UBER — Uber Expands Into Robotaxis via Pony AI Deal
+--------------------------------------------------
+🤝 Strategic Partnership Announcement
+●​ Uber is partnering with Pony AI and Verne to launch robotaxi services in
+Europe.
+●​ Initial rollout will begin in Zagreb, Croatia, marking a new international
+expansion push.
+●​ Uber will integrate the service into its existing global ride-hailing
+platform, leveraging its network advantage.
+●​ Pony AI provides the autonomous driving tech, while Verne operates the
+fleet.
+🌍 Expansion Strategy & Market Positioning
+●​ Move reflects growing competition among Chinese AV firms expanding
+globally, alongside peers like WeRide and Baidu’s Apollo Go.
+●​ Pony AI already has a European foothold via Stellantis partnership, starting in Luxembourg.
+●​ Croatia selected for its strong tourism demand, supporting long-term ride-hailing volume growth.
+●​ Plan includes scaling to thousands of robotaxis across European cities over time.
+📈 Path to Profitability
+●​ Pony AI is pushing toward commercial scale to reach profitability tipping point.
+●​ Company reported revenue growth of +72% YoY, driven by robotaxi services and licensing.
+●​ However, net losses widened due to heavy R&D spending, typical for AV sector.
+●​ Achieved unit-level breakeven in key Chinese markets, indicating improving economics.
+🧠 Business Model Breakdown
+●​ Pony AI = technology provider (AV stack).
+●​ Verne = fleet owner/operator.
+●​ Uber = distribution layer (customer demand + app integration).
+●​ This model reduces capital burden on Uber while giving it exposure to AV upside without owning fleets.
+
+Support:
+  $72.5–$73.0 — Current consolidation base; key level to hold
+  $71.75–$72.25 — Recent lows; downside risk pivot
+  $70.5–$71.25 — Major support zone from prior range
+
+Resistance:
+  $73.75–$74.5 — Immediate resistance; near-term ceiling
+  $75.0–$76.0 — Prior consolidation area; strong supply
+  $77.5–$79.0 — Major resistance from recent highs
+
+Bias: Structure is range-bound with slight downward pressure. Lower highs forming → mild bearish tilt. Bias is neutral-to-bearish below $74, needs breakout for momentum shift
+
+Trader Takeaway: This is a strategic positioning move, not an immediate earnings driver. Uber is continuing to evolve into a platform for autonomy rather than a builder, which is the right capital-light approach, but the timeline to meaningful revenue from robotaxis is still long. The real story here is optionality — Uber gets exposure to the AV future without taking on the full risk. From a trading perspective, though, the chart matters more right now, and UBER is still stuck in a choppy range with a slight bearish lean. Until it breaks out, this is a range trade, not a momentum play.
+
+
+MU — Micron Defended by Morgan Stanley as AI Memory Demand Holds
+--------------------------------------------------
+🏦 Analyst Call: Pullback Seen as Healthy
+●​ Morgan Stanley reiterated an “overweight” rating on Micron ($MU),
+pushing back against the recent selloff in memory stocks.
+●​ The firm views the pullback as a normal repricing of durability
+concerns, not a breakdown in fundamentals.
+🤖 AI Demand Driving Structural Shift
+●​ Memory is now described as “THE bottleneck” in AI infrastructure,
+particularly for next-gen CPUs and data center builds.
+●​ Demand is so strong that customers are reportedly prepaying for
+large-volume memory deals, signaling tight supply.
+●​ AI’s share of semiconductor spending could reach well above 50%,
+reinforcing long-term demand tailwinds.
+📉 Cycle Concerns vs Reality
+●​ Traditional peak-cycle indicators (flat pricing, rising capex, productivity
+gains) have appeared, prompting caution.
+●​ However, Morgan Stanley argues this cycle is not behaving like past
+memory cycles, due to structural AI demand.
+●​ Reports of optimization (e.g., efficiency improvements) are viewed as
+normal evolution, not demand destruction.
+⚙️ Supply Constraints & Pricing Power
+●​ DRAM supply slack is effectively gone, tightening the market and supporting pricing power.
+●​ The firm sees persistent supply-demand imbalance, with supply struggling to catch up to AI-driven needs.
+●​ This dynamic underpins the argument that memory pricing and margins can stay elevated longer than expected.
+💰 Margins & Cash Flow Outlook
+●​ While gross margins near ~81% are likely unsustainable long term, Morgan Stanley does not
+expect near-term compression.
+●​ Strong demand and tight supply should support continued profitability and free cash flow generation.
+●​ The key variable is duration of the cycle, with current indicators pointing to extended strength.
+
+Support:
+  $370.0–$373.0 — Current base area after the recent selloff; key level to hold short-term
+  $360.0–$365.0 — Flush zone with sharp downside wick; critical support if selling accelerates
+  $345.0–$350.0 — Lower support area from extreme downside extension; last line before broader breakdown
+
+Resistance:
+  $380.0–$385.0 — Immediate resistance with repeated rejection attempts
+  $395.0–$400.0 — Prior consolidation and breakdown zone; key reclaim level
+  $410.0–$420.0 — Strong overhead supply aligned with downtrend structure
+
+Bias: The intraday trend remains bearish, with a clear sequence of lower highs and sustained trading below key moving averages. Recent price action shows weak bounces and continued selling pressure, indicating sellers remain in control. The $380–$385 zone is the key pivot—failure to reclaim keeps downside pressure intact, while a break above could trigger a relief bounce. Holding $370 is critical; a break below opens the door to a move toward the $360 flush zone quickly. Despite bullish fundamentals, the technical structure remains weak, meaning traders should separate narrative from price action in the short term
+
+Trader Takeaway: Morgan Stanley is making a strong case that this isn’t a typical memory cycle and that AI demand is fundamentally changing the game. The long-term setup for Micron looks intact, but the stock is still in a technical downtrend right now. From a trading perspective, this is a “wait for confirmation” setup—either a reclaim of key resistance for a bounce or continued weakness if support breaks, regardless of the bullish narrative.
+
+
+SMCI — Super Micro Hit with Lawsuit Amid Export Probe Fallout
+--------------------------------------------------
+🧑‍⚖️ Class Action Lawsuit Filed
+●​ Super Micro Computer is facing a proposed class action lawsuit
+alleging securities fraud.
+●​ Plaintiffs claim the company misled investors by concealing reliance on
+China-linked sales.
+●​ Allegations include overstated growth prospects and weak export
+control compliance disclosures.
+●​ Lawsuit seeks damages for investors between April 2024 and March
+2026.
+🚨 Export Control Investigation Fallout
+●​ Legal action follows a major U.S. indictment tied to illegal AI hardware
+exports to China.
+●​ Three individuals, including a Super Micro co-founder, were charged in connection with the case.
+●​ Allegedly facilitated $2.5B+ in server shipments, including systems using Nvidia GPUs.
+●​ Authorities claim efforts were made to bypass U.S. export restrictions through intermediaries.
+🧠 Company Position & Legal Status
+●​ Super Micro was not named as a defendant in the criminal indictment, only referenced as a “U.S.
+manufacturer.”
+●​ Company stated it is cooperating with investigators, attempting to distance itself from individuals involved.
+●​ However, civil lawsuit directly targets corporate disclosures and investor communication.
+⚠️ Bigger Picture for Investors
+●​ Raises broader concerns around AI supply chain exposure to China.
+●​ Could trigger stricter enforcement across semiconductor and server ecosystem.
+●​ Highlights risk of regulatory overhang in high-growth AI hardware names.
+●​ Narrative shifts from growth story → legal/compliance risk management.
+
+Support:
+  $22.5–$23.0 — Current consolidation base; key near-term support
+  $21.0–$21.5 — Prior bounce zone; strong reaction level
+  $19.5–$20.5 — Major post-crash low; breakdown risk level
+
+Resistance:
+  $24.0–$24.5 — Immediate resistance; recent highs in recovery bounce
+  $26.5–$27.5 — Prior breakdown zone; heavy supply expected
+  $29.5–$31.0 — Major resistance near pre-collapse levels
+
+Bias: Sharp breakdown followed by weak recovery bounce. Structure still shows lower highs despite stabilization attempt. Bias remains bearish below $24.50, rallies likely sold unless momentum shifts
+
+Trader Takeaway: This is no longer a pure AI momentum name — it’s now a legal risk trade with headline volatility. The combination of export violations, criminal charges tied to insiders, and now a shareholder lawsuit creates a stacked risk profile that institutional money typically avoids until clarity improves. The bounce you’re seeing is more likely short-covering than conviction buying. From a trading perspective, this remains a sell-the-rip setup unless the stock can reclaim key breakdown levels with volume.
+
+
+CRWD — CrowdStrike & IBM Expand AI Cybersecurity Partnership
+--------------------------------------------------
+🤝 Partnership Expansion
+●​ CrowdStrike ($CRWD) and IBM ($IBM) announced an expanded strategic
+partnership to modernize Security Operations Centers (SOCs) using
+AI-driven automation.
+●​ The collaboration was unveiled at the RSA 2026 conference, highlighting
+growing enterprise demand for scalable cybersecurity solutions.
+●​ The deal reinforces CrowdStrike’s Falcon platform as a core component
+within IBM’s managed security and consulting ecosystem.
+🤖 AI Integration & Capabilities
+●​ The partnership integrates CrowdStrike’s Charlotte AI with IBM’s
+Autonomous Threat Operations Machine (ATOM), enabling automated
+detection, investigation, and response.
+●​ The combined system aims to deliver end-to-end autonomous threat
+containment, reducing reliance on human analysts in high-speed attack
+environments.
+●​ This positions both companies at the forefront of AI-native cybersecurity
+infrastructure as threats become faster and more complex.
+⚡ Cyber Threat Environment
+●​ New data shows cyber threats are accelerating significantly: Average
+breakout time has dropped to 29 minutes; Fastest recorded breach
+occurred in just 27 seconds, underscoring urgency for real-time defense
+systems.
+●​ These metrics strengthen the investment case for automated cybersecurity
+platforms capable of instant response.
+🌍 Business & Revenue Implications
+●​ IBM gains a best-in-class endpoint and cloud security platform, while CrowdStrike expands reach
+through IBM’s global enterprise client base.
+●​ The partnership creates a high-margin software + services model, combining subscriptions,
+consulting, and simulation-based training.
+●​ CrowdStrike benefits from deeper enterprise penetration without needing to scale its direct sales
+force aggressively.
+
+Support:
+  $380.0–$382.0 — Major flush low with heavy volume; key decision level for breakdown vs bounce
+  $385.0–$387.0 — Recent base after selloff; short-term demand zone
+  $392.0–$395.0 — Prior pivot area acting as near-term support during bounce attempts
+
+Resistance:
+  $398.0–$400.0 — Psychological level with repeated rejections; key intraday pivot
+  $405.0–$408.0 — Breakdown zone where sellers previously stepped in aggressively
+  $412.0–$416.0 — Major overhead resistance near declining higher timeframe averages
+
+Bias: The trend is firmly bearish, with price making consistent lower highs and trading below all key moving averages, signaling strong downside control by sellers. Recent bounce attempts have been shallow and corrective, failing to reclaim prior breakdown levels, which suggests weak buyer conviction and continued distribution. The $398–$400 zone is the first real test for bulls—reclaiming and holding above it could shift short-term momentum, but failure there likely reinforces downside continuation. If price loses $385 support, there is a clear path back toward the $380 liquidity zone, where prior capitulation occurred and stops are likely clustered. For any meaningful reversal, bulls must reclaim and build acceptance above $405+, otherwise rallies should be treated as opportunities to fade into resistance given the prevailing structure
+
+Trader Takeaway: This is a strong fundamental development that reinforces CrowdStrike’s positioning in AI-driven cybersecurity and expands its enterprise reach through IBM. However, the stock is trading in a clear downtrend, meaning price action is not yet confirming the bullish narrative. Until key resistance levels are reclaimed, this remains a technically weak setup where traders will likely continue to fade strength despite the positive long-term catalyst.
+
+
+PONY — Pony AI Targets 3,000+ Robotaxis as Profitability Emerges
+--------------------------------------------------
+🚗 Fleet Expansion & Global Push
+●​ Pony AI ($PONY) expects to more than double its robotaxi fleet to 3,000+
+vehicles across 20+ cities in 2026, with nearly half deployed
+internationally.
+●​ Key expansion markets include Europe (Croatia launch), the Middle East,
+and Asia, signaling a shift toward global commercialization.
+●​ The company is positioning itself alongside Chinese peers like Baidu’s
+Apollo Go and WeRide in the race for global AV leadership.
+🌍 Uber Partnership & Europe Entry
+●​ Pony AI is partnering with Uber ($UBER) and startup Verne to launch
+Europe’s first commercial robotaxi service in Zagreb, Croatia.
+●​ Verne will manage fleet operations, while Uber integrates the service into
+its ride-hailing platform, giving Pony immediate distribution scale.
+●​ This structure creates a capital-light expansion model, allowing Pony to
+focus on technology while partners handle operations and demand.
+📈 Financial Performance & Profitability
+●​ Pony AI reported its first-ever quarterly profit of $75.5M, driven by
+investment gains tied to trading securities.
+●​ Adjusted operating performance improved meaningfully: Robotaxi revenue
+more than doubled to $6.7M; Total annual revenue rose 20% to $90M.
+●​ Net loss for the full year narrowed significantly to $134M, reflecting improving cost structure and scaling benefits.
+⚙️ Unit Economics & Cost Efficiency
+●​ The company reached single-unit breakeven in Guangzhou and Shenzhen, meaning each
+additional robotaxi contributes positively to margins.
+●​ Pony AI has reduced costs on its next-gen autonomous system by ~70%, a key milestone for long-term scalability.
+●​ Gross margin improved to 15.7% - still pressured by robotruck revenue mix and early-stage deployment costs.
+
+Support:
+  $10.4–$10.6 — Recent higher low area following the bounce; key level for trend continuation
+  $10.8–$11.0 — Prior consolidation base and intraday demand zone
+  $11.2–$11.3 — Short-term pivot area where buyers have recently stepped in
+
+Resistance:
+  $11.6–$11.8 — Recent rejection zone with multiple failed breakout attempts
+  $12.0–$12.2 — Psychological level + prior breakdown area
+  $12.5–$12.8 — Major overhead supply aligned with declining higher timeframe trend
+
+Bias: The broader structure remains bearish, with price still trading below the declining higher timeframe moving average, indicating longer-term sellers remain in control. However, the recent price action shows a short-term shift, with higher lows forming and momentum improving off the recent bottom, suggesting early-stage recovery. The $11.20–$11.30 area is acting as a key pivot—holding above it keeps the bounce structure intact, while losing it would likely bring sellers back in control. Bulls need a clean reclaim of $11.60–$11.80 to confirm continuation higher and open a move toward the $12+ range. If price fails to break resistance and rolls over, this likely remains a bear market rally, with downside risk back toward $10.50 support
+
+Trader Takeaway: Pony AI is hitting a key inflection point with its first profitable quarter, improving unit economics, and aggressive global expansion via Uber. The story is shifting from R&D to commercialization, which is exactly what investors want to see in autonomous driving. That said, the stock is still technically in a downtrend, so traders should respect the levels—this is a “prove it” setup where price needs to confirm the improving fundamentals before a sustained move higher.
+
+
+JEF — Jefferies Q1 Earnings Beat Estimates Across Key Segments
+--------------------------------------------------
+📊 Headline Results & Top-Line Growth
+●​ Jefferies Financial Group ($JEF) reported Q1 revenue of $2.62B, beating
+estimates of $2.01B and up ~30% YoY from $2.06B.
+●​ EPS came in at $0.89, ahead of expectations of $0.57, reflecting strong
+operating leverage and capital markets activity.
+●​ Results highlight a rebound in investment banking and trading activity, key
+drivers for the firm’s earnings profile.
+💼 Investment Banking Strength
+●​ Investment banking revenue surged 42.5% YoY to $1.36B, well above
+estimates of $917.6M.
+●​ Advisory revenue came in at $527.13M, slightly below expectations but still
+solid year-over-year performance.
+●​ Equity underwriting revenue jumped to $181.36M, beating estimates and
+showing improved deal flow.
+●​ Debt underwriting also exceeded expectations at $93.34M, indicating
+stronger capital markets issuance activity.
+📈 Trading & Capital Markets Performance
+●​ Capital markets revenue reached $1.81B, beating estimates of $1.82B and
+reflecting strong trading conditions.
+●​ Fixed income revenue came in at $220.27M, slightly below expectations but still contributing to overall strength.
+●​ Equities revenue of $464.28M missed estimates, suggesting mixed performance within trading segments.
+●​ Overall, trading and IB strength combined to drive a significant earnings beat.
+🏦 Segment Breakdown Highlights
+●​ Asset management revenue rose to $88.99M, beating expectations and indicating steady fee income growth.
+●​ Asset management net revenues also exceeded estimates, reinforcing diversification beyond core IB/trading.
+●​ Source (Jefferies’ merchant banking arm) reported $778.76M, slightly below expectations, showing
+variability in investment income.
+●​ Results reflect a mix of strong core operations with some variability in investment-driven segments.
+
+Support:
+  $35.5–$36.0 — Flush low area with sharp selloff; key level for downside continuation vs bounce
+  $36.8–$37.2 — Prior consolidation zone acting as near-term demand
+  $38.5–$38.8 — Recent support before breakdown; intraday pivot level
+
+Resistance:
+  $39.8–$40.2 — Key psychological level and recent consolidation ceiling
+  $41.0–$41.5 — Prior support turned resistance after breakdown
+  $42.5–$43.5 — Major spike high and strong supply zone from recent rally
+
+Bias: The structure has shifted bearish intraday, with a sharp breakdown from the $41+ area and price now trading below key short-term moving averages. The recent bounce attempts have been weak and failing near lower highs, indicating sellers are still active and defending resistance levels. The $39.80–$40.20 zone is the key pivot—price acceptance above it would signal stabilization, while continued rejection keeps downside pressure intact. If price holds below $39 and loses $38.50 support, the chart opens for a move back toward the $36 area where liquidity was recently taken. For any meaningful reversal, bulls need to reclaim $41+, otherwise rallies are likely to be sold into given the current structure
+
+Trader Takeaway: Jefferies delivered a strong earnings beat driven by investment banking and capital markets strength, confirming a rebound in deal activity. However, the stock’s recent underperformance and weak technical structure suggest the market is cautious on sustainability. Near-term, this trades more like a technical setup than a fundamental one—watch key resistance levels to see if buyers step in or if strength continues to get sold.
+
+
+NVAN — Navan Earnings Beat Drives Breakout Move
+--------------------------------------------------
+📊 Q4 Earnings Beat (Top & Bottom Line)
+●​ Navan reported Q4 revenue of $177.92M, beating estimates of $162M,
+signaling stronger-than-expected demand.
+●​ The company posted adjusted EPS of +$0.02, versus expectations for a
+-$0.12 loss, a meaningful profitability surprise.
+●​ This marks a clear inflection point, with both revenue and earnings
+outperforming consensus expectations.
+📈 Strong Growth Metrics
+●​ Total revenue grew 35% YoY, driven by broad-based strength across key
+segments.
+●​ Usage revenue +35% and subscription revenue +29%, indicating
+strong platform adoption and recurring revenue growth.
+●​ Total payment volume reached $1B for the quarter (+19% YoY),
+reinforcing strong transaction activity on the platform.
+💰 Balance Sheet Strength
+●​ Navan ended the quarter with ~$583.5M in cash and equivalents,
+providing solid liquidity for growth initiatives.
+●​ The strong cash position gives flexibility for continued investment in
+product expansion and go-to-market efforts.
+🤖 AI Platform & Market Positioning
+●​ Management emphasized its AI-first platform, positioning Navan as a disruptor replacing legacy
+travel and expense systems.
+●​ CEO commentary highlights enterprise adoption momentum, suggesting increasing market share gains.
+●​ The company is leaning heavily into AI as a differentiator in a fragmented industry.
+🔮 Forward Guidance (Bullish Outlook)
+●​ Q1 revenue guided to $204M–$206M, well above estimates of ~$187.7M.
+●​ FY2027 revenue outlook raised to $866M–$874M, vs estimates of ~$840.6M.
+●​ Guidance reinforces confidence in sustained growth and continued enterprise demand.
+
+Support:
+  $10.6–$10.8 — Post-earnings consolidation area; key level to hold for continuation
+  $9.8–$10.0 — Breakout base and prior resistance turned support
+  $9.2–$9.4 — Pre-breakout consolidation zone; major support if momentum fades
+
+Resistance:
+  $11.4–$11.7 — Recent high and immediate rejection zone after the spike
+  $12.0–$12.3 — Psychological and extension level if breakout continues
+  $12.8–$13.2 — Higher extension zone if strong momentum and follow-through buying persists
+
+Bias: The intraday trend is strongly bullish, with a clear breakout and aggressive momentum shift following earnings. Price is extended after a vertical move, increasing the probability of pullbacks or consolidation before continuation. Holding above $10.60 keeps the breakout structure intact, while losing that level opens the door to a deeper retrace toward $10.00. A clean break and hold above $11.70 would likely trigger continuation momentum toward the $12+ range. Momentum traders will likely focus on dip-buy setups vs chasing highs, given the sharp move already in place
+
+Trader Takeaway: Navan delivered a clean beat with strong growth and bullish guidance, triggering a high-momentum breakout. The story is shifting toward profitability and AI-driven enterprise adoption, which is exactly what the market wants right now. From a trading standpoint, this is a momentum name—watch for dip entries into support rather than chasing extended highs, as continuation depends on holding the breakout structure.
+
+
+JBLU — JetBlue Jumps on Sale Speculation Amid Strategic Uncertainty
+--------------------------------------------------
+✈️ Potential Sale & Strategic Review
+●​ JetBlue ($JBLU) surged after reports the airline is exploring a potential
+sale, hiring advisors to evaluate strategic options.
+●​ The company has examined potential combinations with United ($UAL),
+Alaska Air ($ALK), and Southwest ($LUV), though no deal is confirmed.
+●​ Follow-up reporting indicates JetBlue is not currently in active M&A
+talks, creating uncertainty around the headline.
+📈 Market Reaction
+●​ Shares jumped ~16% intraday to $4.88 following the initial report,
+signaling strong investor appetite for a potential deal.
+●​ Peer airlines showed muted reactions, suggesting the move is
+idiosyncratic to JetBlue rather than sector-wide.
+📉 Fundamental Challenges
+●​ JetBlue has two consecutive years of revenue declines and has not
+delivered an annual profit since 2019.
+●​ The stock is down ~75% from its 2021 highs, highlighting long-term
+underperformance and structural issues.
+●​ Investors increasingly view strategic alternatives (sale, merger,
+restructuring) as necessary to reset the business.
+⚖️ Regulatory Overhang
+●​ Any potential merger faces significant antitrust scrutiny, especially after the blocked $3.8B Spirit Airlines deal.
+●​ A federal judge ruled that the Spirit merger would reduce competition, setting a precedent for
+future airline consolidation.
+●​ Regulatory risk remains the key hurdle for any transaction involving major U.S. carriers.
+🔄 Strategic History & Partnerships
+●​ JetBlue previously pursued growth through partnerships and mergers, including a recent alliance
+with United Airlines.
+●​ The company has attempted multiple strategic pivots, but execution challenges have limited long-term success.
+●​ Spirit Airlines, its prior merger target, has since filed for bankruptcy, underscoring industry pressures.
+
+Support:
+  $4.6–$4.65 — Post-spike consolidation base; key level for holding momentum
+  $4.3–$4.35 — Prior breakout level and intraday demand zone
+  $4.1–$4.15 — Pre-move consolidation range; major support if momentum fades
+
+Resistance:
+  $4.9–$5.0 — Recent spike high and psychological level; immediate resistance
+  $5.1–$5.15 — Upper wick rejection zone; supply area from the initial surge
+  $5.4–$5.6 — Higher timeframe resistance zone above the current move
+
+Bias: The stock has shifted into a short-term bullish momentum phase following the news-driven breakout, with strong volume confirming the move. However, the rally is entirely headline-driven, and the follow-up report cooling M&A expectations introduces risk of a fade. Holding above $4.60 is critical—this keeps the breakout structure intact and signals buyers are defending the move. Failure to hold that level likely leads to a pullback toward $4.30, where the prior breakout base sits. Upside continuation requires a clean break and hold above $5.00; otherwise, this risks turning into a classic news pop fade
+
+Trader Takeaway: JetBlue is trading purely on M&A speculation, with the market pricing in a potential sale as a bullish catalyst. However, the lack of confirmed talks and heavy regulatory risk make this a fragile setup. This is a momentum-driven trade, not a fundamentals story—watch key levels closely, because if the headline loses traction, the move can unwind quickly.
+
+
+VFS — VinFast Touted as Undervalued AI/EV Play by Wedbush
+--------------------------------------------------
+🤖 AI Narrative Emerging
+●​ VinFast is being framed as an underappreciated AI story, with Wedbush
+highlighting its autonomous driving efforts as a key overlooked catalyst.
+●​ The company’s AI ambitions are becoming more visible through global
+partnerships and ecosystem development, expanding beyond EVs.
+●​ This positions VinFast within the broader AI + mobility narrative, which
+continues to attract investor attention.
+🚗 EV + Autonomous Strategy
+●​ VinFast continues to prioritize growth over near-term profitability, aiming
+to scale its EV platform while investing in autonomous capabilities.
+●​ The company’s vertically integrated model allows for greater control over
+supply chain and production, supporting long-term margin potential.
+🌍 Global Expansion & Market Share
+●​ VinFast is targeting up to 50% market share in Vietnam (~1M annual
+vehicle market) by 2030.
+●​ The company is also expanding deliveries into India, Indonesia, and the
+Philippines, signaling aggressive international growth plans.
+●​ Its positioning as a non-Chinese, non-U.S. EV player may offer geopolitical advantages in certain markets.
+📈 Financial Outlook & Analyst View
+●​ Wedbush expects VinFast to achieve gross profit positivity by late FY27 and EBITDA positivity by FY28.
+●​ The firm maintains an Outperform rating with a $6 price target, implying significant upside from current levels.
+●​ Shares were up modestly (~3%) on the note, suggesting early but limited market reaction.
+⚙️ Strategic Positioning
+●​ VinFast’s combination of EV manufacturing, AI ambitions, and vertical integration creates a
+multi-layered growth story.
+●​ The company is attempting to transition from a capital-intensive startup phase into a scalable,
+margin-expanding operator.
+●​ Execution on both EV scaling and AI integration will be critical to validating the long-term thesis.
+
+Support:
+  $2.95–$3.0 — Recent breakout base; key level for holding bullish momentum
+  $2.85–$2.9 — Prior consolidation zone acting as near-term demand
+  $2.78–$2.82 — Swing low area and strong support from recent bottom
+
+Resistance:
+  $3.1–$3.15 — Recent highs and immediate resistance zone
+  $3.2–$3.25 — Prior rejection area from earlier sessions
+  $3.3–$3.4 — Higher timeframe supply zone above current range
+
+Bias: The broader trend remains neutral-to-bearish, as price is still operating below the higher timeframe moving average despite the recent bounce. Short-term momentum has shifted bullish, with higher lows forming and price reclaiming key intraday levels near $3.00. Holding above $2.95 is critical to maintain the breakout structure and sustain upside continuation. A clean break above $3.15 would confirm momentum and open the door toward the $3.25+ area. Failure to hold support would likely bring price back into the prior range, signaling the move was a temporary bounce rather than a trend shift
+
+Trader Takeaway: VinFast is starting to get attention as more than just an EV company, with AI and autonomous driving adding a new layer to the story. The Wedbush call provides a longer-term bullish narrative, but near-term price action still needs to confirm. This is a developing setup—watch for continuation above resistance to validate the move, otherwise it risks fading back into its prior range.
+
+
+BABA — Alibaba Price Target Cut Despite Strong Results
+--------------------------------------------------
+📊 Analyst Action & Rating
+●​ Susquehanna lowered its price target on Alibaba ($BABA) to $170 from
+$190, while maintaining a positive rating on the stock.
+●​ The downgrade reflects a more tempered valuation outlook despite
+continued confidence in long-term growth drivers.
+●​ The move signals a reset in expectations, not a shift to bearish
+positioning.
+📈 Earnings Performance
+●​ Alibaba delivered F3Q results with revenue and profitability ahead of
+expectations, showing solid operational execution.
+●​ Strength was driven by continued growth across core segments,
+reinforcing the company’s ability to deliver near-term results.
+●​ The earnings beat highlights underlying momentum despite macro and
+competitive pressures.
+🚀 Investment Strategy & Growth Focus
+●​ Management emphasized increased investments in key strategic areas,
+including Quick Commerce and AI + Cloud.
+●​ These investments are aimed at driving long-term growth and
+competitive positioning, particularly in emerging tech verticals.
+●​ However, the ramp in spending is expected to pressure margins in the near term, creating a
+trade-off between growth and profitability.
+☁️ AI & Cloud Expansion
+●​ Alibaba continues to position its AI and cloud businesses as core growth engines, aligning with
+broader industry trends.
+●​ Increased capital allocation toward these areas reflects the company’s push to remain competitive
+with global tech peers.
+●​ The strategy suggests a pivot toward higher-value, scalable revenue streams, albeit with upfront cost impact.
+
+Support:
+  $124.0–$125.0 — Recent base and demand zone following the selloff
+  $121.5–$122.5 — Prior swing low area; key downside level if support breaks
+  $119.5–$120.5 — Major flush zone with capitulation wicks
+
+Resistance:
+  $127.5–$128.5 — Near-term resistance and recent consolidation ceiling
+  $130.0–$131.5 — Prior breakdown area with multiple rejections
+  $134.0–$136.0 — Strong overhead supply from earlier highs
+
+Bias: The intraday structure is bearish, with price breaking down from the $130 area and trading below key moving averages. Recent bounces have been weak and failing near resistance, indicating sellers remain active on strength. The $127.50–$128.50 zone is the key pivot—reclaiming it would signal stabilization, while continued rejection keeps downside pressure intact. Holding above $124 is critical; losing that level opens the door to a move toward the $122 and potentially $120 area. For any meaningful reversal, bulls need to reclaim $130+, otherwise rallies are likely to be sold into given the current structure
+
+Trader Takeaway: Alibaba delivered a strong quarter, but the focus is shifting to its reinvestment cycle in AI and cloud, which is weighing on near-term profitability expectations. The price target cut reflects this dynamic—long-term story intact, but near-term pressure remains. From a trading perspective, the chart is weak, so this is more of a “wait for confirmation” setup rather than chasing strength.
+
+
+QCOM — Qualcomm Downgraded on Smartphone Weakness Outlook
+--------------------------------------------------
+📉 Analyst Downgrade & Price Target Cut
+●​ Bernstein downgraded Qualcomm ($QCOM) to “market perform” from
+“outperform”, cutting its price target to $140 from $175.
+●​ The new target still implies modest upside (~7%), but signals reduced
+conviction in near-term performance.
+📱 Smartphone Demand Concerns
+●​ Analysts flagged growing pressure in the memory and smartphone
+markets, with potential for double-digit shipment declines this year.
+●​ Weak end-market demand is expected to directly impact Qualcomm’s core
+handset chip business.
+●​ This creates a cyclical headwind, particularly as smartphone replacement
+cycles remain extended.
+🍏 Apple Headwind
+●​ Bernstein noted that current estimates may be too optimistic, as analysts
+have not fully accounted for the impact of Apple ($AAPL) reducing reliance
+on Qualcomm chips.
+●​ The Apple modem transition remains a structural overhang, potentially
+pressuring future revenue streams.
+●​ This adds to the broader concern around Qualcomm’s dependency on a
+concentrated customer base.
+⚖️ Limited Offset from Catalysts
+●​ Potential positive catalysts such as buybacks and data center initiatives are seen as insufficient
+to offset near-term weakness.
+●​ While diversification efforts exist, they are not yet large enough to materially shift the earnings trajectory.
+●​ This reinforces a “show me” phase for Qualcomm’s non-handset growth strategy.
+📊 Market Positioning & Sentiment
+●​ The average analyst rating remains “hold”, with a median price target of $157.44, indicating mixed sentiment.
+●​ The stock is down ~23.8% year-to-date, reflecting ongoing concerns around growth and demand.
+●​ Investors appear cautious as both cyclical and structural challenges converge.
+
+Support:
+  $127.5–$128.0 — Recent low and immediate support after the selloff
+  $126.0–$126.5 — Flush zone with sharp downside wick; key breakdown level
+  $124.5–$125.0 — Lower support area if selling accelerates
+
+Resistance:
+  $130.0–$131.0 — Near-term resistance and recent consolidation area
+  $132.0–$133.0 — Prior rejection zone with multiple failed attempts higher
+  $134.5–$136.0 — Strong overhead supply aligned with broader downtrend
+
+Bias: The intraday structure is bearish, with price making lower highs and trading below key moving averages, confirming downside control. Recent bounce attempts have been weak and quickly sold, indicating continued seller presence on any strength. The $130–$131 zone is the key pivot—reclaiming it would signal stabilization, while rejection keeps pressure to the downside. Holding above $127.50 is critical; losing that level likely opens the door to a move toward the $126 flush area. For any meaningful reversal, bulls need to reclaim $132+, otherwise rallies are likely to be faded given the current structure
+
+Trader Takeaway: Qualcomm is facing both cyclical pressure from weak smartphone demand and structural concerns tied to Apple exposure. The downgrade reflects a shift in expectations rather than a collapse in fundamentals, but sentiment is clearly deteriorating. From a trading perspective, this remains a weak chart—until key resistance levels are reclaimed, rallies are likely to be sold rather than chased.
+

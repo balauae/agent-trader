@@ -1,0 +1,769 @@
+TraderTV Live — Cherif's Morning Note
+Date: unknown | 17 stocks
+============================================================
+
+META — Meta Legal Risk Escalates After Dual Jury Verdicts
+--------------------------------------------------
+⚖️ Landmark Verdicts Open Litigation Floodgates
+●​ Two back-to-back jury verdicts found Meta liable for harms related to its
+platforms, marking a major shift in legal risk for social media
+companies.
+●​ Legal experts say the rulings could trigger thousands of similar
+lawsuits, creating a long-term overhang on the sector.
+●​ The situation is being compared to early-stage litigation waves like
+tobacco in the 1990s, where initial rulings opened the door to mass
+claims.
+🧠 New Legal Theory: Product Liability & Addiction
+●​ Plaintiffs successfully argued that platform design itself (addictive
+features, algorithms) is harmful—not just third-party content.
+●​ This sidesteps traditional protections under Section 230, which historically
+shielded platforms from liability.
+●​ The introduction of “addiction” as a legal argument significantly
+expands potential liability across tech.
+📊 Case Details & Financial Impact
+●​ A New Mexico jury awarded $375M in damages related to exposing minors to harmful content.
+●​ A Los Angeles case awarded $6M, linking social media use to mental health harm.
+●​ While these amounts are manageable for Meta financially, the real risk is scalability of future
+claims, not individual verdict size.
+🛡️ Meta & Industry Response
+●​ Meta plans to appeal and continue defending its platform design, emphasizing complexity of
+mental health factors.
+●​ The company warns these rulings could force major changes to product design, including
+features like infinite scroll and notifications.
+●​ Other platforms (YouTube, TikTok, Snap) are also implicated, signaling sector-wide regulatory and legal risk.
+
+Support:
+  $540.0–$545.0 — Current base after the sharp selloff; key level holding short-term
+  $530.0–$535.0 — Prior flush zone; next downside level if selling continues
+  $515.0–$520.0 — Lower extension support if broader weakness accelerates
+
+Resistance:
+  $555.0–$560.0 — Immediate resistance; recent bounce attempts failing here
+  $575.0–$580.0 — Prior consolidation and breakdown zone; key reclaim level
+  $600.0–$605.0 — Major overhead supply aligned with downtrend
+
+Bias: The intraday structure is decisively bearish, with a sharp breakdown followed by weak consolidation near lows. Price is trading well below key moving averages, confirming strong downside momentum and trend continuation risk. The $555–$560 level is the key pivot—failure to reclaim keeps sellers firmly in control. Holding $540 is critical; a break below opens the door for a quick move toward $530 and potentially lower. Any bounce is likely to be reactive rather than trend-changing unless price reclaims $575+ with strength
+
+Trader Takeaway: This is no longer just a regulatory headline—this is a structural legal risk that could reshape the social media business model. The market will price in uncertainty before it prices in actual damages, which means volatility stays elevated. From a trading perspective, this is a weak chart with a heavy headline overhang—until key levels are reclaimed, the path of least resistance remains lower.
+
+
+META — Meta Ramps AI Capex to $10B in Infrastructure Arms Race
+--------------------------------------------------
+🤖 Massive AI Data Center Expansion
+●​ Meta ($META) is boosting investment in its West Texas data center to
+$10B (from $1.5B), signaling an aggressive push into AI infrastructure.
+●​ The facility is expected to deliver ~1 gigawatt of capacity by 2028,
+positioning it as a major compute hub.
+●​ This move reflects the broader industry race to secure AI compute
+dominance amid surging demand.
+⚡ Scale, Jobs & Infrastructure Buildout
+●​ The El Paso project will create ~300 permanent jobs and require 4,000+
+construction workers at peak.
+●​ Meta is committing to adding 5,000+ megawatts of clean energy to
+support operations.
+●​ The site will span 1.2M square feet, making it one of the company’s
+largest infrastructure investments.
+💰 Capex Surge & Strategic Shift
+●​ Meta previously guided up to $135B in annual capex, highlighting the
+scale
+of its AI spending ramp.
+●​ Unlike peers (Google, Amazon, Microsoft), Meta lacks a cloud business, making this investment
+more scrutinized by investors.
+●​ The company is reallocating capital aggressively toward AI while cutting costs elsewhere, including layoffs.
+🧠 AI Ecosystem & Chip Investments
+●​ Meta is simultaneously investing in hardware and silicon, signing major deals with Nvidia, AMD, and Arm.
+●​ The company is also developing its own MTIA AI accelerators, aiming to reduce reliance on
+third-party chips long term.
+●​ This vertical integration strategy is key to controlling costs and scaling AI workloads efficiently.
+
+Support:
+  $540.0–$545.0 — Current base after the sharp selloff; key level holding short-term
+  $530.0–$535.0 — Prior flush zone; next downside level if selling continues
+  $515.0–$520.0 — Lower extension support if broader weakness accelerates
+
+Resistance:
+  $555.0–$560.0 — Immediate resistance; recent bounce attempts failing here
+  $575.0–$580.0 — Prior consolidation and breakdown zone; key reclaim level
+  $600.0–$605.0 — Major overhead supply aligned with downtrend
+
+Bias: The intraday structure is decisively bearish, with a sharp breakdown followed by weak consolidation near lows. Price is trading well below key moving averages, confirming strong downside momentum and trend continuation risk. The $555–$560 level is the key pivot—failure to reclaim keeps sellers firmly in control. Holding $540 is critical; a break below opens the door for a quick move toward $530 and potentially lower. Any bounce is likely to be reactive rather than trend-changing unless price reclaims $575+ with strength
+
+Trader Takeaway: Meta is going all-in on AI infrastructure, but the market is treating it as a double-edged sword—massive long-term upside, but heavy near-term cost pressure and execution risk. Right now, price is telling the story: this is a weak chart with sellers in control. Until key levels are reclaimed, this trades like a “sell the bounce” name despite the bullish AI narrative.
+
+
+AMZN — Amazon Chip Unit Sees Key Leadership Exit
+--------------------------------------------------
+🧠 Leadership Departure at Annapurna Labs
+●​ A key leader, Gadi Hutt, is leaving Amazon’s ($AMZN) chip division,
+Annapurna Labs, according to reports.
+●​ Hutt played a major role in product and customer engineering,
+particularly tied to Amazon’s Trainium AI chips.
+●​ His departure removes a core contributor in Amazon’s in-house silicon
+strategy, which is central to its AI ambitions.
+⚙️ Strategic Importance of Annapurna
+●​ Annapurna Labs is a critical part of Amazon’s custom chip development,
+supporting AWS infrastructure and AI workloads.
+●​ Amazon acquired the Israeli startup in 2015 for ~$350M, and it has since
+become a backbone of its cloud differentiation strategy.
+●​ Internal chip development helps Amazon reduce reliance on third-party
+providers like Nvidia and control costs.
+🚨 Broader Talent Exodus Concerns
+●​ Hutt is the second senior Annapurna executive to exit in seven months, following a previous
+departure to Arm ($ARM).
+●​ Amazon has also seen other notable AI-related exits, including its head of AGI earlier this year.
+●​ The pattern raises concerns about talent retention during a critical AI buildout phase.
+🤖 AI Competition & Execution Risk
+●​ Amazon is aggressively investing in AI chips (Trainium, Inferentia) to compete with hyperscalers and chip leaders.
+●​ Leadership turnover could create execution risk in scaling its chip roadmap and customer adoption.
+●​ With AI infrastructure becoming a key battleground, talent continuity is increasingly important.
+📊 Stock Context & Performance
+●​ AMZN stock closed down ~2% on Thursday, reflecting mild reaction to the news.
+●​ Shares are up ~3% over the past 12 months, underperforming some AI-driven peers.
+●​ Investors may view this as a watch item rather than a thesis-breaking event—for now.
+
+Support:
+  $206.0–$207.0 — Current base after sharp drop; immediate level to watch
+  $202.0–$204.0 — Recent flush low; key support if downside continues
+  $198.0–$200.0 — Psychological and lower support zone if breakdown accelerates
+
+Resistance:
+  $209.0–$210.0 — Near-term resistance and recent consolidation area
+  $212.0–$213.0 — Prior rejection zone with multiple failed breakouts
+  $215.0–$217.0 — Strong overhead supply aligned with recent highs
+
+Bias: The intraday structure is bearish, with a sharp selloff followed by weak stabilization near lows. Price is trading below key moving averages, confirming short-term downside momentum. The $209–$210 zone is the key pivot—failure to reclaim keeps sellers in control. Holding $206 is critical; a breakdown opens the door to a move toward $202 quickly. Any bounce is likely to be reactive unless price reclaims $212+ with conviction
+
+Trader Takeaway: This is a subtle but important headline—Amazon’s AI chip strategy is a long-term battleground, and losing key talent adds execution risk. It’s not a thesis breaker today, but if departures stack up, the market will start to care more. From a trading perspective, the chart is weak short-term, so this trades like a fade unless key resistance levels are reclaimed.
+
+
+MSFT — Microsoft Freezes Hiring in Key Divisions - AI Spending Pressure
+--------------------------------------------------
+🛑 Hiring Freeze Details
+●​ Microsoft has paused new hiring in several major divisions, including
+cloud and North American sales teams.
+●​ The freeze applies to roles without already approved offers, signaling a
+targeted slowdown rather than a full hiring stop.
+●​ This is a cost-control move aimed at protecting margins, especially
+into fiscal year-end (June).
+🤖 AI Investment Driving Cost Discipline
+●​ The decision comes as Microsoft continues heavy spending on AI
+infrastructure, which is pressuring profitability.
+●​ Management is balancing long-term AI growth vs. short-term margin
+expectations, a key tension for investors.
+●​ Notably, Copilot and AI-focused teams are still hiring, reinforcing that
+AI
+remains the top strategic priority.
+📉 Growth Concerns Emerging
+●​ Microsoft recently reported slower cloud growth, raising concerns about its core profit engine.
+●​ At the same time, record capital expenditures on AI have spooked investors looking for ROI clarity.
+●​ The hiring freeze signals that management is acknowledging margin pressure and adjusting accordingly.
+🌐 Broader Tech Industry Trend
+●​ Microsoft is not alone—Big Tech is increasingly focused on efficiency and cost discipline:
+○​ Meta is reportedly planning large-scale layoffs.
+○​ Amazon has already cut ~30,000 corporate roles in recent months.
+●​ The trend reflects a shift from growth-at-all-costs → profitability and AI-driven efficiency.
+🏢 Workforce Context
+●​ Microsoft had ~228,000 employees globally (as of mid-2025), highlighting the scale of potential impact.
+●​ The company previously cut ~4% of its workforce in July, indicating ongoing restructuring efforts.
+●​ This hiring pause suggests a more surgical approach vs. broad layoffs (for now).
+
+Support:
+  $363.5–$364.5 — Immediate support with current price consolidating near lows
+  $360.5–$361.5 — Prior flush area and next downside liquidity zone
+  $357.0–$358.5 — Lower support if selling accelerates further
+
+Resistance:
+  $368.5–$370.0 — Near-term resistance with recent lower highs
+  $373.5–$375.0 — Prior consolidation area and supply zone
+  $380.0–$383.0 — Major resistance aligned with breakdown structure
+
+Bias: The chart is in a clear intraday downtrend, with consistent lower highs and lower lows. Price is trading below all key moving averages, confirming strong bearish control. Any bounce into $368–$370 is likely to be sold unless structure breaks. A breakdown below $363 opens the door for continuation toward $360 and potentially lower. Bias remains bearish, with rallies treated as short opportunities until proven otherwise
+
+Trader Takeaway: This is the market forcing discipline on Big Tech. Microsoft isn’t being sold because AI is bad—it’s being sold because AI is expensive and returns aren’t clear yet. The hiring freeze is a signal that management is starting to feel that pressure. From a trading perspective, this is a “sell the rally” environment unless the stock can reclaim key levels and show real demand—otherwise, the path of least resistance remains lower.
+
+
+USO — Oil Surges as Strait of Hormuz Risks Keep Market on Edge
+--------------------------------------------------
+🌍 Geopolitical Catalyst: Iran & Strait of Hormuz
+●​ Oil prices moved higher despite a 10-day extension from the U.S. to
+Iran, as supply concerns remain unresolved.
+●​ The Strait of Hormuz—one of the most critical global oil
+chokepoints—continues to be the primary driver of volatility.
+●​ While limited tanker movement has resumed, markets are not fully
+convinced the risk has passed.
+📈 Price Action & Market Reaction
+●​ Brent crude climbed ~1.8% to ~$109.93, briefly trading above $110
+before pulling back.
+●​ WTI rose ~1.6% to ~$96.01 - continued geopolitical risk premium.
+●​ Gains were trimmed slightly as headlines suggested some oil flow
+continuity, but the overall tone remains bid.
+🚢 Supply Flow Signals Mixed
+●​ Trump indicated that 10 oil tankers passed through the Strait,
+suggesting partial normalization of flows.
+●​ The move is being framed as a gesture from Iran, potentially signaling willingness to de-escalate.
+●​ However, the lack of official confirmation from Iran keeps uncertainty elevated.
+⚠️ Structural Supply Concerns Rising
+●​ Analysts warn the oil market has shifted from “buffered to fragile”, meaning less capacity to absorb shocks.
+●​ Nearly 17.8M barrels/day of flow through the Strait have been disrupted, with ~500M barrels lost so far.
+●​ Previous buffers (inventory, spare supply, crude-on-water) are being depleted, increasing sensitivity to new
+disruptions.
+🧠 Market Psychology: Why Oil Stays Elevated
+●​ Even with partial flow resumption, traders are pricing in tail risk of further escalation or disruption.
+●​ The market is transitioning from reacting to events → anticipating worst-case scenarios.
+●​ This creates a sticky risk premium, where prices remain elevated even on “positive” headlines.
+
+Support:
+  $118.5–$119.5 — Recent consolidation base before breakout higher
+  $116.5–$117.5 — Prior pullback support aligned with short-term trend
+  $113.5–$114.5 — Stronger support near moving average zone
+
+Resistance:
+  $121.5–$122.5 — Immediate resistance with recent highs forming
+  $124.0–$125.0 — Prior rejection zone and extension level
+  $127.0–$128.5 — Higher breakout zone if momentum accelerates
+
+Bias: The intraday structure has shifted to bullish, with higher lows and a steady grind upward following prior consolidation. Price is holding above key moving averages, confirming short-term momentum in favor of buyers. The $120–$121 area is the key pivot—holding above keeps upside continuation in play. Pullbacks into $118–$119 are likely to be buy-the-dip opportunities unless that level breaks. A clean break above $122.50 could trigger momentum continuation toward $125+
+
+Trader Takeaway: This is a classic geopolitical-driven commodity trade—price is being driven more by risk premium than fundamentals in the short term. The key shift is that the market is no longer comfortable; it’s pricing fragility. As long as uncertainty around the Strait of Hormuz persists, dips are likely to be bought, and upside squeezes remain in play.
+
+
+MU — Micron Drops as Memory Efficiency Breakthrough Sparks Fears
+--------------------------------------------------
+🤖 Google’s TurboQuant Triggers Sector Selloff
+●​ Alphabet unveiled TurboQuant, a new algorithm that dramatically reduces
+memory usage in AI workloads through extreme compression.
+●​ The announcement triggered a sharp sell-off across memory stocks,
+including Micron (MU), SK Hynix, Samsung, and others.
+●​ Investors immediately priced in the risk that AI may require fewer chips,
+directly impacting long-term demand assumptions.
+📉 Market Reaction & Core Concern
+●​ The key fear: if AI models become more efficient, less DRAM and
+memory hardware may be needed per workload.
+●​ Memory stocks have been major AI beneficiaries, so any sign of demand
+compression hits the thesis hard.
+●​ This creates a narrative shift from “AI = more chips” → “AI efficiency =
+fewer chips per dollar spent.”
+⚖️ Counter Argument: Efficiency Could Expand Demand
+●​ Analysts argue the long-term picture may still be bullish, as lower costs can drive broader AI adoption.
+●​ More efficient models could enable wider deployment across industries, increasing total compute demand.
+●​ The debate now becomes unit demand vs. total market expansion, adding uncertainty to forecasts.
+🧠 Analyst Perspective
+●​ Morgan Stanley notes that cost reductions may actually increase overall demand by lowering barriers to entry.
+●​ The idea: cheaper AI → more use cases → eventual rebound in hardware demand, just not immediately.
+●​ However, near-term sentiment is dominated by fear of margin compression and demand recalibration.
+📅 Earnings & Valuation Context
+●​ Micron reports earnings April 23, 2026, a key catalyst for validating or refuting demand concerns.
+●​ EPS expected at $2.67 (down YoY), while revenue is projected to grow ~9% YoY to ~$10B.
+●​ Valuation remains elevated, reflecting high expectations tied to AI growth, which are now being questioned.
+
+Support:
+  $345.0–$347.5 — Immediate support with price pressing new lows
+  $340.0–$342.0 — Next downside level if selling continues
+  $335.0–$337.5 — Major support zone from prior structure
+
+Resistance:
+  $352.5–$355.0 — Near-term resistance with recent lower highs
+  $360.0–$365.0 — Prior consolidation zone and supply area
+  $375.0–$380.0 — Major resistance aligned with breakdown structure
+
+Bias: The chart is in a clear downtrend, with persistent lower highs and strong selling pressure. Price is trading below all key moving averages, confirming bearish control remains intact. Any bounce into $352–$355 is likely to be sold unless momentum shifts meaningfully. A break below $345 opens continuation toward $340 and potentially lower levels. Bias is bearish, with oversold conditions but no confirmed reversal yet
+
+Trader Takeaway: This is a narrative shock to one of the market’s strongest themes—AI hardware demand. When the story shifts from “infinite demand” to “efficiency risk,” multiples compress fast. The key now is whether this becomes a short-term shakeout or a real thesis change. Until proven otherwise, traders should treat rallies as opportunities to reduce risk or fade strength, especially with earnings ahead as the next major catalyst.
+
+
+NFLX — Netflix Raises Prices Again as Content Spend Surges
+--------------------------------------------------
+💰 Pricing Changes Across All Tiers
+●​ Netflix implemented a broad price hike across all subscription tiers,
+with increases of at least $1 per plan.
+●​ Ad-supported plan now $8.99 (from $7.99), standard plan $19.99 (from
+$17.99), and premium plan $26.99 (from $24.99).
+●​ Extra member pricing also increased, signaling a continued push to
+monetize account sharing more aggressively.
+📊 Strategic Rationale: Funding Growth
+●​ Management continues to justify price hikes as necessary to fund
+massive content investment and platform expansion.
+●​ Netflix is leaning into live events and video podcasts, expanding
+beyond traditional streaming content.
+●​ The company is positioning itself as a broader entertainment platform,
+not
+just a TV/movie service.
+🎥 Content Spending Ramp
+●​ Netflix expects to spend ~$20B on content in 2026, up from $18B in 2025.
+●​ Increased spending reflects competition for premium content, exclusives, and global audience capture.
+●​ Higher content spend is a key lever to support subscriber growth and justify pricing power.
+📈 Revenue & Ad Growth Outlook
+●​ 2026 revenue guidance: $50.7B–$51.7B, driven by pricing, membership growth, and advertising.
+●​ The company expects ad revenue to roughly double in 2026, highlighting strong traction in its ad-supported tier.
+●​ This signals a shift toward a hybrid subscription + advertising model, similar to legacy media.
+🤝 M&A Angle Fades
+●​ Netflix was previously in talks around acquiring Warner Bros. / HBO Max, but backed off after a
+higher competing bid.
+●​ This suggests a more disciplined capital approach, focusing instead on organic growth and
+internal content investment.
+
+Support:
+  $92.0–$92.5 — Recent consolidation base and intraday demand area
+  $90.5–$91.2 — Prior low zone with strong bounce reaction
+  $89.0–$90.0 — Major flush low and key downside support
+
+Resistance:
+  $93.8–$94.5 — Immediate resistance with repeated rejection
+  $95.5–$96.2 — Previous intraday highs and supply zone
+  $97.5–$98.5 — Higher resistance near earlier breakdown levels
+
+Bias: The trend has been down → base → early recovery, with price now attempting to reclaim short-term moving averages. Bulls are gaining some control, but the structure still shows lower highs on the broader timeframe, so conviction is limited. The $94–$95 area is the key pivot—acceptance above opens room toward $96+. Failure to hold $92 likely brings a retest of $90–$91 support quickly. Overall bias is neutral-to-slightly bullish intraday, but still fragile unless momentum confirms higher highs
+
+Trader Takeaway: This is a classic Netflix setup—pricing power vs. consumer tolerance. The market tends to reward Netflix when price hikes stick without churn, so the real trade isn’t the headline—it’s subscriber reaction over the next few weeks. Near term, the chart is transitioning from selloff to stabilization, so focus on whether buyers can defend higher lows and push through resistance—otherwise, this turns back into a range or fades quickly.
+
+
+WBD — Warner Bros. Discovery Shareholder Vote Set for Paramount Deal
+--------------------------------------------------
+🗳️ Special Meeting & Deal Timeline
+●​ Warner Bros. Discovery (WBD) will hold a special shareholder meeting
+on April 23, 2026, to vote on its merger with Paramount Global.
+●​ Shareholders of record as of March 20, 2026 will be eligible to vote, with
+proxy materials already being distributed.
+●​ The deal is expected to close in Q3 2026, pending regulatory approvals
+and shareholder consent.
+💰 Deal Terms & Premium
+●​ WBD shareholders will receive $31.00 per share in cash, representing a
+147% premium to the unaffected price of $12.54.
+●​ The size of the premium signals a transformational deal aimed at
+consolidating media assets and scale.
+●​ This is a full cash consideration, removing market risk tied to
+stock-based compensation.
+🏛️ Board Approval & Conditions
+●​ The merger has been unanimously approved by both companies’
+boards, indicating strong internal support.
+●​ Closing is subject to customary conditions, including regulatory clearance—likely the biggest external hurdle.
+●​ Given the size and industry implications, expect heightened antitrust scrutiny.
+⏳ “Ticking Fee” Incentive
+●​ If the deal is not completed by September 30, shareholders will receive $0.25 per share per quarter until closing.
+●​ This clause incentivizes timely completion and compensates investors for delays.
+●​ It also signals confidence that the deal will close, while acknowledging regulatory uncertainty risk.
+📊 Market Context & Strategic Implications
+●​ The deal represents a major consolidation play in streaming/media, aiming to compete with
+larger platforms like Netflix and Disney.
+●​ Scale, content libraries, and distribution are becoming critical as the industry shifts toward
+profitability over growth.
+●​ For WBD holders, the trade becomes more of a deal-arb setup rather than a pure fundamental story.
+
+Support:
+  $27.0–$27.1 — Immediate support with recent flush low and current price base
+  $26.6–$26.75 — Prior breakdown level and potential liquidity pocket below
+  $26.2–$26.4 — Lower support zone if selling accelerates
+
+Resistance:
+  $27.4–$27.55 — Near-term resistance aligned with intraday consolidation highs
+  $27.75–$27.9 — Prior rejection area with multiple failed pushes
+  $28.2–$28.4 — Higher resistance near earlier range highs
+
+Bias: The chart shows a clear short-term downtrend, with consistent lower highs and pressure under key moving averages. Price is currently compressing near $27, suggesting a potential breakdown or bounce decision point. Sellers remain in control unless price can reclaim $27.50+ with volume. A break below $27 opens the door for quick downside continuation into $26.50 area. Overall bias is bearish intraday, but extended—watch for short-covering pops into resistance
+
+Trader Takeaway: This is now a deal-driven stock, not a story stock. The $31 buyout price becomes the anchor, but the spread reflects regulatory risk and time value. For traders, the opportunity is in the volatility around that spread—fading pops and buying flushes within a defined range. Until there’s clarity on approvals, expect WBD to trade like a classic merger arb name with controlled upside and headline-driven swings.
+
+
+TGT — Target Faces New Boycott Pressure Amid Turnaround Efforts
+--------------------------------------------------
+🚫 New Boycott Catalyst: Teachers’ Union Action
+●​ The American Federation of Teachers (AFT) is urging its 1.8M
+members to avoid Target for back-to-school shopping.
+●​ The boycott stems from criticism that Target did not respond strongly
+enough to immigration enforcement incidents in Minneapolis.
+●​ The union plans to expand pressure through AFL-CIO, NAACP, and
+LULAC, potentially broadening the boycott reach.
+🧨 Escalating Activism Risk
+●​ This is the latest in a series of boycotts, adding to ongoing reputational
+and consumer sentiment risks.
+●​ Activists remain divided—some groups have ended prior boycotts, while
+others continue to push against the company.
+🛠️ Strategic Actions to Reignite Growth
+●​ Target is implementing aggressive initiatives to win back consumers,
+including:
+○​ Price cuts on 3,000+ items to drive traffic.
+○​ Expansion to 2,000 stores, signaling long-term footprint growth.
+○​ Continued investments in community engagement and partnerships.
+●​ Management messaging emphasizes a “new chapter”, but execution risk remains high.
+⚖️ DEI Backlash Still Lingers
+●​ Prior sales weakness was partly attributed to consumer backlash over DEI rollbacks, along with
+softer discretionary spending.
+●​ While one major boycott (“Target Fast”) has ended, new activism waves could offset any
+recovery momentum.
+🎯 Timing Risk: Back-to-School Season
+●​ The boycott is strategically timed ahead of back-to-school shopping, a key revenue period for Target.
+●​ AFT leadership explicitly highlighted this window as a high-impact leverage point.
+●​ Traders should watch for traffic data and early seasonal sales trends as confirmation signals.
+
+Support:
+  $116.0–$116.2 — Key intraday support near moving average reclaim zone
+  $114.8–$115.2 — Prior consolidation base with multiple bounces
+  $113.0–$113.5 — Strong downside support from recent capitulation low
+
+Resistance:
+  $117.5–$118.2 — Immediate resistance with recent rejection wick
+  $119.5–$120.5 — Prior breakdown zone and major supply area
+  $121.5–$122.5 — Higher resistance from earlier trend highs
+
+Bias: The chart shows a downtrend transitioning into a bounce, with higher lows forming in the short term. Price has reclaimed key moving averages, suggesting short-term bullish momentum, but broader structure remains mixed. The $118 area is the key breakout level—acceptance above opens continuation toward $120+. Failure to hold $116 likely brings a quick fade back into mid-range support ($114–$115). Bias is neutral-to-bullish intraday, but highly dependent on momentum continuation
+
+Trader Takeaway: This is a sentiment-driven setup layered on top of a fragile turnaround story. The boycott headlines matter because they directly target one of Target’s most important seasonal revenue windows. If the company can show resilience in traffic and comps despite the noise, the stock has room to grind higher. If not, every rally becomes a fade. This is a tape where you trade reactions, not narratives—watch price response at key levels more than the headlines themselves.
+
+
+SMCI — Super Micro - AI Chip Smuggling Probe & China Exposure Risk
+--------------------------------------------------
+🚨 Legal & Regulatory Shock
+●​ Super Micro Computer (SMCI) shares plunged ~28% after U.S.
+authorities charged individuals tied to the company with smuggling AI
+technology to China.
+●​ The indictment includes a co-founder and two affiliates, raising serious
+governance and compliance concerns.
+●​ The case centers on alleged violations of the Export Control Reform
+Act, a highly sensitive area tied to national security.
+🇨🇳 China Exposure & Military Links
+●​ Reuters reports that Chinese universities—including ones linked to
+the PLA—acquired SMCI servers equipped with restricted AI chips.
+●​ This raises red flags that U.S. export controls may have been
+bypassed, intentionally or through intermediaries.
+●​ The involvement of military-affiliated institutions significantly escalates
+geopolitical risk and scrutiny.
+🔒 U.S. Crackdown on AI Exports
+●​ The U.S. has restricted advanced AI chip exports to China since 2022, citing military concerns.
+●​ Lawmakers are now pushing for even tighter restrictions, including potentially halting licenses for
+Nvidia chips and related systems.
+●​ This could expand beyond SMCI and impact the broader AI hardware supply chain.
+📦 Supply Chain & Enforcement Concerns
+●​ It remains unclear how the servers were sourced, highlighting loopholes in global distribution channels.
+●​ Reports suggest intermediaries in Southeast Asia may have been used to bypass restrictions.
+●​ This increases the likelihood of stricter enforcement and compliance audits across the sector.
+⚠️ Additional Developments
+●​ Two more universities (including one with military ties) attempted similar purchases in 2025–2026,
+though completion is unclear.
+●​ A key figure linked to the case resigned from SMCI’s board in March, adding to governance concerns.
+●​ This suggests the issue may be ongoing rather than isolated, keeping headline risk elevated.
+
+Support:
+  $21.5–$21.8 — Immediate support with current price consolidating near lows
+  $20.5–$21.0 — Prior bounce zone after capitulation selloff
+  $19.0–$19.5 — Major downside support from panic low
+
+Resistance:
+  $22.8–$23.3 — Near-term resistance with recent lower highs
+  $24.0–$24.8 — Prior rebound high and supply zone
+  $26.5–$27.5 — Major resistance near breakdown area
+
+Bias: The chart shows a sharp breakdown followed by weak consolidation, typical of a stock repricing on news. Price remains below all key moving averages, confirming bearish control despite minor bounce attempts. The $23 area is the key pivot—failure to reclaim keeps pressure to the downside. Any pops into resistance are likely sellable until structure shifts meaningfully. Bias is bearish with dead-cat bounce potential, especially on headline-driven spikes
+
+Trader Takeaway: This is no longer a fundamentals trade—it’s a regulatory headline trade. When you get national security + China + AI chips in the same sentence, the market assumes worst-case until proven otherwise. The 28% drop is the market repricing risk, not overreacting. For traders, this becomes a fade-the-bounce setup unless new information de-risks the situation. The bigger angle to watch is spillover—if this tightens export controls further, it doesn’t stop at SMCI.
+
+
+KWEB — China Launches Trade Probes in Response to U.S. Tariffs
+--------------------------------------------------
+🇨🇳 China Retaliates Against U.S. Trade Actions
+●​ China announced two new investigations into U.S. trade practices,
+signaling a firm response to recent U.S. tariff moves.
+●​ The probes are positioned as a defense of Chinese industry interests,
+with Beijing explicitly opposing U.S. actions.
+●​ This marks another escalation in the ongoing U.S.–China trade war,
+with both sides actively deploying policy tools.
+🔍 Scope of the Investigations
+●​ One probe targets U.S. restrictions on Chinese goods and limitations
+on advanced tech exports, a direct hit at AI and semiconductor controls.
+●​ The second focuses on barriers to Chinese green energy exports, an
+increasingly important global market.
+●​ Investigations are expected to last up to 6–9 months, leaving a
+prolonged overhang on trade sentiment.
+🇺🇸 U.S. Actions Driving the Response
+●​ China’s move follows new U.S. Section 301 investigations, which could lead to additional tariffs
+on multiple countries.
+●​ These include probes into:
+○​ Excess industrial capacity and subsidies (targeting China and others).
+○​ Forced labor-linked imports, which could lead to outright bans.
+●​ The U.S. strategy signals a broader push to tighten trade restrictions and level competitive imbalances.
+⚠️ Rising Trade Tensions & Negotiation Leverage
+●​ China is likely using these probes as bargaining chips ahead of future negotiations.
+●​ Officials warned that U.S. actions could destabilize fragile economic relations, increasing geopolitical risk.
+●​ Trump’s delayed visit to Beijing adds uncertainty, reducing near-term chances of diplomatic de-escalation.
+
+Support:
+  $28.0–$28.2 — Immediate support with repeated intraday holds
+  $27.6–$27.8 — Prior flush low and downside liquidity pocket
+  $27.0–$27.3 — Major support from recent capitulation move
+
+Resistance:
+  $28.8–$29.2 — Near-term resistance with recent failed breakout
+  $29.8–$30.2 — Prior consolidation highs and supply zone
+  $30.8–$31.2 — Major resistance near earlier range top
+
+Bias: The chart remains in a downtrend with lower highs, despite occasional sharp bounce attempts. Price is trading below key moving averages, confirming seller control on rallies. The $29 level is the key pivot—failure to reclaim keeps pressure to the downside. Breakdown below $28 opens the door for continuation toward $27.50 and lower. Bias is bearish-to-neutral, with rallies likely sold unless structure shifts
+
+Trader Takeaway: This is macro driving price, not fundamentals. Trade war headlines tend to create sharp but short-lived moves, and the real edge is in how price reacts at key levels. Right now, the market is treating every bounce as a selling opportunity because uncertainty remains unresolved. Until there’s clarity on tariffs or diplomacy, expect choppy, headline-driven action with downside pressure lingering.
+
+
+U — Unity Software Surges on Strong Preliminary Q1 Results
+--------------------------------------------------
+📊 Revenue & EBITDA Beat
+●​ Unity expects Q1 revenue of $505M–$508M, well above prior guidance of
+$480M–$490M.
+●​ Adjusted EBITDA is projected at $130M–$135M, significantly higher than
+the previous $105M–$110M range.
+●​ The magnitude of the beat signals strong operational execution and
+improving monetization trends.
+⚙️ Growth Driver: Unity Vector
+●​ The upside was largely driven by Unity Vector, which is expected to grow
+~15% sequentially.
+●​ Vector continues to be a key lever, improving ad targeting, performance,
+and monetization efficiency.
+●​ Management highlighted Vector as a core engine of both revenue
+growth and profitability expansion.
+🔄 Strategic Shift: ironSource Wind-Down
+●​ Unity is sunsetting its ironSource Ads Network (effective April 30) to streamline operations.
+●​ The move is aimed at accelerating revenue growth while boosting adjusted EBITDA margins.
+●​ This reflects a broader strategy to focus on higher-quality, higher-margin segments.
+🧠 Management Commentary
+●​ CEO Matt Bromberg emphasized that Vector’s continued strength is driving results above expectations.
+●​ The company sees this transition as a way to enhance both growth and profitability simultaneously.
+●​ Tone from management suggests confidence in sustained momentum beyond just one quarter.
+📈 Market Reaction
+●​ Unity shares surged ~15% in after-hours trading, making it one of the strongest movers of the session.
+●​ The move reflects a reset in expectations, with investors re-rating the stock on improved execution.
+●​ This type of reaction typically signals short covering + fresh momentum buying.
+
+Support:
+  $18.8–$19.0 — Immediate support after post-spike consolidation
+  $17.8–$18.2 — Prior breakout base and intraday demand zone
+  $17.0–$17.4 — Pre-news support and key downside level
+
+Resistance:
+  $19.8–$20.3 — Immediate resistance near post-earnings spike high
+  $20.8–$21.3 — Prior supply zone and rejection area
+  $21.5–$22.0 — Higher resistance from earlier structure highs
+
+Bias: The chart shows a sharp reversal from downtrend → momentum breakout, driven by earnings. Price reclaimed key moving averages aggressively, signaling short-term bullish control. The $19 level is the key pivot—holding above keeps momentum continuation intact. Pullbacks into $18.50–$19.00 likely act as buy-the-dip zones if momentum holds. Bias is bullish intraday, but watch for post-spike consolidation or fade attempts
+
+Trader Takeaway: This is a classic earnings-driven momentum shift. Unity wasn’t just “good”—it reset expectations with a clean beat and a clear profitability story. The real question now is whether this becomes a trend reversal or just a squeeze. If buyers defend the breakout levels, this can trend higher. If not, it turns into a fade-the-gap setup. Focus on how price behaves around $19—that’s your decision level.
+
+
+SNPS — Synopsys Faces Pricing Pressure Despite AI Tailwinds
+--------------------------------------------------
+📉 Pricing Power Concerns
+●​ BNP Paribas flagged that meaningful price increases for Synopsys
+(SNPS) will be difficult, despite strong AI-driven demand.
+●​ Analysts expect a 2–3 year timeline before pricing changes materially
+impact revenue, due to long contract cycles.
+●​ The core issue: EDA customers are slow to adjust procurement habits,
+limiting near-term monetization upside.
+🧠 AI Growth vs Revenue Reality
+●​ While AI spending is surging, EDA software revenue is only growing at
+high single digits, lagging broader tech investment.
+●​ A key disconnect: R&D spending is exploding, but engineering
+headcount (EDA users) is not growing at the same pace.
+●​ This suggests AI investment is not translating 1:1 into increased EDA
+demand, at least in the near term.
+🏭 Customer Behavior & Industry Dynamics
+●​ Many enterprise and analog customers are just beginning to recover after a multi-year
+slowdown, delaying demand acceleration.
+●​ Hyperscalers have not significantly increased EDA spending over the past five years.
+●​ This reinforces the view that EDA demand growth is steady but not explosive, even in an AI cycle.
+⚙️ Monetization Strategy & Ansys Integration
+●​ Synopsys is expected to introduce “flex” pricing models and integrate Ansys simulation tools
+into its ecosystem.
+●​ The goal is to expand capabilities (e.g., multiphysics simulation) and justify higher pricing over time.
+●​ Analysts believe bundling Ansys could improve pricing power gradually, especially for complex chip designs.
+🧨 Activist Catalyst
+●​ Elliott Investment Management has taken a multibillion-dollar stake in Synopsys, pushing for
+improved monetization.
+●​ However, analysts believe aggressive price hikes are unlikely near-term, given customer sensitivity.
+●​ Activist involvement adds a potential catalyst but not an immediate revenue inflection.
+
+Support:
+  $400.0–$402.0 — Immediate support with price testing breakdown lows
+  $395.0–$397.5 — Next downside level if selling accelerates
+  $388.0–$390.0 — Major support from prior demand zone
+
+Resistance:
+  $405.0–$408.0 — Near-term resistance with recent lower highs
+  $415.0–$420.0 — Prior consolidation zone and supply area
+  $430.0–$435.0 — Major resistance from breakdown region
+
+Bias: The chart shows a clear downtrend with consistent lower highs and breakdown structure. Price is trading below key moving averages, confirming bearish momentum remains intact. Any bounce into $405–$408 is likely a sell-the-rip zone unless structure changes. A break below $400 opens room toward mid-$390s quickly, given weak support below. Bias is bearish, with no clear reversal signal yet
+
+Trader Takeaway: This is a classic case where the narrative (AI boom) isn’t lining up with the monetization reality. Synopsys has strong long-term positioning, but near-term expectations may be too high given slow pricing cycles and customer behavior. For traders, this becomes a sentiment reset story—until pricing power shows up in numbers, rallies are likely to be faded, especially in a weak tape.
+
+
+FDA — Rocket Pharma Pops on FDA Gene Therapy Approval
+--------------------------------------------------
+🧪 FDA Approval Catalyst
+●​ Rocket Pharmaceuticals (RCKT) surged ~9% premarket after the FDA
+approved its gene therapy Kresladi.
+●​ The therapy targets LAD-1 (Leukocyte Adhesion Deficiency-1), a rare
+and serious immune disorder.
+●​ This marks a major milestone as Kresladi becomes the first gene
+therapy approved for LAD-1.
+🧬 Treatment Details & Target Population
+●​ Kresladi is approved for children with LAD-1 caused by ITGB2 gene
+mutations, specifically those without a suitable stem cell donor.
+●​ The therapy addresses a critical unmet need, as these patients have
+limited treatment options.
+●​ LAD-1 impacts immune function by preventing white blood cells from
+properly fighting infections.
+🔄 Regulatory Timeline & Background
+●​ The approval follows a previous FDA rejection in June 2024, where additional data was requested.
+●​ Rocket resubmitted its Biologics License Application (BLA), which was accepted in October.
+●​ The FDA had set a March 28, 2026 target decision date, which has now been met with approval.
+📈 Market Implications
+●​ Approval validates Rocket’s platform and could unlock commercialization opportunities in rare disease gene
+therapy.
+●​ Being first-to-market gives RCKT a competitive advantage in a niche but high-value indication.
+●​ Investors are reacting to both the regulatory win and potential long-term revenue stream.
+
+Support:
+  $5.0–$5.1 — Immediate support after the breakout and pullback stabilization
+  $4.7–$4.85 — Prior consolidation zone and breakout base
+  $4.4–$4.55 — Key support from pre-news structure
+
+Resistance:
+  $5.35–$5.45 — Immediate resistance near the spike high
+  $5.6–$5.75 — Next upside extension if momentum continues
+  $5.9–$6.0 — Psychological and major resistance level
+
+Bias: The chart shows a clear news-driven breakout with strong momentum and volume expansion. Price reclaimed key moving averages and is holding above prior resistance, now acting as support. The $5.00 level is the key pivot—holding above keeps bullish continuation intact. Pullbacks into $5.00–$5.10 likely act as dip-buy zones if volume remains strong. Bias is bullish, but expect volatility typical of biotech catalyst moves
+
+Trader Takeaway: This is a clean biotech catalyst—FDA approval with first-in-class positioning. That’s real, not hype. The trade now shifts from “binary event” to “execution and commercialization.” These names tend to spike, pull back, and then either trend or fade depending on follow-through volume. If buyers defend the $5 area, this can continue higher. If not, it turns into a classic post-news fade. Keep it simple—watch the breakout level and trade the reaction.
+
+
+AMZN — American Airlines Eyes In-Flight Overhaul with Starlink & Amazon
+--------------------------------------------------
+📡 Wi-Fi Upgrade Talks
+●​ American Airlines (AAL) is in discussions with SpaceX’s Starlink and
+Amazon’s Kuiper (LEO) to upgrade in-flight Wi-Fi.
+●​ The move signals a push toward faster, low-latency satellite
+connectivity, aligning with industry trends.
+●​ A decision could come as early as next month, making this a near-term
+catalyst headline.
+📺 Seatback Screens Could Return
+●​ The airline is also evaluating bringing back seatback entertainment
+screens on narrow-body aircraft.
+●​ This reverses a prior strategy where screens were removed to cut costs
+and reduce aircraft weight.
+●​ The reconsideration suggests changing customer expectations and
+competitive pressure in passenger experience.
+🎬 Content Partnerships with Amazon
+●​ American is in talks with Amazon (AMZN) to provide on-seat content including Prime Video,
+music, and shopping integration.
+●​ Potential features could include shopping via miles, expanding monetization beyond ticket sales.
+●​ This builds on the airline’s current partnership with Apple (AAPL) for Apple TV+ and music streaming.
+🧠 Strategic Shift in Passenger Experience
+●​ The broader initiative reflects a revamp of in-flight entertainment and connectivity offerings.
+●​ Airlines are increasingly competing on experience and digital ecosystem integration, not just pricing.
+●​ The shift could help drive customer loyalty and ancillary revenue streams over time.
+💰 Cost & Execution Considerations
+●​ Reinstalling seatback screens across ~790 narrow-body aircraft would be a multi-year, capital-intensive
+project.
+●​ Implementation risk remains high, with potential margin pressure in the near term.
+●​ Investors may view this as a long-term investment vs. short-term earnings headwind.
+
+Support:
+  $10.6–$10.65 — Immediate support with price consolidating around this level
+  $10.3–$10.4 — Prior intraday demand zone and bounce area
+  $10.1–$10.2 — Key downside support from recent lows
+
+Resistance:
+  $10.75–$10.85 — Near-term resistance with repeated rejections
+  $10.95–$11.1 — Prior consolidation high and supply zone
+  $11.25–$11.4 — Major resistance from recent spike highs
+
+Bias: The chart shows a range-bound structure following a broader downtrend, with no strong directional conviction. Price is hovering around moving averages, signaling indecision and consolidation. The $10.60 level is acting as a pivot—holding above keeps neutral-to-slight bullish tone intact. A break above $10.85 could trigger momentum toward $11+, while losing $10.60 opens downside. Bias is neutral, leaning slightly bullish if resistance breaks
+
+Trader Takeaway: This is more of a strategic headline than an immediate earnings catalyst. The market will care less about the idea and more about execution and cost. If this turns into a capital-heavy rollout, it could weigh on margins before any revenue benefit shows up. For traders, this is a range trade unless price breaks out—watch $10.60 as your pivot and react to whichever side wins.
+
+
+MA — Mastercard Explores Sale of Real-Time Payments Unit
+--------------------------------------------------
+🏦 Potential Asset Sale
+●​ Mastercard (MA) is exploring the sale of its real-time payments unit,
+originally acquired from Nets in 2019 for $3.2B.
+●​ The company has hired investment bankers, signaling a formal process
+that could attract private equity interest.
+●​ The unit generates roughly $370M in annual revenue and about $100M
+in EBITDA.
+📉 Valuation & Strategic Trade-Off
+●​ Reports suggest Mastercard may sell the unit below its original
+purchase price, implying a potential capital loss.
+●​ This signals a strategic pivot rather than a distress move, prioritizing
+future growth areas over legacy assets.
+●​ The decision reflects a broader trend of capital reallocation toward
+higher-return segments.
+🔗 Shift Toward Blockchain & Stablecoins
+●​ The potential divestiture aligns with Mastercard’s increasing focus on blockchain infrastructure
+and stablecoin-based payments.
+●​ The company recently agreed to acquire Baanx for up to $1.8B, strengthening its digital asset capabilities.
+●​ Management appears to be positioning Mastercard for next-gen payment rails vs. traditional clearing systems.
+⚙️ Background on Nets Acquisition
+●​ Mastercard’s 2019 Nets deal included clearing, instant payments, and e-billing services.
+●​ The current sale consideration suggests that parts of that acquisition no longer fit long-term strategy.
+●​ This is a classic portfolio optimization move, shedding slower-growth or non-core segments.
+🧑‍💼 Operational Restructuring
+●​ Mastercard has been refocusing investment priorities and recently announced ~4% workforce reductions.
+●​ These actions suggest a leaner cost structure and renewed emphasis on high-growth initiatives.
+●​ The company continues to balance efficiency with long-term innovation investments.
+
+Support:
+  $500.0–$501.0 — Immediate support with price consolidating around this level
+  $495.0–$497.5 — Prior demand zone and intraday bounce area
+  $488.0–$490.0 — Major support from recent swing lows
+
+Resistance:
+  $503.5–$505.5 — Near-term resistance with repeated tests
+  $507.5–$510.0 — Prior consolidation high and supply zone
+  $512.5–$515.0 — Major resistance from recent spike highs
+
+Bias: The chart shows a transition from downtrend into consolidation, with price stabilizing near $500. Moving averages are flattening, indicating loss of downside momentum and potential base-building. The $500 level is acting as a key pivot—holding above supports a neutral-to-bullish bias. A break above $505 could trigger continuation toward $510+, while failure opens downside. Bias is neutral, leaning bullish if resistance clears
+
+Trader Takeaway: This is a strategic reshuffle, not a panic move. Mastercard is effectively rotating capital away from slower, infrastructure-heavy assets into higher-growth areas like blockchain and stablecoins. The market will care less about the one-time sale price and more about what they do with the capital. For traders, this is a low-volatility setup—watch the $500 pivot and trade the range until a breakout confirms direction.
+
+
+RTX — $RTX Wins $980M Defense Contracts, Reinforcing Radar Growth
+--------------------------------------------------
+💰 Contract Awards Overview
+●​ Raytheon (RTX) secured ~$980.5M in U.S. defense contracts, primarily
+tied to radar systems and avionics sustainment.
+●​ The awards are largely modifications/extensions of existing
+programs, reinforcing backlog visibility rather than new programs.
+●​ Funding spans multiple branches, including the Missile Defense Agency,
+Navy, Air Force, and Special Operations Command.
+📡 AN/TPY-2 Radar Expansion (Core Driver)
+●​ The largest piece is a $773.5M contract modification, increasing the
+total program ceiling to $2.25B.
+●​ The contract supports R&D for the AN/TPY-2 radar, a key component in
+missile defense systems.
+●​ The ordering period is extended through October 2030, providing
+long-term revenue visibility.
+🔁 Additional Radar Support Contract
+●​ A second award of $193.2M focuses on spares replenishment and continued radar development support.
+●​ This raises the total value of the task order to $339.1M, further deepening Raytheon’s role in missile defense.
+●​ Like the primary contract, this runs through 2030, reinforcing sustained demand.
+✈️ V-22 Avionics Sustainment
+●​ Raytheon also received a $13.8M contract for V-22 Osprey avionics sustainment and upgrades.
+●​ Work includes maintaining fleet systems and supporting ongoing flight testing and deployment updates.
+●​ The program runs through March 2027, offering shorter-term but stable revenue contribution.
+🧠 Strategic Implications
+●​ These awards highlight Raytheon’s core positioning in missile defense and radar technology, a
+high-priority area for defense spending.
+●​ Long-dated contracts (to 2030) provide strong backlog visibility and predictable cash flows.
+●​ The noncompetitive nature of the awards reinforces entrenched relationships with U.S. defense agencies.
+
+Support:
+  $191.5–$192.5 — Immediate support with price stabilizing near recent lows
+  $189.5–$190.5 — Secondary support if breakdown continues
+  $186.5–$188.0 — Major support from prior structure
+
+Resistance:
+  $194.5–$196.0 — Near-term resistance with repeated rejections
+  $198.0–$200.0 — Prior consolidation zone and supply area
+  $203.0–$205.0 — Major resistance aligned with breakdown structure
+
+Bias: The chart is in a clear downtrend with consistent lower highs and lower lows. Price remains below key moving averages, confirming bearish control is still dominant. The $192 level is acting as a short-term pivot—failure here opens further downside. Any bounce into $195–$196 likely faces selling pressure unless structure shifts. Bias is bearish, with no confirmed reversal despite positive contract news
+
+Trader Takeaway: This is a fundamentally positive headline—strong backlog, long-duration contracts, and continued dominance in missile defense. But the market isn’t rewarding it, which tells you sentiment is driving price more than fundamentals right now. That’s a key signal. Until the chart confirms a reversal, this is a “good news, sell the bounce” type of setup. Watch the $192 pivot—if it breaks, momentum likely continues lower.
+
