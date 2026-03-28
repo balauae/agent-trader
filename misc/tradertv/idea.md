@@ -44,15 +44,18 @@ META, AMZN, MSFT, USO (oil), MU, NFLX, WBD, TGT, SMCI, BABA
   "ticker": "META",
   "headline": "Meta Legal Risk Escalates After Dual Jury Verdicts",
   "bias": "BEARISH",
+  "bias_detail": "Intraday structure decisively bearish. Price below key MAs. $555-560 key pivot. Hold $540 critical.",
   "support": [
-    {"zone": "540-545", "notes": "Current base after sharp selloff"},
-    {"zone": "530-535", "notes": "Prior flush zone"},
-    {"zone": "515-520", "notes": "Lower extension support"}
+    {"zone": "540-545", "low": 540, "high": 545, "notes": "Current base after sharp selloff"},
+    {"zone": "530-535", "low": 530, "high": 535, "notes": "Prior flush zone"},
+    {"zone": "515-520", "low": 515, "high": 520, "notes": "Lower extension support"}
   ],
   "resistance": [
-    {"zone": "555-560", "notes": "Immediate resistance"},
-    {"zone": "575-580", "notes": "Prior consolidation"}
-  ]
+    {"zone": "555-560", "low": 555, "high": 560, "notes": "Immediate resistance"},
+    {"zone": "575-580", "low": 575, "high": 580, "notes": "Prior consolidation"},
+    {"zone": "600-605", "low": 600, "high": 605, "notes": "Major overhead supply"}
+  ],
+  "trader_takeaway": "Structural legal risk reshaping social media model. Weak chart + headline overhang. Path of least resistance lower."
 }
 ```
 
@@ -161,9 +164,15 @@ Daily 11:30 AM AbuDhabi → fetch → parse → send Telegram
 
 ## Dependencies
 ```bash
-uv pip install pdfplumber  # ✅ already installed
+uv pip install pymupdf  # ✅ already installed — faster + cleaner than pdfplumber
 # yt-dlp (optional — for auto-fetch)
 ```
+
+## Why PyMuPDF over pdfplumber
+- Extracts two-column layouts correctly (news + levels side by side)
+- Includes **Bias** section at bottom of each page (explicit bullish/bearish + reasoning)
+- Faster parsing
+- `import fitz` — `doc[i].get_text()`
 
 ---
 
