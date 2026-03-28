@@ -309,17 +309,55 @@ def filter_watchlist(data: dict, watchlist: list[str]) -> list[dict]:
     return [s for s in data["stocks"] if s["ticker"] in watchlist]
 
 
+def format_text(result: dict) -> str:
+    """Output raw text — as close to the original PDF as possible."""
+    lines = []
+    lines.append(f"TraderTV Live — Cherif's Morning Note")
+    lines.append(f"Date: {result['date']} | {result['total_stocks']} stocks")
+    lines.append("=" * 60)
+
+    for s in result["stocks"]:
+        lines.append(f"\n{s['ticker']} — {s['headline']}")
+        lines.append("-" * 50)
+
+        if s.get("news_bullets"):
+            lines.append("\n".join(s["news_bullets"]))
+
+        lines.append("\nSupport:")
+        for z in s["support"]:
+            lines.append(f"  {z['zone']} — {z['notes']}")
+
+        lines.append("\nResistance:")
+        for z in s["resistance"]:
+            lines.append(f"  {z['zone']} — {z['notes']}")
+
+        if s.get("bias_detail"):
+            lines.append(f"\n{s['bias_detail']}")
+
+        if s.get("trader_takeaway"):
+            lines.append(f"\nTrader Takeaway: {s['trader_takeaway']}")
+
+        lines.append("")
+
+    return "\n".join(lines)
+
+
 def main():
     if len(sys.argv) < 2:
-        print("Usage: python parser.py <pdf_path> [--watchlist AAPL,NVDA,META]", file=sys.stderr)
+        print("Usage: python parser.py <pdf_path> [--watchlist AAPL,NVDA,META] [--format text|json]", file=sys.stderr)
         sys.exit(1)
 
     pdf_path = sys.argv[1]
     watchlist = None
+    fmt = "json"
 
     if "--watchlist" in sys.argv:
         idx = sys.argv.index("--watchlist")
         watchlist = sys.argv[idx + 1].upper().split(",")
+
+    if "--format" in sys.argv:
+        idx = sys.argv.index("--format")
+        fmt = sys.argv[idx + 1]
 
     if not Path(pdf_path).exists():
         print(f"ERROR: File not found: {pdf_path}", file=sys.stderr)
@@ -332,7 +370,10 @@ def main():
         result["total_stocks"] = len(result["stocks"])
         result["watchlist_filter"] = watchlist
 
-    print(json.dumps(result, indent=2))
+    if fmt == "text":
+        print(format_text(result))
+    else:
+        print(json.dumps(result, indent=2))
 
 
 if __name__ == "__main__":
