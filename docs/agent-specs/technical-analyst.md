@@ -52,3 +52,5 @@ Core charting and indicator analysis agent. Reads price action across multiple t
 - Works closely with `timeframe-analyzer` (which handles TF-specific setups) and `vwap-watcher`
 - Always state which timeframe is driving the bias
 - Do not override `vwap-watcher` VWAP-specific outputs — coordinate
+- S/R levels computed by `support-resistance` agent — import, don't recompute
+- Current `compute_levels()` in technical_analyst.py is basic (min/max only) — to be replaced by support_resistance.py output
