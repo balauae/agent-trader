@@ -50,6 +50,16 @@ func (c *Client) Earnings(ticker string) (map[string]interface{}, error) {
 	return c.get("/earnings/" + ticker)
 }
 
+// SR fetches single-timeframe support/resistance levels.
+func (c *Client) SR(ticker, timeframe string, bars int) (map[string]interface{}, error) {
+	return c.get(fmt.Sprintf("/sr/%s?timeframe=%s&bars=%d", ticker, timeframe, bars))
+}
+
+// SRMulti fetches multi-timeframe confluent S/R levels.
+func (c *Client) SRMulti(ticker, timeframes string, bars int) (map[string]interface{}, error) {
+	return c.get(fmt.Sprintf("/sr-multi/%s?timeframes=%s&bars=%d", ticker, timeframes, bars))
+}
+
 // IsUp checks if the bridge is running.
 func (c *Client) IsUp() bool {
 	resp, err := c.client.Get(c.base + "/health")

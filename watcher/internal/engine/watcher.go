@@ -4,9 +4,11 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"math"
 	"time"
 
 	"github.com/bala/tradedesk-watcher/internal/alerts"
+	"github.com/bala/tradedesk-watcher/internal/bridge"
 	"github.com/bala/tradedesk-watcher/internal/config"
 	"github.com/bala/tradedesk-watcher/internal/metrics"
 	"github.com/bala/tradedesk-watcher/internal/position"
@@ -15,19 +17,20 @@ import (
 
 // Watcher watches a single ticker goroutine.
 type Watcher struct {
-	pos       position.Position
-	cfg       *config.Settings
-	events    chan<- Event
-	cmdCh     chan Command
-	state     WatcherState
-	price     float64
-	prevPrice float64
-	vwap      *metrics.VWAP
-	rsi       *metrics.RSI
-	ema9      *metrics.EMA
-	cooldown  *alerts.CooldownTracker
-	ratelimit *alerts.RateLimiter
-	registry  *Registry
+	pos        position.Position
+	cfg        *config.Settings
+	events     chan<- Event
+	cmdCh      chan Command
+	state      WatcherState
+	price      float64
+	prevPrice  float64
+	vwap       *metrics.VWAP
+	rsi        *metrics.RSI
+	ema9       *metrics.EMA
+	cooldown   *alerts.CooldownTracker
+	ratelimit  *alerts.RateLimiter
+	registry   *Registry
+	srLevels   []float64 // key S/R levels loaded from bridge
 }
 
 // NewWatcher creates a new watcher for a position.
@@ -91,6 +94,9 @@ func (w *Watcher) Run(ctx context.Context) {
 
 	go conn.ReadLoop()
 
+	// Load S/R levels from bridge (non-blocking, best-effort)
+	go w.loadSRLevels()
+
 	w.state = StateRunning
 	w.emitState(StateRunning, fmt.Sprintf("👁️ Watching %s @ %s", w.pos.Ticker, exchange))
 
@@ -138,6 +144,7 @@ func (w *Watcher) Run(ctx context.Context) {
 			}
 
 			w.checkAlerts(b.Close)
+			w.checkSRProximity(b.Close)
 
 		case err := <-conn.Errors():
 			log.Printf("[watcher:%s] connection error: %v — reconnecting", w.pos.Ticker, err)
@@ -248,5 +255,61 @@ func (w *Watcher) emitState(s WatcherState, msg string) {
 		State:   s,
 		Message: msg,
 		Time:    time.Now(),
+	}
+}
+
+// loadSRLevels fetches key S/R levels from the FastAPI bridge.
+func (w *Watcher) loadSRLevels() {
+	bc := bridge.New(w.cfg.BridgeURL)
+	if !bc.IsUp() {
+		log.Printf("[watcher:%s] bridge not available — S/R levels skipped", w.pos.Ticker)
+		return
+	}
+	data, err := bc.SR(w.pos.Ticker, "1D", 200)
+	if err != nil {
+		log.Printf("[watcher:%s] S/R load error: %v", w.pos.Ticker, err)
+		return
+	}
+	raw, ok := data["key_levels"]
+	if !ok {
+		return
+	}
+	levels, ok := raw.([]interface{})
+	if !ok {
+		return
+	}
+	var srLevels []float64
+	for _, l := range levels {
+		if v, ok := l.(float64); ok {
+			srLevels = append(srLevels, v)
+		}
+	}
+	w.srLevels = srLevels
+	log.Printf("[watcher:%s] loaded %d S/R levels: %v", w.pos.Ticker, len(srLevels), srLevels)
+}
+
+// checkSRProximity fires an alert if price is within 0.3% of a key S/R level.
+func (w *Watcher) checkSRProximity(price float64) {
+	const proximityPct = 0.003 // 0.3%
+	for _, level := range w.srLevels {
+		dist := math.Abs(price-level) / level
+		if dist <= proximityPct {
+			side := "resistance"
+			if level < price {
+				side = "support"
+			}
+			alertType := alerts.AlertType(fmt.Sprintf("sr_proximity_%.0f", level))
+			if !w.cooldown.CanAlert(w.pos.Ticker, alertType, 30*time.Minute) {
+				continue
+			}
+			w.cooldown.Record(w.pos.Ticker, alertType)
+			w.events <- Event{
+				Type:    EventAlert,
+				Ticker:  w.pos.Ticker,
+				Price:   price,
+				Message: fmt.Sprintf("📍 %s approaching %s $%.2f (%.2f%% away)", w.pos.Ticker, side, level, dist*100),
+				Time:    time.Now(),
+			}
+		}
 	}
 }

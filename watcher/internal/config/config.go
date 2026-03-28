@@ -17,6 +17,7 @@ type Settings struct {
 	DataDir           string        `json:"data_dir"`
 	PositionsFile     string        `json:"positions_file"`
 	SecretsDir        string        `json:"secrets_dir"`
+	BridgeURL         string        `json:"bridge_url"`
 	RSIPeriod         int           `json:"rsi_period"`
 	ATRPeriod         int           `json:"atr_period"`
 	EMAShort          int           `json:"ema_short"`
@@ -38,6 +39,7 @@ func DefaultSettings() *Settings {
 		PollIntervalMs:    1000,
 		AlertCooldownMins: 15,
 		SocketPath:        "/tmp/tradedesk-manager.sock",
+		BridgeURL:         "http://localhost:8000",
 		DataDir:           "data",
 		PositionsFile:     "data/positions.json",
 		SecretsDir:        ".secrets",
