@@ -141,11 +141,13 @@ def parse_price_zones(section: str) -> list[dict]:
     # Normalize section: collapse newlines so split zones join properly
     section = re.sub(r'\n+', ' ', section)
 
-    # Pattern: $LOW[–/-]HIGH → notes   (HIGH may or may not have $)
-    # Covers: $592–594, $592 – $594, $592–$594, $24.75 – $25.00
+    # Pattern: $LOW[–/-]HIGH [→/–] notes   (HIGH may or may not have $)
+    # Covers: $592–594 → notes
+    #         $540 – $545 – notes   (older format uses – as separator)
+    #         $24.75 – $25.00 → notes
     range_pattern = re.compile(
-        r'\$([\d,]+\.?\d*)\s*[–\-—]+\s*\$?([\d,]+\.?\d*)\s*[→\-—]+\s*([^$]{10,120}?)(?=\$[\d]|$)',
-        re.MULTILINE
+        r'\$([\d,]+\.?\d*)\s*[–\-—]+\s*\$?([\d,]+\.?\d*)\s*[→–\-—]+\s*([^$\n]{10,150}?)(?=\n?\$[\d]|\Z)',
+        re.MULTILINE | re.DOTALL
     )
 
     for m in range_pattern.finditer(section):
