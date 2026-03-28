@@ -81,6 +81,20 @@ COMPANY_TO_TICKER = {
     "raytheon": "RTX",
     "rtx": "RTX",
     "kweb": "KWEB",
+    "robinhood": "HOOD",
+    "shopify": "SHOP",
+    "on holdings": "ONON",
+    "on running": "ONON",
+    "gamestop": "GME",
+    "chewy": "CHWY",
+    "merck": "MRK",
+    "spacex": "SPCE",
+    "cipher mining": "CIFR",
+    "navan": "NVAN",
+    "vinfast": "VFS",
+    "kb home": "KBH",
+    "pdd": "PDD",
+    "sk hynix": "000660.KS",
 }
 
 # Bias keywords
@@ -105,46 +119,50 @@ def extract_ticker(headline: str, text: str) -> str:
         if name in headline_lower:
             return ticker
 
+    # Last resort: first ALL-CAPS word in headline (2–5 chars) may be the ticker
+    caps = re.findall(r'\b([A-Z]{2,5})\b', headline)
+    if caps:
+        return caps[0]
+
     return "UNKNOWN"
 
 
 def parse_price_zones(section: str) -> list[dict]:
-    """Parse price zones from Support: or Resistance: section text."""
+    """Parse price zones from Support: or Resistance: section text.
+    
+    Handles formats:
+      $592–594 → notes
+      $592 – $594 → notes
+      $592.50 – $594.00 → notes
+      $24.75 – $25.00 → notes
+    """
     zones = []
 
-    # Pattern: $XXX – $XXX — description  OR  $XXX.XX – description
-    # Also handles: $XXX.XX – $XXX.XX – description
-    price_pattern = re.compile(
-        r'\$([\d,]+\.?\d*)\s*[–\-—]+\s*\$([\d,]+\.?\d*)\s*[–\-—]+\s*([^\n$]{5,80})',
-        re.MULTILINE
-    )
-    single_pattern = re.compile(
-        r'\$([\d,]+\.?\d*)\s*[–\-—]+\s*([^\n$]{5,80})',
+    # Normalize section: collapse newlines so split zones join properly
+    section = re.sub(r'\n+', ' ', section)
+
+    # Pattern: $LOW[–/-]HIGH → notes   (HIGH may or may not have $)
+    # Covers: $592–594, $592 – $594, $592–$594, $24.75 – $25.00
+    range_pattern = re.compile(
+        r'\$([\d,]+\.?\d*)\s*[–\-—]+\s*\$?([\d,]+\.?\d*)\s*[→\-—]+\s*([^$]{10,120}?)(?=\$[\d]|$)',
         re.MULTILINE
     )
 
-    for m in price_pattern.finditer(section):
-        low = float(m.group(1).replace(",", ""))
+    for m in range_pattern.finditer(section):
+        low  = float(m.group(1).replace(",", ""))
         high = float(m.group(2).replace(",", ""))
-        notes = m.group(3).strip().rstrip(".")
+        notes = m.group(3).strip().rstrip(".,")
+
+        # Sanity: high should be >= low; if not, swap
+        if high < low:
+            low, high = high, low
+
         zones.append({
-            "low": low,
-            "high": high,
-            "zone": f"{low}–{high}",
+            "low":   low,
+            "high":  high,
+            "zone":  f"${low}–${high}",
             "notes": notes
         })
-
-    # If no range zones found, try single price zones
-    if not zones:
-        for m in single_pattern.finditer(section):
-            price = float(m.group(1).replace(",", ""))
-            notes = m.group(2).strip().rstrip(".")
-            zones.append({
-                "low": price,
-                "high": price,
-                "zone": str(price),
-                "notes": notes
-            })
 
     return zones
 
