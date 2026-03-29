@@ -136,3 +136,50 @@ git add -A && git commit -m "Remove old flat scripts — refactor complete" && g
 - [ ] `watch TICKER` auto-persist to positions.json (lost on restart)
 - [ ] Reorganize orchestrator.py to use new module paths
 - [ ] Update SCRIPT-EXAMPLE-USAGE.md with new paths
+
+---
+
+## Build: Position Sizing & Risk Calculator
+
+Complete the trading system with the missing risk management layer.
+
+### What to build
+A position sizing calculator integrated into TradeDesk:
+
+```
+You: "GLD entry $415, stop $410"
+TradeDesk: "Position size: 142 shares. Risk: $710 (1.4% of $50K account)"
+```
+
+### Formula (ATR-based — pro standard)
+```
+Shares = (Account × Risk%) / (Entry - Stop)
+
+Example:
+Account   = $50,000
+Risk      = 1% = $500
+Entry     = $415
+Stop      = $410
+Risk/share = $5
+
+Shares = $500 / $5 = 100 shares
+Dollar risk = 100 × $5 = $500
+Target (2:1) = $415 + $10 = $425
+```
+
+### System rules to define
+- Max risk per trade: 1–2% of account
+- Max daily loss: 5% of account → stop trading
+- Max drawdown: 15% → review system
+- Min R/R ratio: 2:1 before entering any trade
+- Correlation limit: no more than 3 correlated positions
+
+### Integration points
+- Telegram: "size GLD 415 stop 410" → instant calculation
+- Bridge endpoint: `POST /size` with entry/stop/account
+- Watcher: include suggested size in P&L snapshot
+
+### Phase 2 (after calculator works)
+- Backtest our existing signals (VWAP, S/R, VCP) on historical data
+- Measure actual win rate, expectancy, Sharpe ratio
+- Only keep signals with proven edge
