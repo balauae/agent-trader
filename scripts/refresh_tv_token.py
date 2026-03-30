@@ -13,6 +13,28 @@ How it works:
 - TradingView embeds the auth_token JWT in the chart page HTML
 - The token is used by tvdatafeed to authenticate WebSocket data feed
 - The bala browser profile has persistent Google login (no re-auth needed)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+MANUAL FALLBACK (when this script fails — e.g. CDP connection refused)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+If this script fails, the OpenClaw AI agent can refresh the token manually
+using the browser tool. The agent should:
+
+1. Use: browser(action="open", url="https://www.tradingview.com/chart/pDbiSupQ/", profile="bala")
+2. Wait 6 seconds: browser(action="act", request={"kind":"wait","timeMs":6000})
+3. Extract token from page HTML:
+   browser(action="act", request={
+     "kind": "evaluate",
+     "fn": "document.documentElement.innerHTML.match(/\"auth_token\":\"([^\"]+)\"/)?.[1] || 'not found'"
+   })
+4. Save the returned JWT string to .secrets/tradingview.json as {"auth_token": "<token>"}
+
+NOTE: The token is NOT in cookies — it is embedded in the page HTML as a JSON variable.
+Cookies won't have it. localStorage won't have it. It's in document.documentElement.innerHTML.
+
+The token format: eyJhbGci... (JWT, 3 dot-separated base64 segments)
+Token lifespan: ~4 hours (check exp field in JWT payload)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 """
 
 import json
@@ -39,6 +61,59 @@ MAX_RETRIES     = 3
 def log(msg):
     ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     print(f"[{ts}] {msg}")
+
+
+def save_token_direct(token: str) -> bool:
+    """
+    Save a JWT token directly to .secrets/tradingview.json.
+    
+    Use this when the agent extracts the token manually via browser tool:
+      python scripts/refresh_tv_token.py --token "eyJhbGci..."
+    
+    Also callable from OpenClaw agent after browser evaluate step.
+    """
+    import base64
+
+    if not token or not token.startswith("eyJ"):
+        log("ERROR: Invalid token format (expected JWT starting with eyJ)")
+        return False
+
+    try:
+        # Decode JWT payload to get expiry + plan
+        payload_b64 = token.split(".")[1]
+        payload_b64 += "=" * (4 - len(payload_b64) % 4)
+        payload = json.loads(base64.b64decode(payload_b64))
+        exp = payload.get("exp", 0)
+        exp_dt = datetime.fromtimestamp(exp, tz=timezone.utc)
+        plan = payload.get("plan", "unknown")
+        user_id = payload.get("user_id", "unknown")
+        log(f"Plan: {plan} | User ID: {user_id} | Expires: {exp_dt.strftime('%Y-%m-%d %H:%M UTC')}")
+    except Exception as e:
+        log(f"Warning: could not decode JWT payload: {e}")
+        exp_dt = None
+        plan = "unknown"
+        user_id = "unknown"
+
+    existing = {}
+    if SECRETS_FILE.exists():
+        try:
+            existing = json.loads(SECRETS_FILE.read_text())
+        except Exception:
+            pass
+
+    existing.update({
+        "auth_token": token,
+        "plan": plan,
+        "user_id": str(user_id),
+        "token_expires": exp_dt.isoformat() if exp_dt else None,
+        "token_refreshed_at": datetime.now(tz=timezone.utc).isoformat(),
+        "login_method": "browser_evaluate"
+    })
+
+    SECRETS_FILE.parent.mkdir(exist_ok=True)
+    SECRETS_FILE.write_text(json.dumps(existing, indent=2))
+    log(f"Token saved ✅ ({len(token)} chars) → {SECRETS_FILE}")
+    return True
 
 
 def start_browser():
@@ -233,5 +308,10 @@ def refresh_token():
 
 
 if __name__ == "__main__":
-    success = refresh_token()
+    # Allow direct token injection:
+    #   python scripts/refresh_tv_token.py --token "eyJhbGci..."
+    if len(sys.argv) == 3 and sys.argv[1] == "--token":
+        success = save_token_direct(sys.argv[2])
+    else:
+        success = refresh_token()
     sys.exit(0 if success else 1)

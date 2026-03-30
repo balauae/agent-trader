@@ -27,7 +27,7 @@ from tvDatafeed import TvDatafeed, Interval
 logger = logging.getLogger(__name__)
 
 # --- Paths ---
-REPO_ROOT    = Path(__file__).parent.parent
+REPO_ROOT    = Path(__file__).parent.parent.parent
 SECRETS_FILE = REPO_ROOT / ".secrets" / "tradingview.json"
 
 # --- Timeframe map ---
@@ -75,10 +75,15 @@ def _get_tv_client() -> TvDatafeed:
             if remaining < 1800:
                 logger.warning(f"TV token expires in {remaining/60:.0f}min — refresh soon")
 
-    tv = TvDatafeed()
     if token:
+        # Patch token AFTER init — TvDatafeed sets token in __init__ via __auth(),
+        # so we override it after construction
+        tv = TvDatafeed()
         tv.token = token
+        # Suppress the "nologin" path by directly injecting token into session headers
+        logger.info(f"TV token loaded ({len(token)} chars)")
     else:
+        tv = TvDatafeed()
         logger.warning("No TV token found — using anonymous (limited data)")
 
     _tv_client = tv
