@@ -174,3 +174,46 @@ def support_resistance_multi(ticker: str, timeframes: str = "1D,1h", bars: int =
     if "error" in data:
         raise HTTPException(500, data["error"])
     return data
+
+
+@app.get("/technical/{ticker}")
+def technical(ticker: str, timeframe: str = "1D"):
+    """Technical analysis (alias for /analyze with timeframe param)."""
+    data = run_script("analysis/technical.py", ticker.upper(), timeframe)
+    if "error" in data:
+        raise HTTPException(500, data["error"])
+    return data
+
+
+WATCHER_SOCK = "/tmp/tradedesk-manager.sock"
+
+def _watcher_get(path: str):
+    """GET request to Go watcher via Unix socket using curl."""
+    try:
+        result = subprocess.run(
+            ["curl", "-s", "--unix-socket", WATCHER_SOCK, f"http://localhost{path}"],
+            capture_output=True, text=True, timeout=5
+        )
+        if result.returncode != 0 or not result.stdout.strip():
+            return None
+        return json.loads(result.stdout)
+    except Exception as e:
+        return None
+
+
+@app.get("/positions")
+def get_positions():
+    """Live positions from Go watcher (price, VWAP, RSI, PnL)."""
+    data = _watcher_get("/status")
+    if data is None:
+        raise HTTPException(503, "watcher not running")
+    return data or []
+
+
+@app.get("/status")
+def get_status():
+    """Watcher health + all active positions."""
+    data = _watcher_get("/status")
+    if data is None:
+        raise HTTPException(503, "watcher not running")
+    return {"watchers": data or [], "count": len(data) if data else 0}

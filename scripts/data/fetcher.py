@@ -46,6 +46,14 @@ TF_MAP = {
 # --- Exchange map (default NASDAQ, override as needed) ---
 EXCHANGE_MAP = {
     "SPY": "AMEX", "QQQ": "NASDAQ", "IWM": "AMEX",
+    "DIA": "AMEX", "GLD": "AMEX", "SLV": "AMEX",
+    "XLF": "AMEX", "XLE": "AMEX", "XLK": "AMEX",
+    "XLV": "AMEX", "XLI": "AMEX", "XLP": "AMEX",
+    "XLU": "AMEX", "XLB": "AMEX", "XLC": "AMEX",
+    "XLRE": "AMEX", "XBI": "AMEX", "XOP": "AMEX",
+    "VXX": "AMEX", "TLT": "NASDAQ", "HYG": "AMEX",
+    "EEM": "AMEX", "EFA": "AMEX", "VTI": "AMEX",
+    "VOO": "AMEX", "ARKK": "AMEX",
     "VIX": "CBOE", "DXY": "TVC",
     "GOLD": "TVC", "USOIL": "TVC",
 }
