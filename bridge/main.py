@@ -104,7 +104,7 @@ def fundamental(ticker: str):
 @app.get("/calendar")
 def calendar():
     """Today's economic calendar events."""
-    data = run_script("feeds/calendar.py")
+    data = run_script("feeds/econ_calendar.py")
     if "error" in data:
         raise HTTPException(500, data["error"])
     return data

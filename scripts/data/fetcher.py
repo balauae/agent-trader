@@ -123,7 +123,7 @@ def get_ohlcv(
         try:
             if attempt > 0:
                 time.sleep(1.5 * attempt)
-                tv = _get_tv_client()  # fresh client on retry
+                # Re-use same client — do NOT create new one (new TvDatafeed() resets token)
             df = tv.get_hist(ticker.upper(), exch, interval=interval, n_bars=bars)
             if df is None or df.empty:
                 df = tv.get_hist(ticker.upper(), "NYSE", interval=interval, n_bars=bars)
