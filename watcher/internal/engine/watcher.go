@@ -226,13 +226,15 @@ func (w *Watcher) checkAlerts(price float64) {
 		}
 		w.cooldown.Record(w.pos.Ticker, a.Type)
 		w.events <- Event{
-			Type:    EventAlert,
-			Ticker:  w.pos.Ticker,
-			Price:   price,
-			VWAP:    w.vwap.Value(),
-			RSI:     w.rsi.Value(),
-			Message: a.Message,
-			Time:    time.Now(),
+			Type:      EventAlert,
+			AlertType: string(a.Type),
+			Ticker:    w.pos.Ticker,
+			Price:     price,
+			VWAP:      w.vwap.Value(),
+			RSI:       w.rsi.Value(),
+			PnL:       w.pos.PnLDollars(price),
+			Message:   a.Message,
+			Time:      time.Now(),
 		}
 	}
 }

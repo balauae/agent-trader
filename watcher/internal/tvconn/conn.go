@@ -1,10 +1,13 @@
 package tvconn
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"math/rand"
+	"net"
 	"net/http"
+	"os"
 	"strings"
 	"sync"
 	"time"
@@ -156,10 +159,10 @@ func (c *Conn) ReadLoop() {
 	}()
 	defer close(c.done)
 	for {
-		c.ws.SetReadDeadline(time.Now().Add(10 * time.Second))
+		c.ws.SetReadDeadline(time.Now().Add(30 * time.Second))
 		_, msg, err := c.ws.ReadMessage()
 		if err != nil {
-			if strings.Contains(err.Error(), "timeout") || strings.Contains(err.Error(), "i/o timeout") {
+			if isTimeout(err) {
 				continue
 			}
 			select {
@@ -233,6 +236,18 @@ func (c *Conn) sendMsg(funcName string, args []interface{}) error {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 	return c.ws.WriteMessage(websocket.TextMessage, []byte(wrapped))
+}
+
+// isTimeout returns true if the error is a read deadline timeout.
+func isTimeout(err error) bool {
+	if errors.Is(err, os.ErrDeadlineExceeded) {
+		return true
+	}
+	var netErr net.Error
+	if errors.As(err, &netErr) && netErr.Timeout() {
+		return true
+	}
+	return strings.Contains(err.Error(), "i/o timeout")
 }
 
 // randomSession generates a random session ID with the given prefix.

@@ -15,8 +15,9 @@ import (
 )
 
 const (
-	maxRestartsPerHour = 3
-	restartDelay       = 5 * time.Second
+	maxRestartsPerHour = 6
+	baseRestartDelay   = 5 * time.Second
+	maxRestartDelay    = 5 * time.Minute
 )
 
 // Supervisor manages multiple watcher goroutines.
@@ -260,8 +261,16 @@ func (s *Supervisor) runWithRestart(pos position.Position, w *Watcher) {
 			return
 		}
 
-		log.Printf("[supervisor] restarting %s watcher in %v (restart %d/%d)", pos.Ticker, restartDelay, restarts, maxRestartsPerHour)
-		time.Sleep(restartDelay)
+		// Exponential backoff: 5s, 10s, 20s, 40s, ... capped at 5m
+		delay := baseRestartDelay
+		for i := 1; i < restarts; i++ {
+			delay *= 2
+		}
+		if delay > maxRestartDelay {
+			delay = maxRestartDelay
+		}
+		log.Printf("[supervisor] restarting %s watcher in %v (restart %d/%d)", pos.Ticker, delay, restarts, maxRestartsPerHour)
+		time.Sleep(delay)
 
 		// Create fresh watcher
 		w = NewWatcher(pos, s.cfg, s.events, s.registry)
@@ -343,5 +352,9 @@ func (s *Supervisor) LogAlert(evt Event) {
 	if s.alertDB == nil {
 		return
 	}
-	s.alertDB.Log(evt.Ticker, string(evt.Type), evt.Price, 0, 0, 0, evt.Message)
+	alertType := evt.AlertType
+	if alertType == "" {
+		alertType = "alert"
+	}
+	s.alertDB.Log(evt.Ticker, alertType, evt.Price, evt.VWAP, evt.RSI, evt.PnL, evt.Message)
 }

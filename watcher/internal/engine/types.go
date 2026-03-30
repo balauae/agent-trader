@@ -43,15 +43,17 @@ const (
 
 // Event is emitted by a watcher goroutine to the supervisor.
 type Event struct {
-	Type    EventType
-	Ticker  string
-	State   WatcherState
-	Price   float64
-	VWAP    float64
-	RSI     float64
-	Message string
-	Error   interface{}
-	Time    time.Time
+	Type      EventType
+	AlertType string    // human-readable alert type e.g. "vwap_break", "stop_hit"
+	Ticker    string
+	State     WatcherState
+	Price     float64
+	VWAP      float64
+	RSI       float64
+	PnL       float64
+	Message   string
+	Error     interface{}
+	Time      time.Time
 }
 
 // Command is sent from the supervisor/API to a watcher.
