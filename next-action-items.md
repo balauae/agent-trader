@@ -1,106 +1,120 @@
-# Next Action Items — Monday March 31
+# Next Action Items — Updated March 30, 2026
 
-## Pre-Market (5:00 PM AbuDhabi)
+## ✅ Completed (March 30)
 
-### 1. Start services
-```bash
-systemctl --user start tradedesk-bridge
-systemctl --user start tradedesk-watcher
-```
-
-### 2. Verify S/R levels loaded from TV
-```bash
-journalctl --user -u tradedesk-watcher -n 20 | grep "S/R levels"
-# Expected: [watcher:GLD] loaded 4 S/R levels: [399.98 411.37 420.59 428.59]
-```
-
-### 3. Test new script paths (refactored modules)
-```bash
-# NEW paths — these must work now
-.venv/bin/python scripts/analysis/levels.py GLD 1D 200 2>/dev/null | python3 -c "import sys,json; d=json.load(sys.stdin); print('levels OK:', d.get('ticker'), d.get('data_source'))"
-.venv/bin/python scripts/analysis/technical.py GLD 1D 2>/dev/null | python3 -c "import sys,json; d=json.load(sys.stdin); print('technical OK:', d.get('bias'), 'weinstein:', d.get('weinstein',{}).get('label'))"
-.venv/bin/python scripts/analysis/fundamental.py GLD 2>/dev/null | python3 -c "import sys,json; d=json.load(sys.stdin); print('fundamental OK, canslim:', d.get('canslim',{}).get('score'))"
-.venv/bin/python scripts/vcp_scanner.py GLD 1D 200 2>/dev/null | python3 -c "import sys,json; d=json.load(sys.stdin); print('vcp OK:', d.get('summary'))"
-```
-
-### 4. Test bridge endpoints (new paths)
-```bash
-curl -s http://localhost:8000/technical/GLD | python3 -c "import sys,json; d=json.load(sys.stdin); print('bridge technical OK:', d.get('bias'))"
-curl -s http://localhost:8000/sr/GLD | python3 -c "import sys,json; d=json.load(sys.stdin); print('bridge SR OK:', d.get('nearest_resistance'))"
-curl -s http://localhost:8000/vcp/GLD | python3 -c "import sys,json; d=json.load(sys.stdin); print('bridge VCP OK:', d.get('action'))"
-```
+- [x] Services running: `tradedesk-watcher` + `tradedesk-bridge`
+- [x] S/R levels loading on startup
+- [x] All new module paths tested and working (`scripts/analysis/`, `scripts/data/`, `scripts/feeds/`, `scripts/session/`)
+- [x] Exchange map fix — AMEX ETFs/GLD now use correct exchange (commit `b2e3ea1`)
+- [x] Bridge routes added: `/technical/{ticker}`, `/positions`, `/status`
+- [x] Strategy fields verified: Weinstein, Williams %R, Raschke fade, Livermore pivot, CANSLIM
+- [x] SQLite alert log working — AlertType string fix (commit `0a95be6`)
+- [x] Stale flat scripts cleaned up — `data_fetcher.py` is intentional re-export shim (stays)
+- [x] GLD hit target $420.00 — watcher alert fired correctly 🎯
+- [x] TraderTV Mar 30 note processed and sent to Telegram
+- [x] Pattern detection working — AAPL/NVDA/CRWV all show Double Top (90% conf)
 
 ---
 
-## Market Open (5:30 PM AbuDhabi)
+## 🔧 Minor Fixes Needed
 
-### 5. Test session scripts with live data
-```bash
-# Pre-market (run at 5 PM before open)
-.venv/bin/python scripts/session/premarket.py GLD 2>/dev/null | python3 -c "import sys,json; d=json.load(sys.stdin); print('premarket OK:', d.get('setup'), 'raschke:', d.get('raschke_fade',{}).get('setup'))"
-
-# Opening range (run at 5:35 PM)
-.venv/bin/python scripts/session/open.py GLD 2>/dev/null | python3 -c "import sys,json; d=json.load(sys.stdin); print('open OK:', d.get('setup'), 'williams:', d.get('williams_breakout',{}).get('buy_level'))"
-
-# Post-market (run after 30 min of trading)
-.venv/bin/python scripts/session/postmarket.py GLD 2>/dev/null | python3 -c "import sys,json; d=json.load(sys.stdin); print('postmarket OK:', d.get('data_source'))"
-```
-
-### 6. Watch for alerts
-- GLD closed Friday at $414.70
-- **$415.00** resistance — 0.07% away, alert fires almost immediately
-- **$420.59** — EMA9/target area, confluent 1D+1h
-- Expected: `📍 GLD approaching resistance $415.00`
-- Expected: `📊 P&L Snapshot` every 30 min after 5:30 PM
+- [ ] `scripts/session/overnight.py` — `bias` key missing from output
+- [ ] `scripts/vcp_scanner.py` — `vcp_detected` key missing from output
 
 ---
 
-## New Strategy Fields to Verify
+## 🔨 Build Queue (priority order)
 
-| Script | New Field | Expected |
-|--------|-----------|---------|
-| `analysis/technical.py` | `weinstein` | `{stage: 2, label: "ADVANCING"}` |
-| `analysis/technical.py` | `indicators.williams_r` | number between -100 and 0 |
-| `session/premarket.py` | `raschke_fade` | `{setup: "fade-short/long/no-fade"}` |
-| `session/open.py` | `williams_breakout` | `{buy_level: X, short_level: Y}` |
-| `analysis/levels.py` | `livermore_pivot` | `{pivot_level: X, confirmed: bool}` |
-| `analysis/fundamental.py` | `canslim` | `{score: "X/7", rating: "Strong/Moderate/Weak"}` |
-| `vcp_scanner.py` | `vcp.vcp_detected` | true/false |
+### 1. Position Sizing & Risk Calculator
+The missing risk management layer.
+
+**Trigger:** `"size GLD 415 stop 410"` → instant calculation
+
+**Formula (ATR-based):**
+```
+Shares = (Account × Risk%) / (Entry - Stop)
+
+Example:
+Account    = $50,000
+Risk       = 1% = $500
+Entry      = $415
+Stop       = $410
+Risk/share = $5
+Shares     = 100
+Dollar risk = $500
+Target (2:1) = $425
+```
+
+**System rules:**
+- Max risk per trade: 1–2% of account
+- Max daily loss: 5% → stop trading
+- Max drawdown: 15% → review system
+- Min R/R: 2:1 before entering
+- Correlation limit: max 3 correlated positions
+
+**Integration:**
+- Telegram: `"size GLD 415 stop 410"` → response
+- Bridge: `POST /size` with entry/stop/account
+- Watcher: include size suggestion in P&L snapshot
 
 ---
 
-## SQLite Alert Log
+### 2. Break Alerts
+`🔼 GLD broke above $420.59` — proximity detection exists, break detection missing.
 
-### 7. Verify alerts are being logged
-```bash
-sqlite3 data/alerts.db "SELECT * FROM alerts ORDER BY ts DESC LIMIT 10;"
-```
-
-### 8. Test bridge alert endpoints
-```bash
-curl -s http://localhost:8000/alerts/GLD | python3 -m json.tool
-curl -s http://localhost:8000/alerts | python3 -m json.tool
-```
+Go watcher `conditions.go` — add break detection logic:
+- Track last price vs level
+- Fire `broke_above` / `broke_below` when price crosses
 
 ---
 
-## Things to verify
+### 3. Pre-Market Brief Automation
+Daily at 5:00 PM AbuDhabi (1 hr before open):
+- Fetch TraderTV note
+- Run premarket.py on watchlist top movers
+- Send Telegram summary
 
-| Check | Expected |
-|-------|----------|
-| New module paths work | ✅ all imports |
-| `data_source: "tv"` in outputs | TV when market open |
-| S/R proximity alert fires | Within first few bars |
-| P&L snapshot sends to Telegram | Every 30 min |
-| SQLite alert log populates | After first alert |
-| No duplicate alerts | 30 min cooldown |
+Cron job: agentTurn payload, 5 PM AbuDhabi daily.
+
+---
+
+### 4. `watch TICKER` Persistence
+`/watch` API adds ticker to watcher but **not** to `data/positions.json` → lost on restart.
+
+Fix in `watcher/internal/api/server.go`:
+- On `/watch` POST → also write to `positions.json`
+
+---
+
+### 5. S/R Levels Mid-Day Refresh
+Currently loaded once on startup. Add refresh every 2 hours during market hours.
+
+Fix in `watcher/internal/engine/supervisor.go`.
+
+---
+
+### 6. `/stop/TICKER` Bug Fix
+Go watcher responds OK but goroutine doesn't actually die.
+Must use `systemctl --user stop tradedesk-watcher` to kill all watchers.
+
+Fix in `watcher/internal/api/server.go` — cancel goroutine context on stop.
+
+---
+
+## Phase 2 (after above done)
+
+- [ ] Backtest existing signals (VWAP, S/R, VCP) on historical data
+- [ ] Measure win rate, expectancy, Sharpe ratio
+- [ ] Wire `tradertv` skill into orchestrator routing table
+- [ ] Build trading AutoResearch system (`misc/autoresearch-trading/`)
+- [ ] TV token auto-refresh when browser not running overnight
 
 ---
 
 ## If something breaks
 
 ```bash
-# Check logs
+# Logs
 journalctl --user -u tradedesk-watcher -f
 journalctl --user -u tradedesk-bridge -f
 
@@ -108,78 +122,6 @@ journalctl --user -u tradedesk-bridge -f
 cd ~/dev/apps/agent-trader/watcher && make deploy
 systemctl --user restart tradedesk-bridge
 
-# Fallback — old flat scripts still exist until confirmed working
-.venv/bin/python scripts/technical_analyst.py GLD  # old path still works
+# Socket check
+curl -s --unix-socket /tmp/tradedesk-manager.sock http://localhost/status
 ```
-
----
-
-## After Monday test passes → cleanup
-
-```bash
-# Delete old flat scripts (only after new paths confirmed working)
-cd ~/dev/apps/agent-trader/scripts
-rm technical_analyst.py fundamental_analyst.py pattern_finder.py support_resistance.py \
-   timeframe_analyzer.py premarket_specialist.py market_open_scalper.py \
-   postmarket_summarizer.py overnight_expert.py news_fetcher.py \
-   economic_calendar.py vwap_watcher.py data_fetcher.py scanner.py build_ticker_db.py
-git add -A && git commit -m "Remove old flat scripts — refactor complete" && git push
-```
-
----
-
-## Pending features (build after Monday test)
-
-- [ ] Break alerts: `🔼 GLD broke above $420.59` (proximity built, break detection not yet)
-- [ ] S/R levels refresh mid-day (currently loaded once on startup)
-- [ ] Pre-market brief automation (daily 5 PM AbuDhabi)
-- [ ] `watch TICKER` auto-persist to positions.json (lost on restart)
-- [ ] Reorganize orchestrator.py to use new module paths
-- [ ] Update SCRIPT-EXAMPLE-USAGE.md with new paths
-
----
-
-## Build: Position Sizing & Risk Calculator
-
-Complete the trading system with the missing risk management layer.
-
-### What to build
-A position sizing calculator integrated into TradeDesk:
-
-```
-You: "GLD entry $415, stop $410"
-TradeDesk: "Position size: 142 shares. Risk: $710 (1.4% of $50K account)"
-```
-
-### Formula (ATR-based — pro standard)
-```
-Shares = (Account × Risk%) / (Entry - Stop)
-
-Example:
-Account   = $50,000
-Risk      = 1% = $500
-Entry     = $415
-Stop      = $410
-Risk/share = $5
-
-Shares = $500 / $5 = 100 shares
-Dollar risk = 100 × $5 = $500
-Target (2:1) = $415 + $10 = $425
-```
-
-### System rules to define
-- Max risk per trade: 1–2% of account
-- Max daily loss: 5% of account → stop trading
-- Max drawdown: 15% → review system
-- Min R/R ratio: 2:1 before entering any trade
-- Correlation limit: no more than 3 correlated positions
-
-### Integration points
-- Telegram: "size GLD 415 stop 410" → instant calculation
-- Bridge endpoint: `POST /size` with entry/stop/account
-- Watcher: include suggested size in P&L snapshot
-
-### Phase 2 (after calculator works)
-- Backtest our existing signals (VWAP, S/R, VCP) on historical data
-- Measure actual win rate, expectancy, Sharpe ratio
-- Only keep signals with proven edge
