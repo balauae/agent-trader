@@ -18,8 +18,8 @@ from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
-from scripts.technical_analyst import analyze as tech_analyze
-from scripts.vwap_watcher import analyze as vwap_analyze
+from scripts.analysis.technical import analyze as tech_analyze
+from scripts.feeds.vwap import analyze as vwap_analyze
 
 logger = logging.getLogger(__name__)
 
