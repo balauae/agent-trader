@@ -2,104 +2,63 @@
 """
 TradingView Auth Token Refresher
 =================================
-Opens the 'bala' OpenClaw browser profile (already logged into TradingView via Google),
-loads the chart page, extracts the JWT auth token from the page HTML, and saves it to
-.secrets/tradingview.json.
+Launches Chrome with the user's profile + remote debugging, opens TradingView,
+extracts the JWT auth token via CDP, and saves to .secrets/tradingview.json.
 
 Run manually:    python scripts/refresh_tv_token.py
-Run via cron:    every 4 hours via OpenClaw cron job
+Direct inject:   python scripts/refresh_tv_token.py --token "eyJhbGci..."
 
-How it works:
-- TradingView embeds the auth_token JWT in the chart page HTML
-- The token is used by tvdatafeed to authenticate WebSocket data feed
-- The bala browser profile has persistent Google login (no re-auth needed)
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-MANUAL FALLBACK (when this script fails — e.g. CDP connection refused)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-If this script fails, the OpenClaw AI agent can refresh the token manually
-using the browser tool. The agent should:
-
-1. Use: browser(action="open", url="https://www.tradingview.com/chart/pDbiSupQ/", profile="bala")
-2. Wait 6 seconds: browser(action="act", request={"kind":"wait","timeMs":6000})
-3. Extract token from page HTML:
-   browser(action="act", request={
-     "kind": "evaluate",
-     "fn": "document.documentElement.innerHTML.match(/\"auth_token\":\"([^\"]+)\"/)?.[1] || 'not found'"
-   })
-4. Save the returned JWT string to .secrets/tradingview.json as {"auth_token": "<token>"}
-
-NOTE: The token is NOT in cookies — it is embedded in the page HTML as a JSON variable.
-Cookies won't have it. localStorage won't have it. It's in document.documentElement.innerHTML.
-
-The token format: eyJhbGci... (JWT, 3 dot-separated base64 segments)
-Token lifespan: ~4 hours (check exp field in JWT payload)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+No Playwright, no complex deps — just Chrome + CDP over HTTP.
 """
 
 import json
+import base64
+import os
+import sys
 import time
 import subprocess
 import urllib.request
 import urllib.error
-import re
-import os
-import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
-# --- Config ---
-REPO_ROOT       = Path(__file__).parent.parent
-SECRETS_FILE    = REPO_ROOT / ".secrets" / "tradingview.json"
-CDP_PORT        = 18801
-CDP_URL         = f"http://127.0.0.1:{CDP_PORT}"
-TV_CHART_URL    = "https://www.tradingview.com/chart/"
-WAIT_LOAD_SEC   = 6      # seconds to wait for page to load
-MAX_RETRIES     = 3
+REPO_ROOT = Path(__file__).parent.parent
+SECRETS_FILE = REPO_ROOT / ".secrets" / "tradingview.json"
+TV_CHART_URL = "https://www.tradingview.com/chart/"
+CHROME_BIN = "/usr/bin/google-chrome"
+USER_DATA_DIR = os.path.expanduser("~/.openclaw/browser/bala/user-data")
+CDP_PORT = 18801
+CDP_URL = f"http://127.0.0.1:{CDP_PORT}"
+MAX_RETRIES = 3
 
 
 def log(msg):
-    ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    ts = datetime.now().strftime("%H:%M:%S")
     print(f"[{ts}] {msg}")
 
 
-def save_token_direct(token: str) -> bool:
-    """
-    Save a JWT token directly to .secrets/tradingview.json.
-    
-    Use this when the agent extracts the token manually via browser tool:
-      python scripts/refresh_tv_token.py --token "eyJhbGci..."
-    
-    Also callable from OpenClaw agent after browser evaluate step.
-    """
-    import base64
-
+def save_token(token: str, method: str = "cdp") -> bool:
+    """Save a JWT token to .secrets/tradingview.json."""
     if not token or not token.startswith("eyJ"):
-        log("ERROR: Invalid token format (expected JWT starting with eyJ)")
+        log("ERROR: Invalid token (expected JWT starting with eyJ)")
         return False
-
     try:
-        # Decode JWT payload to get expiry + plan
         payload_b64 = token.split(".")[1]
         payload_b64 += "=" * (4 - len(payload_b64) % 4)
         payload = json.loads(base64.b64decode(payload_b64))
-        exp = payload.get("exp", 0)
-        exp_dt = datetime.fromtimestamp(exp, tz=timezone.utc)
-        plan = payload.get("plan", "unknown")
-        user_id = payload.get("user_id", "unknown")
-        log(f"Plan: {plan} | User ID: {user_id} | Expires: {exp_dt.strftime('%Y-%m-%d %H:%M UTC')}")
+        exp_dt = datetime.fromtimestamp(payload.get("exp", 0), tz=timezone.utc)
+        plan = payload.get("plan", "?")
+        user_id = payload.get("user_id", "?")
+        log(f"Plan: {plan} | User: {user_id} | Expires: {exp_dt.strftime('%Y-%m-%d %H:%M UTC')}")
     except Exception as e:
-        log(f"Warning: could not decode JWT payload: {e}")
+        log(f"JWT decode warning: {e}")
         exp_dt = None
-        plan = "unknown"
-        user_id = "unknown"
+        plan = user_id = "unknown"
 
     existing = {}
     if SECRETS_FILE.exists():
-        try:
-            existing = json.loads(SECRETS_FILE.read_text())
-        except Exception:
-            pass
+        try: existing = json.loads(SECRETS_FILE.read_text())
+        except Exception: pass
 
     existing.update({
         "auth_token": token,
@@ -107,211 +66,165 @@ def save_token_direct(token: str) -> bool:
         "user_id": str(user_id),
         "token_expires": exp_dt.isoformat() if exp_dt else None,
         "token_refreshed_at": datetime.now(tz=timezone.utc).isoformat(),
-        "login_method": "browser_evaluate"
+        "login_method": method,
     })
-
     SECRETS_FILE.parent.mkdir(exist_ok=True)
     SECRETS_FILE.write_text(json.dumps(existing, indent=2))
-    log(f"Token saved ✅ ({len(token)} chars) → {SECRETS_FILE}")
+    log(f"Token saved ({len(token)} chars)")
     return True
 
 
-def start_browser():
-    """Start the bala OpenClaw browser profile via openclaw CLI."""
-    log("Starting bala browser profile...")
-    result = subprocess.run(
-        ["openclaw", "browser", "start", "--profile", "bala"],
-        capture_output=True, text=True, timeout=15
-    )
-    time.sleep(3)
-    return result.returncode == 0
+def cdp_get(path: str, timeout: int = 10):
+    """GET request to CDP HTTP endpoint."""
+    with urllib.request.urlopen(f"{CDP_URL}{path}", timeout=timeout) as r:
+        return json.loads(r.read())
 
 
-def stop_browser():
-    """Stop the bala browser profile."""
-    log("Stopping bala browser profile...")
-    subprocess.run(
-        ["openclaw", "browser", "stop", "--profile", "bala"],
-        capture_output=True, text=True, timeout=10
-    )
-
-
-def cdp_request(method, params=None, target_id=None):
-    """Make a CDP (Chrome DevTools Protocol) request."""
-    if target_id:
-        url = f"{CDP_URL}/json"
-    else:
-        url = f"{CDP_URL}/json"
-
-    payload = json.dumps({"method": method, "params": params or {}}).encode()
-    req = urllib.request.Request(url, data=payload, headers={"Content-Type": "application/json"})
-    try:
-        with urllib.request.urlopen(req, timeout=10) as r:
-            return json.loads(r.read())
-    except Exception as e:
-        log(f"CDP request failed: {e}")
-        return None
-
-
-def get_open_tabs():
-    """Get list of open browser tabs via CDP."""
-    try:
-        url = f"{CDP_URL}/json"
-        with urllib.request.urlopen(url, timeout=10) as r:
-            return json.loads(r.read())
-    except Exception as e:
-        log(f"Failed to get tabs: {e}")
-        return []
-
-
-def open_tab(url):
-    """Open a new tab via CDP."""
-    try:
-        req_url = f"{CDP_URL}/json/new?{url}"
-        with urllib.request.urlopen(req_url, timeout=10) as r:
-            return json.loads(r.read())
-    except Exception as e:
-        log(f"Failed to open tab: {e}")
-        return None
-
-
-def evaluate_js(ws_debugger_url, js_code):
-    """Run JavaScript in a tab using CDP WebSocket."""
+def cdp_ws_eval(ws_url: str, js: str, timeout: int = 15) -> str | None:
+    """Evaluate JS in a tab via CDP WebSocket. Returns the string result."""
     import websocket
-
-    result_holder = {}
+    result = {}
 
     def on_message(ws, message):
         data = json.loads(message)
         if data.get("id") == 1:
-            result_holder["result"] = data.get("result", {}).get("result", {}).get("value")
+            result["value"] = data.get("result", {}).get("result", {}).get("value")
             ws.close()
 
     def on_open(ws):
-        payload = json.dumps({
+        ws.send(json.dumps({
             "id": 1,
             "method": "Runtime.evaluate",
-            "params": {"expression": js_code, "returnByValue": True}
-        })
-        ws.send(payload)
+            "params": {"expression": js, "returnByValue": True},
+        }))
 
-    ws_url = ws_debugger_url.replace("127.0.0.1", "localhost")
     ws = websocket.WebSocketApp(ws_url, on_message=on_message, on_open=on_open)
-    ws.run_forever(ping_timeout=10)
-    return result_holder.get("result")
+    ws.run_forever(ping_timeout=timeout)
+    return result.get("value")
 
 
-def extract_token_from_html(html):
-    """Extract auth_token from TradingView page HTML."""
-    match = re.search(r'"auth_token":"([^"]+)"', html)
-    if match:
-        return match.group(1)
-    return None
+def get_display() -> str:
+    """Auto-detect X display from /tmp/.X11-unix/."""
+    try:
+        sockets = [f for f in os.listdir("/tmp/.X11-unix/") if f.startswith("X")]
+        if sockets:
+            return f":{sockets[0][1:]}"
+    except Exception:
+        pass
+    return ":0"
 
 
-def refresh_token():
-    """Main token refresh flow."""
+def refresh_token() -> bool:
     log("=== TradingView Token Refresh ===")
 
-    browser_started_here = False
+    chrome_proc = None
+    we_started = False
 
-    # Check if browser already running
+    # 1. Check if CDP is already available
     try:
-        tabs = get_open_tabs()
-        if not tabs:
-            raise Exception("No tabs")
+        info = cdp_get("/json/version")
+        log(f"CDP available: {info.get('Browser', '?')}")
     except Exception:
-        if not start_browser():
-            log("ERROR: Failed to start browser")
-            return False
-        browser_started_here = True
-        time.sleep(3)
+        # 2. Need to launch Chrome with CDP
+        log("Launching Chrome with --remote-debugging-port...")
+        pkill_result = subprocess.run(["pkill", "-f", "google-chrome"], capture_output=True)
+        if pkill_result.returncode == 0:
+            log("Killed existing Chrome")
+            time.sleep(2)
 
+        display = get_display()
+        env = os.environ.copy()
+        env["DISPLAY"] = display
+        log(f"DISPLAY={display}")
+
+        chrome_proc = subprocess.Popen(
+            [CHROME_BIN, f"--remote-debugging-port={CDP_PORT}", "--remote-allow-origins=*",
+             f"--user-data-dir={USER_DATA_DIR}", "--no-first-run", TV_CHART_URL],
+            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, env=env,
+        )
+        we_started = True
+        log(f"Chrome PID: {chrome_proc.pid}")
+
+        # Wait for CDP
+        for i in range(20):
+            time.sleep(1)
+            try:
+                cdp_get("/json/version")
+                log(f"CDP ready after {i+1}s")
+                break
+            except Exception:
+                pass
+        else:
+            log("ERROR: CDP not available after 20s")
+            chrome_proc.terminate()
+            return False
+
+    # 3. Find or open a TradingView tab
     for attempt in range(1, MAX_RETRIES + 1):
         log(f"Attempt {attempt}/{MAX_RETRIES}")
-
         try:
-            # Open TradingView chart tab
-            tab = open_tab(TV_CHART_URL)
-            if not tab:
-                log("Failed to open tab, retrying...")
-                time.sleep(2)
+            tabs = cdp_get("/json")
+            tv_tab = next((t for t in tabs if "tradingview.com" in (t.get("url") or "")), None)
+
+            if tv_tab:
+                log(f"Found existing TV tab: {tv_tab['url'][:60]}")
+                ws_url = tv_tab.get("webSocketDebuggerUrl", "")
+            else:
+                log("Opening TradingView tab...")
+                # Navigate the first tab to TradingView
+                if tabs:
+                    ws_url = tabs[0].get("webSocketDebuggerUrl", "")
+                    cdp_ws_eval(ws_url, f"window.location.href = '{TV_CHART_URL}'")
+                    log("Navigating...")
+                else:
+                    log("No tabs found")
+                    continue
+
+            log("Waiting 10s for page to render...")
+            time.sleep(10)
+
+            # Re-fetch tabs to get updated WS URL after navigation
+            tabs = cdp_get("/json")
+            tv_tab = next((t for t in tabs if "tradingview.com" in (t.get("url") or "")), None)
+            if not tv_tab:
+                log("TV tab not found after navigation")
                 continue
+            ws_url = tv_tab.get("webSocketDebuggerUrl", "")
 
-            ws_url = tab.get("webSocketDebuggerUrl", "")
-            log(f"Tab opened: {tab.get('url', '')}")
-
-            # Wait for page to load
-            log(f"Waiting {WAIT_LOAD_SEC}s for page load...")
-            time.sleep(WAIT_LOAD_SEC)
-
-            # Extract auth token via JS
-            js = "document.documentElement.innerHTML.match(/\"auth_token\":\"([^\"]+)\"/)?.[1] || 'NOT_FOUND'"
-            token = evaluate_js(ws_url, js)
+            # Extract token
+            log("Extracting auth_token...")
+            js = 'document.documentElement.innerHTML.match(/"auth_token":"([^"]+)"/)?.[1] || "NOT_FOUND"'
+            token = cdp_ws_eval(ws_url, js)
 
             if not token or token == "NOT_FOUND":
-                log("Token not found in page, retrying...")
+                log("Token not found in page HTML")
                 time.sleep(3)
                 continue
 
-            log(f"Token extracted: {token[:40]}...")
-
-            # Decode JWT to check expiry
-            import base64
-            payload_b64 = token.split(".")[1]
-            payload_b64 += "=" * (4 - len(payload_b64) % 4)
-            payload = json.loads(base64.b64decode(payload_b64))
-            exp = payload.get("exp", 0)
-            exp_dt = datetime.fromtimestamp(exp, tz=timezone.utc)
-            plan = payload.get("plan", "unknown")
-            user_id = payload.get("user_id", "unknown")
-
-            log(f"Plan: {plan} | User ID: {user_id} | Expires: {exp_dt.strftime('%Y-%m-%d %H:%M UTC')}")
-
-            # Load existing secrets
-            existing = {}
-            if SECRETS_FILE.exists():
-                with open(SECRETS_FILE) as f:
-                    existing = json.load(f)
-
-            # Update token
-            existing.update({
-                "auth_token": token,
-                "plan": plan,
-                "user_id": str(user_id),
-                "token_expires": exp_dt.isoformat(),
-                "token_refreshed_at": datetime.now(tz=timezone.utc).isoformat(),
-                "login_method": "google"
-            })
-
-            SECRETS_FILE.parent.mkdir(exist_ok=True)
-            with open(SECRETS_FILE, "w") as f:
-                json.dump(existing, f, indent=2)
-
-            log(f"Token saved to {SECRETS_FILE}")
-
-            # Stop browser if we started it
-            if browser_started_here:
-                stop_browser()
-
-            log("=== Token refresh complete ✅ ===")
-            return True
+            log(f"Token: {token[:40]}...")
+            if save_token(token):
+                log("=== Token refresh complete ===")
+                return True
 
         except Exception as e:
-            log(f"Error on attempt {attempt}: {e}")
+            log(f"Error: {e}")
             time.sleep(3)
 
-    log("ERROR: All attempts failed ❌")
-    if browser_started_here:
-        stop_browser()
+    log("ERROR: All attempts failed")
+    if we_started and chrome_proc:
+        chrome_proc.terminate()
     return False
 
 
 if __name__ == "__main__":
-    # Allow direct token injection:
-    #   python scripts/refresh_tv_token.py --token "eyJhbGci..."
     if len(sys.argv) == 3 and sys.argv[1] == "--token":
-        success = save_token_direct(sys.argv[2])
+        success = save_token(sys.argv[2], "manual")
     else:
+        # Ensure websocket-client is available
+        try:
+            import websocket  # noqa: F401
+        except ImportError:
+            print("Installing websocket-client...")
+            subprocess.run([sys.executable, "-m", "pip", "install", "websocket-client"], check=True)
         success = refresh_token()
     sys.exit(0 if success else 1)
