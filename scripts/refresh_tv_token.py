@@ -204,6 +204,9 @@ def refresh_token() -> bool:
             log(f"Token: {token[:40]}...")
             if save_token(token):
                 log("=== Token refresh complete ===")
+                if we_started and chrome_proc:
+                    chrome_proc.terminate()
+                    log("Chrome closed")
                 return True
 
         except Exception as e:
@@ -213,6 +216,7 @@ def refresh_token() -> bool:
     log("ERROR: All attempts failed")
     if we_started and chrome_proc:
         chrome_proc.terminate()
+        log("Chrome closed")
     return False
 
 
