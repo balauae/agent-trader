@@ -26,7 +26,7 @@ REPO_ROOT = Path(__file__).parent.parent
 SECRETS_FILE = REPO_ROOT / ".secrets" / "tradingview.json"
 TV_CHART_URL = "https://www.tradingview.com/chart/"
 CHROME_BIN = "/usr/bin/google-chrome"
-USER_DATA_DIR = os.path.expanduser("~/.openclaw/browser/bala/user-data")
+USER_DATA_DIR = os.path.expanduser("~/.kairobm/browser/tradingview")
 CDP_PORT = 18801
 CDP_URL = f"http://127.0.0.1:{CDP_PORT}"
 MAX_RETRIES = 3
@@ -169,6 +169,10 @@ def refresh_token() -> bool:
             if tv_tab:
                 log(f"Found existing TV tab: {tv_tab['url'][:60]}")
                 ws_url = tv_tab.get("webSocketDebuggerUrl", "")
+                # Always reload on first attempt to ensure fresh login state
+                if attempt == 1:
+                    log("Reloading page to ensure fresh session...")
+                    cdp_ws_eval(ws_url, "window.location.reload()")
             else:
                 log("Opening TradingView tab...")
                 # Navigate the first tab to TradingView
