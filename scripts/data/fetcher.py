@@ -83,15 +83,13 @@ def _get_tv_client() -> TvDatafeed:
             if remaining < 1800:
                 logger.warning(f"TV token expires in {remaining/60:.0f}min — refresh soon")
 
+    tv = TvDatafeed()
+    
     if token:
-        # Patch token AFTER init — TvDatafeed sets token in __init__ via __auth(),
-        # so we override it after construction
-        tv = TvDatafeed()
+        # Inject token directly into tvDatafeed BEFORE any requests
         tv.token = token
-        # Suppress the "nologin" path by directly injecting token into session headers
-        logger.info(f"TV token loaded ({len(token)} chars)")
+        logger.info(f"TV token loaded ({len(token)} chars) and assigned to tv.token")
     else:
-        tv = TvDatafeed()
         logger.warning("No TV token found — using anonymous (limited data)")
 
     _tv_client = tv
