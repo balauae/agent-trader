@@ -126,17 +126,20 @@ func (w *Watcher) Run(ctx context.Context) {
 			if len(bar.Bars) == 0 {
 				continue
 			}
+			// Feed ALL bars through metrics (critical for initial 300-bar batch)
+			for _, b := range bar.Bars {
+				w.vwap.Update(b.High, b.Low, b.Close, b.Volume)
+				w.rsi.Update(b.Close)
+				w.ema9.Update(b.Close)
+				w.ema21.Update(b.Close)
+				w.macd.Update(b.Close)
+				w.atr.Update(b.High, b.Low, b.Close)
+				w.volTracker.Update(b.Volume)
+				w.barBuf.Add(Bar{High: b.High, Low: b.Low, Close: b.Close, Volume: b.Volume})
+				w.prevPrice = w.price
+				w.price = b.Close
+			}
 			b := bar.Bars[len(bar.Bars)-1]
-			w.vwap.Update(b.High, b.Low, b.Close, b.Volume)
-			w.rsi.Update(b.Close)
-			w.ema9.Update(b.Close)
-			w.ema21.Update(b.Close)
-			w.macd.Update(b.Close)
-			w.atr.Update(b.High, b.Low, b.Close)
-			w.volTracker.Update(b.Volume)
-			w.barBuf.Add(Bar{High: b.High, Low: b.Low, Close: b.Close, Volume: b.Volume})
-			w.prevPrice = w.price
-			w.price = b.Close
 
 			// Compute extended metrics from bar buffer
 			bbMid, bbUpper, bbLower := w.barBuf.BollingerBands(20, 2.0)
