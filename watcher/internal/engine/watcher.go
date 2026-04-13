@@ -27,6 +27,11 @@ type Watcher struct {
 	vwap       *metrics.VWAP
 	rsi        *metrics.RSI
 	ema9       *metrics.EMA
+	ema21      *metrics.EMA
+	macd       *metrics.MACD
+	atr        *metrics.ATR
+	volTracker *metrics.VolumeTracker
+	barBuf     *BarBuffer
 	cooldown   *alerts.CooldownTracker
 	ratelimit  *alerts.RateLimiter
 	registry   *Registry
@@ -36,17 +41,22 @@ type Watcher struct {
 // NewWatcher creates a new watcher for a position.
 func NewWatcher(pos position.Position, cfg *config.Settings, events chan<- Event, registry *Registry) *Watcher {
 	return &Watcher{
-		pos:       pos,
-		cfg:       cfg,
-		events:    events,
-		cmdCh:     make(chan Command, 10),
-		state:     StateStarting,
-		vwap:      metrics.NewVWAP(),
-		rsi:       metrics.NewRSI(14),
-		ema9:      metrics.NewEMA(9),
-		cooldown:  alerts.NewCooldownTracker(),
-		ratelimit: alerts.NewRateLimiter(5),
-		registry:  registry,
+		pos:        pos,
+		cfg:        cfg,
+		events:     events,
+		cmdCh:      make(chan Command, 10),
+		state:      StateStarting,
+		vwap:       metrics.NewVWAP(),
+		rsi:        metrics.NewRSI(14),
+		ema9:       metrics.NewEMA(9),
+		ema21:      metrics.NewEMA(21),
+		macd:       metrics.NewMACD(12, 26, 9),
+		atr:        metrics.NewATR(14),
+		volTracker: metrics.NewVolumeTracker(20),
+		barBuf:     NewBarBuffer(200),
+		cooldown:   alerts.NewCooldownTracker(),
+		ratelimit:  alerts.NewRateLimiter(5),
+		registry:   registry,
 	}
 }
 
@@ -120,16 +130,50 @@ func (w *Watcher) Run(ctx context.Context) {
 			w.vwap.Update(b.High, b.Low, b.Close, b.Volume)
 			w.rsi.Update(b.Close)
 			w.ema9.Update(b.Close)
+			w.ema21.Update(b.Close)
+			w.macd.Update(b.Close)
+			w.atr.Update(b.High, b.Low, b.Close)
+			w.volTracker.Update(b.Volume)
+			w.barBuf.Add(Bar{High: b.High, Low: b.Low, Close: b.Close, Volume: b.Volume})
 			w.prevPrice = w.price
 			w.price = b.Close
 
+			// Compute extended metrics from bar buffer
+			bbMid, bbUpper, bbLower := w.barBuf.BollingerBands(20, 2.0)
+			support, resistance := w.barBuf.SupportResistance(20)
+			sma50 := w.barBuf.SMA(50)
+
+			ext := ExtendedMetrics{
+				EMA9:        w.ema9.Value(),
+				EMA21:       w.ema21.Value(),
+				SMA50:       sma50,
+				MACD:        w.macd.MACDLine(),
+				MACDSignal:  w.macd.Signal(),
+				MACDHist:    w.macd.Histogram(),
+				ATR:         w.atr.Value(),
+				BBUpper:     bbUpper,
+				BBLower:     bbLower,
+				BBMid:       bbMid,
+				Volume:      b.Volume,
+				VolAvg:      w.volTracker.Average(),
+				VolAboveAvg: w.volTracker.Current() > w.volTracker.Average(),
+				Support:     support,
+				Resistance:  resistance,
+				BarCount:    w.barBuf.Len(),
+				VWAPUpper1:  w.vwap.Upper1Sigma(),
+				VWAPUpper2:  w.vwap.Upper2Sigma(),
+				VWAPLower1:  w.vwap.Lower1Sigma(),
+				VWAPLower2:  w.vwap.Lower2Sigma(),
+			}
+
 			// push live metrics to registry for API status queries
 			if w.registry != nil {
-				w.registry.UpdateMetrics(
+				w.registry.UpdateAllMetrics(
 					w.pos.Ticker,
 					b.Close, w.vwap.Value(), w.rsi.Value(),
 					w.pos.Shares, w.pos.AvgPrice,
 					w.pos.Stop, w.pos.Target,
+					ext,
 				)
 			}
 

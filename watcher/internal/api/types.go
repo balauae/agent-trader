@@ -60,3 +60,58 @@ type OKResponse struct {
 	OK      bool   `json:"ok"`
 	Message string `json:"message"`
 }
+
+// AnalyzeResponse matches the Python bridge /analyze/{ticker} format.
+type AnalyzeResponse struct {
+	Ticker          string              `json:"ticker"`
+	Timeframe       string              `json:"timeframe"`
+	Price           float64             `json:"price"`
+	Bias            string              `json:"bias"`
+	ConfluenceScore string              `json:"confluence_score"`
+	Indicators      AnalyzeIndicators   `json:"indicators"`
+	Levels          AnalyzeLevels       `json:"levels"`
+	Signals         []string            `json:"signals"`
+	VWAP            AnalyzeVWAP         `json:"vwap"`
+}
+
+// AnalyzeIndicators holds all computed indicator values.
+type AnalyzeIndicators struct {
+	Close        float64  `json:"close"`
+	EMA9         float64  `json:"ema_9"`
+	EMA21        float64  `json:"ema_21"`
+	SMA50        *float64 `json:"sma_50"`
+	SMA200       *float64 `json:"sma_200"`
+	MACDLine     float64  `json:"macd_line"`
+	MACDSignal   float64  `json:"macd_signal"`
+	MACDHist     float64  `json:"macd_histogram"`
+	RSI          float64  `json:"rsi"`
+	BBUpper      float64  `json:"bb_upper"`
+	BBMid        float64  `json:"bb_mid"`
+	BBLower      float64  `json:"bb_lower"`
+	ATR          float64  `json:"atr"`
+	VWAP         float64  `json:"vwap"`
+	Volume       float64  `json:"volume"`
+	VolumeSMA20  float64  `json:"volume_sma_20"`
+	VolAboveAvg  bool     `json:"volume_above_avg"`
+}
+
+// AnalyzeLevels holds key price levels.
+type AnalyzeLevels struct {
+	Support    float64 `json:"support"`
+	Resistance float64 `json:"resistance"`
+	EMA9       float64 `json:"ema_9"`
+	EMA21      float64 `json:"ema_21"`
+	BBUpper    float64 `json:"bb_upper"`
+	BBLower    float64 `json:"bb_lower"`
+}
+
+// AnalyzeVWAP holds VWAP and band data.
+type AnalyzeVWAP struct {
+	Value       float64 `json:"value"`
+	Upper1S     float64 `json:"upper_1s"`
+	Upper2S     float64 `json:"upper_2s"`
+	Lower1S     float64 `json:"lower_1s"`
+	Lower2S     float64 `json:"lower_2s"`
+	PriceVsVWAP string  `json:"price_vs_vwap"`
+	DistancePct float64 `json:"distance_pct"`
+}
