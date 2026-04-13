@@ -6,3 +6,4 @@ __pycache__/
 *.duckdb.wal
 .env
 openclaw-impl/TRADINGVIEW-AUTH.md
+bin/
