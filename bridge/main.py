@@ -9,12 +9,21 @@ import sys
 from pathlib import Path
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 
 ROOT = Path(__file__).parent.parent
 SCRIPTS = ROOT / "scripts"
 PYTHON = ROOT / ".venv" / "bin" / "python"
 
 app = FastAPI(title="TradeDesk Bridge", version="1.0")
+
+# Allow CORS from kairobm UI
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["https://kairobm.duckdns.org", "http://localhost:18182"],
+    allow_methods=["GET", "POST"],
+    allow_headers=["*"],
+)
 
 
 def run_script(script: str, *args) -> dict:
@@ -183,6 +192,45 @@ def technical(ticker: str, timeframe: str = "1D"):
     if "error" in data:
         raise HTTPException(500, data["error"])
     return data
+
+
+import duckdb as _duckdb
+
+MARKET_DB = str(ROOT / "data" / "market.duckdb")
+
+
+@app.get("/history/{ticker}")
+def get_history(ticker: str, timeframe: str = "1d", bars: int = 200):
+    """Get historical OHLCV bars from DuckDB."""
+    try:
+        con = _duckdb.connect(MARKET_DB, read_only=True)
+        rows = con.execute("""
+            SELECT ts::VARCHAR as timestamp, open, high, low, close, volume
+            FROM bars
+            WHERE ticker=? AND timeframe=?
+            ORDER BY ts DESC
+            LIMIT ?
+        """, [ticker.upper(), timeframe, bars]).fetchall()
+        con.close()
+
+        if not rows:
+            raise HTTPException(404, f"No data for {ticker.upper()} {timeframe}")
+
+        return {
+            "ticker": ticker.upper(),
+            "timeframe": timeframe,
+            "count": len(rows),
+            "bars": [
+                {"ts": r[0], "o": r[1], "h": r[2], "l": r[3], "c": r[4], "v": r[5]}
+                for r in reversed(rows)
+            ],
+        }
+    except _duckdb.IOException:
+        raise HTTPException(503, "Market database not available — run load_history.py first")
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(500, str(e))
 
 
 WATCHER_SOCK = "/tmp/tradedesk-manager.sock"

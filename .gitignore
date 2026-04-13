@@ -2,5 +2,7 @@
 .secrets/
 __pycache__/
 *.pyc
+*.duckdb
+*.duckdb.wal
 .env
 openclaw-impl/TRADINGVIEW-AUTH.md
