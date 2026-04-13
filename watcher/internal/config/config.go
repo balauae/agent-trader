@@ -29,6 +29,7 @@ type Settings struct {
 	VolumeWindow      int           `json:"volume_window"`
 	VolumeSpikeMulti  float64       `json:"volume_spike_multiplier"`
 	NumBars           int           `json:"num_bars"`
+	DuckDBPath        string        `json:"duckdb_path"`
 	Timezone          string        `json:"timezone"`
 	PollInterval      time.Duration `json:"-"`
 	AlertCooldown     time.Duration `json:"-"`

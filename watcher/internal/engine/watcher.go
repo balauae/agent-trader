@@ -12,6 +12,7 @@ import (
 	"github.com/bala/tradedesk-watcher/internal/config"
 	"github.com/bala/tradedesk-watcher/internal/metrics"
 	"github.com/bala/tradedesk-watcher/internal/position"
+	"github.com/bala/tradedesk-watcher/internal/store"
 	"github.com/bala/tradedesk-watcher/internal/tvconn"
 )
 
@@ -35,11 +36,12 @@ type Watcher struct {
 	cooldown   *alerts.CooldownTracker
 	ratelimit  *alerts.RateLimiter
 	registry   *Registry
+	barStore   *store.BarStore
 	srLevels   []float64 // key S/R levels loaded from bridge
 }
 
 // NewWatcher creates a new watcher for a position.
-func NewWatcher(pos position.Position, cfg *config.Settings, events chan<- Event, registry *Registry) *Watcher {
+func NewWatcher(pos position.Position, cfg *config.Settings, events chan<- Event, registry *Registry, barStore *store.BarStore) *Watcher {
 	return &Watcher{
 		pos:        pos,
 		cfg:        cfg,
@@ -57,6 +59,7 @@ func NewWatcher(pos position.Position, cfg *config.Settings, events chan<- Event
 		cooldown:   alerts.NewCooldownTracker(),
 		ratelimit:  alerts.NewRateLimiter(5),
 		registry:   registry,
+		barStore:   barStore,
 	}
 }
 
@@ -88,6 +91,11 @@ func (w *Watcher) Run(ctx context.Context) {
 	exchange := w.pos.Exchange
 	if exchange == "" {
 		exchange = "NASDAQ"
+	}
+
+	// Seed metrics from DuckDB historical bars before connecting
+	if w.barStore != nil {
+		w.seedFromHistory()
 	}
 
 	conn, err := tvconn.Connect(authToken)
@@ -192,6 +200,26 @@ func (w *Watcher) Run(ctx context.Context) {
 
 			w.checkAlerts(b.Close)
 			w.checkSRProximity(b.Close)
+
+			// Persist live bars to DuckDB (fire-and-forget)
+			if w.barStore != nil {
+				storeBars := make([]store.Bar, len(bar.Bars))
+				for i, tvb := range bar.Bars {
+					storeBars[i] = store.Bar{
+						Timestamp: tvb.Time,
+						Open:      tvb.Open,
+						High:      tvb.High,
+						Low:       tvb.Low,
+						Close:     tvb.Close,
+						Volume:    tvb.Volume,
+					}
+				}
+				go func() {
+					if err := w.barStore.WriteBars(w.pos.Ticker, "1m", storeBars); err != nil {
+						log.Printf("[watcher:%s] duckdb write: %v", w.pos.Ticker, err)
+					}
+				}()
+			}
 
 		case err := <-conn.Errors():
 			log.Printf("[watcher:%s] connection error: %v — reconnecting", w.pos.Ticker, err)
@@ -335,6 +363,34 @@ func (w *Watcher) loadSRLevels() {
 	}
 	w.srLevels = srLevels
 	log.Printf("[watcher:%s] loaded %d S/R levels: %v", w.pos.Ticker, len(srLevels), srLevels)
+}
+
+// seedFromHistory loads historical daily bars from DuckDB and feeds them
+// through all metrics so indicators are accurate from the first live bar.
+func (w *Watcher) seedFromHistory() {
+	bars, err := w.barStore.LoadBars(w.pos.Ticker, "1d", 300)
+	if err != nil {
+		log.Printf("[watcher:%s] could not seed from DuckDB: %v", w.pos.Ticker, err)
+		return
+	}
+	if len(bars) == 0 {
+		log.Printf("[watcher:%s] no historical bars in DuckDB for seeding", w.pos.Ticker)
+		return
+	}
+
+	for _, b := range bars {
+		w.vwap.Update(b.High, b.Low, b.Close, b.Volume)
+		w.rsi.Update(b.Close)
+		w.ema9.Update(b.Close)
+		w.ema21.Update(b.Close)
+		w.macd.Update(b.Close)
+		w.atr.Update(b.High, b.Low, b.Close)
+		w.volTracker.Update(b.Volume)
+		w.barBuf.Add(Bar{High: b.High, Low: b.Low, Close: b.Close, Volume: b.Volume})
+		w.price = b.Close
+	}
+
+	log.Printf("[watcher:%s] seeded with %d historical bars from DuckDB", w.pos.Ticker, len(bars))
 }
 
 // checkSRProximity fires an alert if price is within 0.3% of a key S/R level.

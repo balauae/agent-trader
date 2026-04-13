@@ -21,6 +21,7 @@ import (
 	"github.com/bala/tradedesk-watcher/internal/metrics"
 	"github.com/bala/tradedesk-watcher/internal/notifier"
 	"github.com/bala/tradedesk-watcher/internal/position"
+	"github.com/bala/tradedesk-watcher/internal/store"
 	"github.com/bala/tradedesk-watcher/internal/tvconn"
 )
 
@@ -279,6 +280,18 @@ func runMulti(cfg *config.Settings, posPath string, timeout time.Duration) {
 
 	fmt.Printf("🔭 Multi-ticker mode — watching %d positions\n\n", len(positions))
 
+	// Init DuckDB bar store (best-effort — not fatal if unavailable)
+	var barStore *store.BarStore
+	if cfg.DuckDBPath != "" {
+		bs, err := store.NewBarStore(cfg.DuckDBPath)
+		if err != nil {
+			log.Printf("⚠️ DuckDB unavailable: %v — startup seeding disabled", err)
+		} else {
+			barStore = bs
+			fmt.Printf("🦆 DuckDB connected: %s\n", cfg.DuckDBPath)
+		}
+	}
+
 	// Init Telegram notifier
 	ntf, err := notifier.New(cfg.SecretsDir)
 	if err != nil {
@@ -293,7 +306,7 @@ func runMulti(cfg *config.Settings, posPath string, timeout time.Duration) {
 	defer cancel()
 
 	registryPath := cfg.DataDir + "/registry.json"
-	sup := engine.NewSupervisor(cfg, registryPath)
+	sup := engine.NewSupervisor(cfg, registryPath, barStore)
 	sup.LoadSilenceState()
 	sup.Start(positions)
 

@@ -12,6 +12,7 @@ import (
 	"github.com/bala/tradedesk-watcher/internal/alertlog"
 	"github.com/bala/tradedesk-watcher/internal/config"
 	"github.com/bala/tradedesk-watcher/internal/position"
+	"github.com/bala/tradedesk-watcher/internal/store"
 )
 
 const (
@@ -31,10 +32,11 @@ type Supervisor struct {
 	cancel   context.CancelFunc
 	silenced bool // global alert mute
 	alertDB  *alertlog.DB
+	barStore *store.BarStore
 }
 
 // NewSupervisor creates a new supervisor.
-func NewSupervisor(cfg *config.Settings, registryPath string) *Supervisor {
+func NewSupervisor(cfg *config.Settings, registryPath string, barStore *store.BarStore) *Supervisor {
 	ctx, cancel := context.WithCancel(context.Background())
 	s := &Supervisor{
 		cfg:      cfg,
@@ -43,6 +45,7 @@ func NewSupervisor(cfg *config.Settings, registryPath string) *Supervisor {
 		events:   make(chan Event, 100),
 		ctx:      ctx,
 		cancel:   cancel,
+		barStore: barStore,
 	}
 	// Open alert DB (best-effort — don't fail if unavailable)
 	if cfg.AlertsDB != "" {
@@ -79,7 +82,7 @@ func (s *Supervisor) StartWatcher(pos position.Position) {
 		return
 	}
 
-	w := NewWatcher(pos, s.cfg, s.events, s.registry)
+	w := NewWatcher(pos, s.cfg, s.events, s.registry, s.barStore)
 	s.watchers[pos.Ticker] = w
 
 	s.registry.Register(pos.Ticker, &RegistryEntry{
@@ -154,6 +157,9 @@ func (s *Supervisor) Stop() {
 	}
 	if s.alertDB != nil {
 		s.alertDB.Close()
+	}
+	if s.barStore != nil {
+		s.barStore.Close()
 	}
 }
 
@@ -273,7 +279,7 @@ func (s *Supervisor) runWithRestart(pos position.Position, w *Watcher) {
 		time.Sleep(delay)
 
 		// Create fresh watcher
-		w = NewWatcher(pos, s.cfg, s.events, s.registry)
+		w = NewWatcher(pos, s.cfg, s.events, s.registry, s.barStore)
 		s.mu.Lock()
 		s.watchers[pos.Ticker] = w
 		s.mu.Unlock()
