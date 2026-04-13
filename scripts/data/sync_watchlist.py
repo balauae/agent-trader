@@ -31,12 +31,16 @@ log = logging.getLogger("sync")
 # Staleness thresholds (seconds) — when to flag as stale
 STALE_THRESHOLDS = {
     "1m": 3 * 3600,       # 3 hours
+    "3m": 6 * 3600,       # 6 hours
     "5m": 12 * 3600,      # 12 hours
     "15m": 2 * 86400,     # 2 days
+    "30m": 2 * 86400,     # 2 days
     "1h": 3 * 86400,      # 3 days
+    "2h": 5 * 86400,      # 5 days
     "4h": 7 * 86400,      # 1 week
     "1d": 3 * 86400,      # 3 days
     "1w": 10 * 86400,     # 10 days
+    "1M": 35 * 86400,     # 35 days
 }
 
 

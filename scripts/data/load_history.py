@@ -36,26 +36,51 @@ DB_PATH    = REPO_ROOT / "data" / "market.duckdb"
 POS_FILE   = REPO_ROOT / "data" / "positions.json"
 TICK_FILE  = REPO_ROOT / "data" / "tickers.json"
 
-# --- Watchlist (major tech) ---
-WATCHLIST = ["NVDA", "TSLA", "AMD", "MSFT", "GOOGL", "AMZN", "META", "NFLX"]
+# --- Watchlist (full 50-ticker universe) ---
+WATCHLIST = [
+    # Momentum / Day trade
+    "TSLA", "NVDA", "AMD", "MRVL", "PLTR", "COIN", "APP", "HIMS", "CRWV", "ARM",
+    "RKLB", "HOOD", "SOFI", "SOUN", "RGTI", "SMCI",
+    # Growth / Swing
+    "AAPL", "MSFT", "META", "AMZN", "GOOGL", "AVGO", "MU", "CRWD", "PANW", "NFLX",
+    "ORCL", "TSM", "NU", "AFRM", "SNOW", "TEAM", "DOCU", "WDAY", "DOCN", "UNH",
+    "OKTA", "PYPL", "NVO",
+    # Macro / Crypto proxies
+    "GLD", "SLV", "IBIT", "BABA",
+    # Speculative
+    "QBTS", "APLD", "IREN", "SMR", "ALAB", "MDB",
+    # Swing
+    "AXON", "TTD", "ZS", "ADBE",
+    # Index ETFs
+    "SPY", "QQQ",
+]
 
 # --- Timeframe config ---
 # (label, Interval enum, n_bars to request)
+# Pro Premium: up to 20K bars, custom timeframes available
 TIMEFRAMES = [
-    ("1m",  Interval.in_1_minute,  10000),
-    ("5m",  Interval.in_5_minute,  10000),
-    ("15m", Interval.in_15_minute, 10000),
-    ("1h",  Interval.in_1_hour,    10000),
-    ("4h",  Interval.in_4_hour,     5000),
-    ("1d",  Interval.in_daily,     10000),
-    ("1w",  Interval.in_weekly,     5000),
+    ("1m",  Interval.in_1_minute,  20000),
+    ("3m",  Interval.in_3_minute,  20000),
+    ("5m",  Interval.in_5_minute,  20000),
+    ("15m", Interval.in_15_minute, 20000),
+    ("30m", Interval.in_30_minute, 20000),
+    ("1h",  Interval.in_1_hour,    20000),
+    ("2h",  Interval.in_2_hour,    10000),
+    ("4h",  Interval.in_4_hour,    10000),
+    ("1d",  Interval.in_daily,     20000),
+    ("1w",  Interval.in_weekly,    10000),
+    ("1M",  Interval.in_monthly,   5000),
 ]
 
 # --- Exchange map (from tickers.json or defaults) ---
 DEFAULT_EXCHANGE = {
+    # ETFs (AMEX)
     "SPY": "AMEX", "QQQ": "NASDAQ", "GLD": "AMEX", "SLV": "AMEX",
-    "IWM": "AMEX", "DIA": "AMEX", "IBIT": "AMEX",
+    "IWM": "AMEX", "DIA": "AMEX", "IBIT": "NASDAQ",
     "ARKK": "AMEX", "XLF": "AMEX", "XLE": "AMEX",
+    # NYSE
+    "TSM": "NYSE", "NVO": "NYSE", "BABA": "NYSE", "UNH": "NYSE",
+    "ORCL": "NYSE", "AXON": "NYSE",
 }
 
 API_DELAY = 1.5  # seconds between TV API calls
