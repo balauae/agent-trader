@@ -1,43 +1,57 @@
 # Agent Trader
 
-An AI-powered trading assistant platform backed by a multi-agent architecture.
+Personal AI-powered trading infrastructure — real-time position monitoring, technical analysis, and historical data management.
 
-## Overview
+## What it does
 
-Agent Trader is a web/mobile app where traders manage their watchlists, analyze stocks with TradingView-integrated charts, and interact with a fleet of specialized AI agents — all in one place.
+- **Go Watcher** — monitors live positions via TradingView WebSocket, calculates real-time indicators (VWAP, RSI, EMA, MACD, ATR, BB), fires alerts to Telegram
+- **DuckDB** — 2.3M+ historical bars across 49 tickers, 11 timeframes, daily data back to 1972
+- **Python Bridge** — FastAPI wrapper for analysis scripts (news, earnings, fundamentals, patterns)
+- **kairobm Integration** — trader + data-ops specialist agents, trading workspace with live charts
 
-## Key Features
+## Quick Start
 
-- **Multi-user, personalized** — each user has a master prompt that controls agent behavior
-- **Watchlists** — up to 10 per user, default `main` watchlist
-- **Stock Detail Page** — TradingView chart (2/3 screen) + AI Chat Panel (1/3, collapsible overlay)
-- **Multi-Agent Chat** — specialized agents collaborate in a single chat window per stock
-- **Market-hours-aware** — agents adapt to pre-market, open, intraday, post-market contexts
+```bash
+# Start services
+systemctl --user start tradedesk-watcher
+systemctl --user start tradedesk-bridge
 
-## Agent Fleet
+# Check health
+curl -s --unix-socket /tmp/tradedesk-manager.sock http://localhost/health
+curl -s http://localhost:8000/health
 
-See [`agents/`](./agents/) for individual agent specs.
+# Instant analysis (4ms)
+curl -s --unix-socket /tmp/tradedesk-manager.sock http://localhost/analyze/PLTR
 
-| Agent | Role |
-|-------|------|
-| [orchestrator](./agents/orchestrator.md) | Main router, user context, personal prompt |
-| [technical-analyst](./agents/technical-analyst.md) | Chart analysis, EMAs, MACD, RSI, multi-timeframe |
-| [timeframe-analyzer](./agents/timeframe-analyzer.md) | Timeframe-specific setups (1m, 5m, 15m, 1h, 1D) |
-| [vwap-watcher](./agents/vwap-watcher.md) | VWAP bounces, breaks, band setups |
-| [pattern-finder](./agents/pattern-finder.md) | Historical chart pattern recognition |
-| [fundamental-analyst](./agents/fundamental-analyst.md) | Earnings, valuation, balance sheet |
-| [sentiment-monitor](./agents/sentiment-monitor.md) | Social sentiment, options flow, put/call |
-| [news-fetcher](./agents/news-fetcher.md) | Real-time news aggregation |
-| [twitter-monitor](./agents/twitter-monitor.md) | X/Twitter sentiment & influencer tracking |
-| [geopolitical-analyst](./agents/geopolitical-analyst.md) | Macro/geopolitical impact on sectors & stocks |
-| [economic-calendar](./agents/economic-calendar.md) | Fed, CPI, NFP, earnings dates |
-| [earnings-expert](./agents/earnings-expert.md) | Earnings plays, IV crush, historical patterns |
-| [premarket-specialist](./agents/premarket-specialist.md) | 4AM–9:30AM gaps, futures, pre-market flow |
-| [market-open-scalper](./agents/market-open-scalper.md) | 8:50–9:15AM opening range & scalp setups |
-| [postmarket-summarizer](./agents/postmarket-summarizer.md) | After-hours recap, next-day outlook |
-| [overnight-expert](./agents/overnight-expert.md) | After-close to before-open trade planning |
+# Sync market data
+PYTHONPATH=scripts .venv/bin/python scripts/data/sync_watchlist.py
+```
 
-## Docs
+## Architecture
 
-- [Agent Architecture](./docs/agent-architecture.md)
-- [User Personalization](./docs/user-personalization.md)
+See [ARCHITECTURE.md](ARCHITECTURE.md) for the full system map including:
+- Service endpoints and response times
+- Data flow diagrams
+- DuckDB schema and data management
+- kairobm specialist integration
+- File structure and operations guide
+
+## Active Positions
+
+Tracked in `data/positions.json`: GLD, MU, ARM, CRWV, AAPL, PLTR
+
+## Watchlist (52 tickers)
+
+Momentum, growth, macro/crypto, speculative, and swing categories. See [ARCHITECTURE.md](ARCHITECTURE.md#watchlist-52-tickers) for the full list.
+
+## Key Directories
+
+| Directory | What |
+|---|---|
+| `watcher/` | Go watcher source (~3,500 LOC) |
+| `bridge/` | Python FastAPI bridge |
+| `scripts/analysis/` | Technical, pattern, fundamental analysis |
+| `scripts/data/` | DuckDB loaders and sync tools |
+| `scripts/feeds/` | News, VWAP, economic calendar |
+| `skills/` | AI agent persona definitions (18 specs) |
+| `data/` | Runtime data (DuckDB, positions, alerts) |
