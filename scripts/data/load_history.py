@@ -80,7 +80,13 @@ DEFAULT_EXCHANGE = {
     "ARKK": "AMEX", "XLF": "AMEX", "XLE": "AMEX",
     # NYSE
     "TSM": "NYSE", "NVO": "NYSE", "BABA": "NYSE", "UNH": "NYSE",
-    "ORCL": "NYSE", "AXON": "NYSE",
+    "ORCL": "NYSE", "AXON": "NYSE", "JNJ": "NYSE", "JPM": "NYSE",
+    "BAC": "NYSE", "WMT": "NYSE", "V": "NYSE", "MA": "NYSE",
+    "PG": "NYSE", "KO": "NYSE", "DIS": "NYSE", "CVX": "NYSE",
+    "XOM": "NYSE", "PFE": "NYSE", "ABBV": "NYSE", "MRK": "NYSE",
+    "LLY": "NYSE", "ABT": "NYSE", "DHR": "NYSE", "BMY": "NYSE",
+    "CRM": "NYSE", "IBM": "NYSE", "CAT": "NYSE", "GS": "NYSE",
+    "HD": "NYSE", "LOW": "NYSE", "TGT": "NYSE", "NKE": "NYSE",
 }
 
 API_DELAY = 1.5  # seconds between TV API calls
@@ -196,6 +202,15 @@ def load_ticker(tv: TvDatafeed, con: duckdb.DuckDBPyConnection,
                 interval=tf_interval,
                 n_bars=n_bars,
             )
+
+            # Auto-retry with alternate exchanges if primary fails
+            if (df is None or df.empty) and exchange == 'NASDAQ':
+                for alt in ['NYSE', 'AMEX']:
+                    df = tv.get_hist(symbol=ticker, exchange=alt, interval=tf_interval, n_bars=n_bars)
+                    if df is not None and not df.empty:
+                        log.info(f"  {tf_label:>4s}: found on {alt} (not {exchange})")
+                        break
+                    time.sleep(API_DELAY)
 
             if df is None or df.empty:
                 log.warning(f"  {tf_label:>4s}: no data returned")
