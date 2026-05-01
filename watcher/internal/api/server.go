@@ -19,10 +19,11 @@ import (
 
 // Server is the HTTP-over-Unix-socket manager API.
 type Server struct {
-	socketPath string
-	supervisor *engine.Supervisor
-	startedAt  time.Time
-	server     *http.Server
+	socketPath    string
+	supervisor    *engine.Supervisor
+	positionsFile string // path to positions.json for persistence
+	startedAt     time.Time
+	server        *http.Server
 }
 
 // New creates a new API server.
@@ -32,6 +33,11 @@ func New(socketPath string, supervisor *engine.Supervisor) *Server {
 		supervisor: supervisor,
 		startedAt:  time.Now(),
 	}
+}
+
+// SetPositionsFile sets the path used for /watch and /stop persistence.
+func (s *Server) SetPositionsFile(path string) {
+	s.positionsFile = path
 }
 
 // Start begins listening on the Unix socket.
@@ -105,6 +111,14 @@ func (s *Server) handleWatch(w http.ResponseWriter, r *http.Request) {
 	}
 
 	s.supervisor.StartWatcher(pos)
+
+	// Persist to positions.json so it survives restart
+	if s.positionsFile != "" {
+		if err := position.AddPosition(s.positionsFile, pos); err != nil {
+			log.Printf("[api] warning: failed to persist position %s: %v", req.Ticker, err)
+		}
+	}
+
 	writeJSON(w, OKResponse{OK: true, Message: fmt.Sprintf("👁️ Watching %s", req.Ticker)})
 }
 
@@ -116,6 +130,14 @@ func (s *Server) handleStop(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	s.supervisor.StopWatcher(ticker)
+
+	// Remove from positions.json
+	if s.positionsFile != "" {
+		if err := position.RemovePosition(s.positionsFile, ticker); err != nil {
+			log.Printf("[api] warning: failed to remove position %s: %v", ticker, err)
+		}
+	}
+
 	writeJSON(w, OKResponse{OK: true, Message: fmt.Sprintf("Stopped watching %s", ticker)})
 }
 

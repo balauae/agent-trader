@@ -319,6 +319,7 @@ func runMulti(cfg *config.Settings, posPath string, timeout time.Duration) {
 
 	// Start HTTP API server
 	apiServer := api.New(cfg.SocketPath, sup)
+	apiServer.SetPositionsFile(posFile)
 	if err := apiServer.Start(); err != nil {
 		log.Printf("⚠️ API server unavailable: %v", err)
 	} else {

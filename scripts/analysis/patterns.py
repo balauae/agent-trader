@@ -14,6 +14,30 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 from scripts.data.fetcher import get_ohlcv
 
+DB_PATH = Path(__file__).parent.parent.parent / "data" / "market-read.duckdb"
+DB_FALLBACK = Path(__file__).parent.parent.parent / "data" / "market.duckdb"
+
+
+def _get_bars_duckdb(ticker: str, timeframe: str = "1d", bars: int = 60) -> pd.DataFrame:
+    """Fast local DuckDB fetch — no API calls."""
+    import duckdb
+    db = str(DB_PATH if DB_PATH.exists() else DB_FALLBACK)
+    try:
+        con = duckdb.connect(db, read_only=True)
+        rows = con.execute(
+            "SELECT ts, open, high, low, close, volume FROM bars "
+            "WHERE ticker=? AND timeframe=? ORDER BY ts DESC LIMIT ?",
+            [ticker, timeframe, bars]
+        ).fetchdf()
+        con.close()
+        if rows.empty:
+            return pd.DataFrame()
+        rows = rows.iloc[::-1].reset_index(drop=True)
+        rows.columns = ["datetime", "open", "high", "low", "close", "volume"]
+        return rows
+    except Exception:
+        return pd.DataFrame()
+
 logger = logging.getLogger(__name__)
 
 
@@ -237,7 +261,10 @@ def detect_triangle(df: pd.DataFrame) -> dict | None:
 
 def analyze(ticker: str) -> dict:
     t = ticker.upper()
-    df = get_ohlcv(t, "1D", bars=60)
+    # DuckDB first (instant), TV fallback
+    df = _get_bars_duckdb(t, "1d", 60)
+    if df.empty:
+        df = get_ohlcv(t, "1D", bars=60)
     if df.empty or len(df) < 20:
         return {"ticker": t, "error": "Insufficient data", "patterns_found": [], "overall_bias": "NEUTRAL"}
 

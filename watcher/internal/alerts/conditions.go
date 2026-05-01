@@ -155,6 +155,42 @@ func CheckFlashMove(ticker string, price, prevClose float64, thresholdPct float6
 	}
 }
 
+// CheckSRBreak detects when price breaks above resistance or below support.
+// Requires the previous price to confirm the cross (not just proximity).
+func CheckSRBreak(ticker string, price, prevPrice float64, levels []float64) *Alert {
+	if len(levels) == 0 || prevPrice == 0 {
+		return nil
+	}
+	for _, lvl := range levels {
+		if lvl == 0 {
+			continue
+		}
+		// Breakout: previous was below, now above
+		if prevPrice < lvl && price >= lvl {
+			return &Alert{
+				Type:     AlertSRBreakout,
+				Severity: SeverityWarning,
+				Ticker:   ticker,
+				Price:    price,
+				Message:  fmt.Sprintf("🚀 %s BREAKOUT above $%.2f — prev $%.2f → now $%.2f", ticker, lvl, prevPrice, price),
+				Time:     time.Now(),
+			}
+		}
+		// Breakdown: previous was above, now below
+		if prevPrice > lvl && price <= lvl {
+			return &Alert{
+				Type:     AlertSRBreakdown,
+				Severity: SeverityWarning,
+				Ticker:   ticker,
+				Price:    price,
+				Message:  fmt.Sprintf("💥 %s BREAKDOWN below $%.2f — prev $%.2f → now $%.2f", ticker, lvl, prevPrice, price),
+				Time:     time.Now(),
+			}
+		}
+	}
+	return nil
+}
+
 // CheckRSI returns an alert if RSI hits overbought or oversold.
 func CheckRSI(ticker string, price, rsi float64) *Alert {
 	if rsi == 0 {

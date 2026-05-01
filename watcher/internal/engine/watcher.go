@@ -115,6 +115,10 @@ func (w *Watcher) Run(ctx context.Context) {
 	// Load S/R levels from bridge (non-blocking, best-effort)
 	go w.loadSRLevels()
 
+	// Periodic S/R refresh every 2 hours
+	srRefreshTicker := time.NewTicker(2 * time.Hour)
+	defer srRefreshTicker.Stop()
+
 	w.state = StateRunning
 	w.emitState(StateRunning, fmt.Sprintf("👁️ Watching %s @ %s", w.pos.Ticker, exchange))
 
@@ -221,6 +225,10 @@ func (w *Watcher) Run(ctx context.Context) {
 				}()
 			}
 
+		case <-srRefreshTicker.C:
+			log.Printf("[watcher:%s] refreshing S/R levels", w.pos.Ticker)
+			go w.loadSRLevels()
+
 		case err := <-conn.Errors():
 			log.Printf("[watcher:%s] connection error: %v — reconnecting", w.pos.Ticker, err)
 			return // supervisor will restart
@@ -287,6 +295,7 @@ func (w *Watcher) checkAlerts(price float64) {
 		alerts.CheckVWAPReclaim(w.pos.Ticker, price, w.prevPrice, w.vwap.Value()),
 		alerts.CheckFlashMove(w.pos.Ticker, price, w.prevPrice, 1.5),
 		alerts.CheckRSI(w.pos.Ticker, price, w.rsi.Value()),
+		alerts.CheckSRBreak(w.pos.Ticker, price, w.prevPrice, w.srLevels),
 	}
 
 	for _, a := range candidates {

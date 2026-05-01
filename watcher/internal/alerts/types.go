@@ -33,9 +33,11 @@ const (
 	AlertVWAPReclaim   AlertType = "vwap_reclaim"
 	AlertHighVolume    AlertType = "high_volume"
 	AlertFlashMove     AlertType = "flash_move"
-	AlertConsecRed     AlertType = "consec_red"
-	AlertPnLThreshold  AlertType = "pnl_threshold"
+	AlertConsecRed      AlertType = "consec_red"
+	AlertPnLThreshold   AlertType = "pnl_threshold"
 	AlertPeriodicUpdate AlertType = "periodic_update"
+	AlertSRBreakout     AlertType = "sr_breakout"
+	AlertSRBreakdown    AlertType = "sr_breakdown"
 )
 
 // Alert represents a triggered alert event.

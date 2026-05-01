@@ -1,0 +1,48 @@
+[
+  {
+    "ticker": "ARM",
+    "shares": 250,
+    "avg_price": 138.70,
+    "stop": 140.00,
+    "direction": "long",
+    "exchange": "NASDAQ"
+  },
+  {
+    "ticker": "AAPL",
+    "shares": 50,
+    "avg_price": 247.32,
+    "direction": "long",
+    "exchange": "NASDAQ"
+  },
+  {
+    "ticker": "CRWV",
+    "shares": 400,
+    "avg_price": 79.20,
+    "stop": 80.00,
+    "direction": "long",
+    "exchange": "NASDAQ"
+  },
+  {
+    "ticker": "PLTR",
+    "shares": 200,
+    "avg_price": 127.90,
+    "direction": "long",
+    "exchange": "NASDAQ"
+  },
+  {
+    "ticker": "MU",
+    "shares": 100,
+    "avg_price": 338.11,
+    "stop": 395.00,
+    "direction": "long",
+    "exchange": "NASDAQ"
+  },
+  {
+    "ticker": "GLD",
+    "shares": 325,
+    "avg_price": 392.31,
+    "stop": 395.00,
+    "direction": "long",
+    "exchange": "AMEX"
+  }
+]

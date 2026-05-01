@@ -56,6 +56,11 @@ EXCHANGE_MAP = {
     "VOO": "AMEX", "ARKK": "AMEX",
     "VIX": "CBOE", "DXY": "TVC",
     "GOLD": "TVC", "USOIL": "TVC",
+    # NYSE stocks commonly confused as NASDAQ
+    "NOW": "NYSE", "IBM": "NYSE", "UBER": "NYSE", "SQ": "NYSE",
+    "SHOP": "NYSE", "RIVN": "NASDAQ", "OKLO": "NYSE",
+    "TSM": "NYSE", "NVO": "NYSE", "BABA": "NYSE", "UNH": "NYSE",
+    "ORCL": "NYSE", "AXON": "NYSE",
 }
 
 _tv_client: Optional[TvDatafeed] = None
@@ -326,17 +331,60 @@ def get_market_summary() -> dict:
 # QUICK TEST
 # ─────────────────────────────────────────────
 
+def get_ohlcv_duckdb(ticker: str, timeframe: str = "1D", bars: int = 200) -> pd.DataFrame:
+    """
+    Fetch OHLCV bars from local DuckDB — instant, no API calls.
+    Returns DataFrame with lowercase columns: open, high, low, close, volume.
+    Empty DataFrame if ticker/timeframe not in DB.
+    """
+    import duckdb
+
+    # Normalize timeframe to DuckDB convention (lowercase)
+    tf_norm = {"1D": "1d", "1W": "1w", "1M": "1M"}.get(timeframe, timeframe)
+
+    # Try read-only snapshot first, fall back to main DB
+    db_read = REPO_ROOT / "data" / "market-read.duckdb"
+    db_main = REPO_ROOT / "data" / "market.duckdb"
+    db_path = str(db_read if db_read.exists() else db_main)
+
+    try:
+        con = duckdb.connect(db_path, read_only=True)
+        df = con.execute(
+            "SELECT ts, open, high, low, close, volume FROM bars "
+            "WHERE ticker = ? AND timeframe = ? ORDER BY ts DESC LIMIT ?",
+            [ticker.upper(), tf_norm, bars]
+        ).fetchdf()
+        con.close()
+
+        if df.empty:
+            return pd.DataFrame()
+
+        # Reverse to chronological, set index
+        df = df.iloc[::-1].reset_index(drop=True)
+        df.columns = ["datetime", "open", "high", "low", "close", "volume"]
+        df["datetime"] = pd.to_datetime(df["datetime"])
+        df = df.set_index("datetime")
+        return df
+    except Exception as e:
+        logger.debug(f"DuckDB fetch failed for {ticker}/{tf_norm}: {e}")
+        return pd.DataFrame()
+
+
 def get_ohlcv_smart(ticker: str, timeframe: str = "1D", bars: int = 200, tv_timeout: int = 10) -> tuple:
     """
-    Fetch OHLCV bars — TradingView primary, yfinance fallback.
+    Fetch OHLCV bars — DuckDB first (instant), TradingView second, yfinance last.
     Returns: (DataFrame, source_str)
-    source_str is "tv" or "yfinance"
-    tv_timeout: seconds to wait for TV before falling back (default 10s)
+    source_str is "duckdb", "tv", or "yfinance"
     """
-    import yfinance as yf
     import concurrent.futures
 
-    # Try TradingView first with timeout
+    # 1. DuckDB (instant, no API calls)
+    df = get_ohlcv_duckdb(ticker, timeframe, bars)
+    if not df.empty and len(df) >= min(bars * 0.5, 20):
+        df.columns = [c.lower() for c in df.columns]
+        return df, "duckdb"
+
+    # 2. TradingView (with timeout)
     try:
         with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
             future = executor.submit(get_ohlcv, ticker, timeframe, bars)
@@ -347,7 +395,7 @@ def get_ohlcv_smart(ticker: str, timeframe: str = "1D", bars: int = 200, tv_time
     except Exception:
         pass
 
-    # Fallback: yfinance
+    # 3. yfinance (last resort)
     tf_map = {
         "1m": "1m", "5m": "5m", "15m": "15m", "30m": "30m",
         "1h": "60m", "2h": "90m", "4h": "1h",

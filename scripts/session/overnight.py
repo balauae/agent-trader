@@ -70,16 +70,38 @@ def analyze(ticker: str) -> dict:
     else:
         risk_level = "Low"
 
+    # Overnight bias
+    if ah_change_pct > 1:
+        bias = "BULLISH"
+    elif ah_change_pct < -1:
+        bias = "BEARISH"
+    else:
+        bias = "NEUTRAL"
+
+    # Hold recommendation
+    if earnings_tonight:
+        recommendation = "EXIT — binary earnings risk"
+    elif risk_level == "High":
+        recommendation = "REDUCE — elevated overnight risk"
+    elif bias == "BULLISH" and risk_level == "Low":
+        recommendation = "HOLD — positive AH, low risk"
+    elif bias == "BEARISH":
+        recommendation = "REDUCE — negative AH momentum"
+    else:
+        recommendation = "HOLD — normal conditions"
+
     return {
         "ticker": ticker,
         "regular_close": regular_close,
         "ah_price": ah_price,
         "ah_change_pct": round(ah_change_pct, 4),
+        "bias": bias,
         "support": support,
         "resistance": resistance,
         "next_earnings_date": next_earnings_date,
         "earnings_tonight": earnings_tonight,
         "risk_level": risk_level,
+        "recommendation": recommendation,
         "data_source": f"extended_hours=yfinance, daily={daily_src}",
     }
 

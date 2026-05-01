@@ -89,7 +89,7 @@ DEFAULT_EXCHANGE = {
     "HD": "NYSE", "LOW": "NYSE", "TGT": "NYSE", "NKE": "NYSE",
 }
 
-API_DELAY = 1.5  # seconds between TV API calls
+API_DELAY = 0.3  # seconds between TV API calls (0.2s tested OK, 0.3s for safety)
 
 
 def load_exchange_map() -> dict:

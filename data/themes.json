@@ -1,0 +1,220 @@
+{
+  "themes": [
+    {
+      "id": "ai-semis",
+      "name": "AI Semiconductors & Chips",
+      "subtitle": "GPUs, custom ASICs, memory, and the laggards being left behind",
+      "date": "2026-04-23",
+      "color": "#3b82f6",
+      "sub_themes": [
+        {
+          "name": "GPU / AI Accelerators",
+          "tickers": ["NVDA", "AMD", "INTC"],
+          "best_pick": "NVDA",
+          "thesis": "Core compute for training and inference. NVDA ~90% accelerator share."
+        },
+        {
+          "name": "Custom Silicon / ASICs & AI Networking",
+          "tickers": ["AVGO", "MRVL", "ALAB", "CRDO"],
+          "best_pick": "AVGO",
+          "thesis": "Hyperscaler-designed chips + high-speed interconnect."
+        },
+        {
+          "name": "Memory / HBM",
+          "tickers": ["MU"],
+          "best_pick": "MU",
+          "thesis": "HBM is gate-limiting AI throughput. DRAM supply shortage thesis."
+        },
+        {
+          "name": "Mobile & Edge",
+          "tickers": ["QCOM", "ARM"],
+          "best_pick": "QCOM",
+          "thesis": "On-device AI — slower-growing adjacent theme."
+        },
+        {
+          "name": "Legacy / Mature Nodes",
+          "tickers": ["INTC", "TXN", "ADI", "NXPI", "STM", "MCHP", "ON"],
+          "best_pick": "ADI",
+          "thesis": "Auto, industrial, analog — struggling while AI absorbs capital."
+        }
+      ]
+    },
+    {
+      "id": "foundry-equip",
+      "name": "Foundry & Semi Equipment",
+      "subtitle": "TSMC, ASML's EUV monopoly, and the tools powering the AI buildout",
+      "date": "2026-04-23",
+      "color": "#10b981",
+      "sub_themes": [
+        {
+          "name": "Leading-Edge Foundry",
+          "tickers": ["TSM"],
+          "best_pick": "TSM",
+          "thesis": "Manufactures all advanced AI chips. No alternative."
+        },
+        {
+          "name": "Trailing-Edge Foundry",
+          "tickers": ["UMC", "GFS"],
+          "best_pick": null,
+          "thesis": "Mature-node, auto & industrial. AI-lagging."
+        },
+        {
+          "name": "Lithography",
+          "tickers": ["ASML", "ASMI"],
+          "best_pick": "ASML",
+          "thesis": "100% monopoly in EUV. $200M per system."
+        },
+        {
+          "name": "Deposition, Etch & Process",
+          "tickers": ["AMAT", "LRCX"],
+          "best_pick": "AMAT",
+          "thesis": "Duopoly in wafer fab equipment. TSMC + memory capex beneficiaries."
+        },
+        {
+          "name": "Metrology & Process Control",
+          "tickers": ["KLAC", "ONTO"],
+          "best_pick": "KLAC",
+          "thesis": "Quality control for sub-5nm nodes. 41%+ operating margin."
+        }
+      ]
+    },
+    {
+      "id": "hyperscalers-sw",
+      "name": "Hyperscalers & AI Software",
+      "subtitle": "The $700B capex race and who's capturing the returns",
+      "date": "2026-04-23",
+      "color": "#8b5cf6",
+      "sub_themes": [
+        {
+          "name": "Hyperscalers",
+          "tickers": ["MSFT", "GOOGL", "META", "AMZN", "ORCL"],
+          "best_pick": "GOOGL",
+          "thesis": "Own the infrastructure, models, and cloud. ~$700B combined 2026 capex."
+        },
+        {
+          "name": "AI-Native Software & Data",
+          "tickers": ["PLTR", "SNOW", "MDB", "DDOG", "AI", "PATH"],
+          "best_pick": "SNOW",
+          "thesis": "Picks-and-shovels for enterprise AI workloads."
+        },
+        {
+          "name": "Legacy Enterprise Software + AI",
+          "tickers": ["NOW", "CRM", "ADBE", "INTU", "WDAY"],
+          "best_pick": "NOW",
+          "thesis": "Adding AI overlays to existing franchises. NOW tracking $1B ACV."
+        },
+        {
+          "name": "Cybersecurity AI",
+          "tickers": ["CRWD", "PANW", "ZS", "FTNT", "S", "NET", "OKTA"],
+          "best_pick": "CRWD",
+          "thesis": "AI expands attack surface + sophistication. Tier-1 platforms benefit."
+        }
+      ]
+    },
+    {
+      "id": "ai-power-dc",
+      "name": "AI Power & Data Center Infrastructure",
+      "subtitle": "Nuclear, natural gas, grid equipment, REITs, and cooling",
+      "date": "2026-04-23",
+      "color": "#f59e0b",
+      "sub_themes": [
+        {
+          "name": "Operating Nuclear",
+          "tickers": ["CEG", "VST", "TLN", "D"],
+          "best_pick": "CEG",
+          "thesis": "Only assets meeting hyperscaler PPA demand now. Multi-GW deals signed."
+        },
+        {
+          "name": "Small Modular Reactors (SMRs)",
+          "tickers": ["OKLO", "SMR", "NNE", "BWXT", "CCJ"],
+          "best_pick": "BWXT",
+          "thesis": "2030+ power. Pre-revenue, speculative. Venture-style call options."
+        },
+        {
+          "name": "Power Generation Equipment",
+          "tickers": ["GEV", "ETN", "HUBB", "EMR", "PWR"],
+          "best_pick": "GEV",
+          "thesis": "Turbines, transformers, switchgear for new AI load."
+        },
+        {
+          "name": "Data Center REITs & Cooling",
+          "tickers": ["EQIX", "DLR", "IRM", "VRT", "MOD", "SMCI"],
+          "best_pick": "EQIX",
+          "thesis": "Physical real estate AI runs on + liquid cooling infrastructure."
+        },
+        {
+          "name": "Regulated Utilities + AI",
+          "tickers": ["NEE", "SO", "DUK", "ETR"],
+          "best_pick": null,
+          "thesis": "Hybrid utility/merchant models. Data center load growth."
+        }
+      ]
+    },
+    {
+      "id": "ai-adjacent",
+      "name": "AI-Adjacent Sectors",
+      "subtitle": "Networking, cybersecurity, optical, robotics — the second derivatives",
+      "date": "2026-04-23",
+      "color": "#06b6d4",
+      "sub_themes": [
+        {
+          "name": "AI Data Center Networking",
+          "tickers": ["ANET", "CSCO", "JNPR", "HPE"],
+          "best_pick": "ANET",
+          "thesis": "400G→800G→1.6T ethernet for AI clusters."
+        },
+        {
+          "name": "Optical Components",
+          "tickers": ["COHR", "CIEN", "LITE", "FN", "AAOI"],
+          "best_pick": "COHR",
+          "thesis": "Lasers and modules between racks. Some of the best AI returns."
+        },
+        {
+          "name": "Robotics & Industrial Automation",
+          "tickers": ["ISRG", "SYM", "ABB", "ROK"],
+          "best_pick": "ISRG",
+          "thesis": "Physical AI — applying models to real-world tasks."
+        },
+        {
+          "name": "Autonomous Vehicles",
+          "tickers": ["TSLA", "MBLY"],
+          "best_pick": "TSLA",
+          "thesis": "Long-cycle bet on vision+inference at the edge."
+        }
+      ]
+    },
+    {
+      "id": "biotech",
+      "name": "Biotech Thematic",
+      "subtitle": "Next-gen biotech platforms, gene editing, and cell therapy",
+      "date": "2026-04-23",
+      "color": "#ec4899",
+      "sub_themes": [
+        {
+          "name": "AI-Driven Drug Discovery",
+          "tickers": ["RXRX", "RLAY", "ABSI", "SDGR", "TEM", "LLY"],
+          "best_pick": "RXRX",
+          "thesis": "Computational platforms compressing drug discovery timelines."
+        },
+        {
+          "name": "Gene Editing",
+          "tickers": ["CRSP", "NTLA", "BEAM", "PRME", "CRBU", "EDIT"],
+          "best_pick": "CRSP",
+          "thesis": "CRISPR-Cas9, base editing, prime editing. CRSP has only approved therapy."
+        },
+        {
+          "name": "Commercial-Stage Biotech",
+          "tickers": ["IOVA", "NUVB"],
+          "best_pick": "IOVA",
+          "thesis": "Actual revenue anchoring valuation. Single-asset risk."
+        },
+        {
+          "name": "Picks & Shovels / Large-Cap",
+          "tickers": ["VRTX", "REGN", "ILMN"],
+          "best_pick": "VRTX",
+          "thesis": "Lower single-stock blowup risk. Capture theme at cost of lower upside."
+        }
+      ]
+    }
+  ]
+}

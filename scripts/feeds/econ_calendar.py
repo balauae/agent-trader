@@ -118,7 +118,18 @@ def get_opex_dates(start: datetime, days: int) -> list[dict]:
 # ─────────────────────────────────────────────
 
 def fetch_macro_events(days: int = 7) -> list[dict]:
-    """Scrape US macro events from Trading Economics calendar."""
+    """Scrape US macro events from Trading Economics calendar.
+
+    Current HTML structure (as of April 2026):
+      Data rows have 12 <td>s:
+        [0] time (class contains date as YYYY-MM-DD)
+        [1] country display text
+        [2] icon area (empty)
+        [3] ISO 2-letter country code (class=calendar-iso)
+        [4] event name
+        [5] actual   [6] previous   [7] consensus   [8] forecast
+        [9-11] responsive layout cells
+    """
     today = datetime.now(tz=timezone.utc)
     end = today + timedelta(days=days)
 
@@ -140,73 +151,47 @@ def fetch_macro_events(days: int = 7) -> list[dict]:
     soup = BeautifulSoup(resp.text, "lxml")
     events = []
 
-    # Trading Economics renders calendar as a table
     table = soup.find("table", {"id": "calendar"}) or soup.find("table")
     if not table:
         logger.warning("Could not find calendar table on Trading Economics")
         return []
 
     rows = table.find_all("tr")
-    current_date = None
 
     for row in rows:
-        # Date header rows
-        date_header = row.find("td", colspan=True) or row.find("th", colspan=True)
-        if date_header and date_header.get_text(strip=True):
-            text = date_header.get_text(strip=True)
-            try:
-                current_date = datetime.strptime(text, "%B %d, %Y").replace(tzinfo=timezone.utc)
-            except ValueError:
-                try:
-                    current_date = datetime.strptime(text, "%Y-%m-%d").replace(tzinfo=timezone.utc)
-                except ValueError:
-                    pass
-            continue
-
         cells = row.find_all("td")
-        if len(cells) < 4:
+        # Data rows have 9+ cells; skip headers/spacers
+        if len(cells) < 9:
             continue
 
-        # Extract country — look for flag or text
-        country_cell = cells[1] if len(cells) > 1 else None
-        country = ""
-        if country_cell:
-            # Check for title attribute on flag images
-            flag = country_cell.find("img") or country_cell.find("span")
-            if flag and flag.get("title"):
-                country = flag["title"]
-            elif flag and flag.get("alt"):
-                country = flag["alt"]
-            else:
-                country = country_cell.get_text(strip=True)
-
-        # Only US events
-        if "united states" not in country.lower() and "us" != country.strip().upper():
+        # Country — cell[3] has class 'calendar-iso', text is 2-letter code
+        country_code = cells[3].get_text(strip=True).upper() if cells[3] else ""
+        if country_code != "US":
             continue
 
         # Time
-        time_text = cells[0].get_text(strip=True) if cells[0] else ""
+        time_cell = cells[0]
+        time_text = time_cell.get_text(strip=True)
 
-        # Event name
-        event_name = ""
-        for cell in cells[2:5]:
-            text = cell.get_text(strip=True)
-            if text and len(text) > 3 and not text.replace(".", "").replace("-", "").isdigit():
-                event_name = text
+        # Date — from cell[0]'s class attribute (e.g. class=['2026-04-21'])
+        evt_date = today.strftime("%Y-%m-%d")
+        for cls in time_cell.get("class", []):
+            if len(cls) == 10 and cls[4] == "-" and cls[7] == "-":
+                evt_date = cls
                 break
 
-        if not event_name:
+        # Event name — cell[4]
+        event_name = cells[4].get_text(strip=True) if cells[4] else ""
+        if not event_name or len(event_name) < 3:
             continue
 
-        # Importance — some pages encode as a class or data attribute
-        importance = ""
-        imp_cell = row.find("td", class_=lambda c: c and "calendar" in str(c).lower())
-        if imp_cell:
-            importance = imp_cell.get("data-importance", "")
+        # Data columns
+        actual = cells[5].get_text(strip=True) if len(cells) > 5 else ""
+        previous = cells[6].get_text(strip=True) if len(cells) > 6 else ""
+        consensus = cells[7].get_text(strip=True) if len(cells) > 7 else ""
+        forecast = cells[8].get_text(strip=True) if len(cells) > 8 else ""
 
-        impact = _classify_impact(event_name, importance)
-
-        evt_date = current_date.strftime("%Y-%m-%d") if current_date else today.strftime("%Y-%m-%d")
+        impact = _classify_impact(event_name)
 
         events.append({
             "date": evt_date,
@@ -214,6 +199,9 @@ def fetch_macro_events(days: int = 7) -> list[dict]:
             "event": event_name,
             "impact": impact,
             "category": _categorize_event(event_name),
+            "actual": actual or None,
+            "previous": previous or None,
+            "forecast": consensus or forecast or None,
         })
 
     # Filter to lookahead window

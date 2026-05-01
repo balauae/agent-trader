@@ -283,6 +283,12 @@ def analyze(ticker: str, timeframe: str = "1D", bars: int = 200) -> dict:
     # VWAP only for intraday
     vwap_val = vwap(h, l, c, v) if timeframe in INTRADAY_TFS else pd.Series([np.nan] * len(df))
 
+    # Donchian Channels (20-period default)
+    dc_period = 20
+    dc_upper = h.rolling(dc_period).max()
+    dc_lower = l.rolling(dc_period).min()
+    dc_mid = (dc_upper + dc_lower) / 2
+
     # Latest values
     last = len(df) - 1
     price = float(c.iloc[last])
@@ -312,6 +318,9 @@ def analyze(ticker: str, timeframe: str = "1D", bars: int = 200) -> dict:
         "volume": float(v.iloc[last]),
         "volume_sma_20": safe(vol_sma),
         "volume_above_avg": bool(v.iloc[last] > vol_sma.iloc[last]) if pd.notna(vol_sma.iloc[last]) else None,
+        "dc_upper": safe(dc_upper),
+        "dc_lower": safe(dc_lower),
+        "dc_mid": safe(dc_mid),
     }
 
     # Signals
@@ -365,6 +374,59 @@ def analyze(ticker: str, timeframe: str = "1D", bars: int = 200) -> dict:
             "notes": f"Stage {stage}: {label} — {'BUY ZONE' if stage==2 else 'AVOID' if stage==4 else 'WAIT'}"
         }
 
+    # Fibonacci Retracement
+    def compute_fibonacci(df, lookback=50):
+        """Compute Fibonacci retracement levels from swing high/low in the last N bars."""
+        window = df.tail(min(lookback, len(df)))
+        swing_high = float(window["high"].max())
+        swing_low = float(window["low"].min())
+        diff = swing_high - swing_low
+        if diff < 0.01:
+            return None
+
+        # Find dates of swing points
+        high_idx = window["high"].idxmax()
+        low_idx = window["low"].idxmin()
+        # Determine trend direction: if high came after low → uptrend retracement
+        uptrend = high_idx > low_idx
+
+        fib_ratios = [0, 0.236, 0.382, 0.5, 0.618, 0.786, 1.0]
+        if uptrend:
+            # Retracement from high back down
+            levels = {f"{r:.3g}": round(swing_high - diff * r, 2) for r in fib_ratios}
+        else:
+            # Retracement from low back up
+            levels = {f"{r:.3g}": round(swing_low + diff * r, 2) for r in fib_ratios}
+
+        # Extensions
+        ext_ratios = [1.272, 1.618]
+        extensions = {}
+        if uptrend:
+            for r in ext_ratios:
+                extensions[f"{r:.3g}"] = round(swing_high + diff * (r - 1), 2)
+        else:
+            for r in ext_ratios:
+                extensions[f"{r:.3g}"] = round(swing_low - diff * (r - 1), 2)
+
+        # Current price position (which fib zone)
+        p = float(df["close"].iloc[-1])
+        sorted_levels = sorted(levels.values())
+        zone = None
+        for i in range(len(sorted_levels) - 1):
+            if sorted_levels[i] <= p <= sorted_levels[i + 1]:
+                zone = f"{sorted_levels[i]:.2f} - {sorted_levels[i + 1]:.2f}"
+                break
+
+        return {
+            "swing_high": round(swing_high, 2),
+            "swing_low": round(swing_low, 2),
+            "trend": "uptrend" if uptrend else "downtrend",
+            "lookback_bars": len(window),
+            "levels": levels,
+            "extensions": extensions,
+            "current_zone": zone,
+        }
+
     return {
         "ticker": ticker.upper(),
         "timeframe": timeframe,
@@ -378,6 +440,7 @@ def analyze(ticker: str, timeframe: str = "1D", bars: int = 200) -> dict:
         "take_profit": take_profit,
         "risk_reward": risk_reward,
         "weinstein": compute_weinstein_stage(df),
+        "fibonacci": compute_fibonacci(df),
     }
 
 
